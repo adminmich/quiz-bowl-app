@@ -1,6 +1,6 @@
-/* Service worker with fresh-first strategy for HTML + data,
+/* Service worker with fresh-first strategy for HTML, data, and API,
    cache-first for immutable assets like icons. */
-const CACHE = 'quiz-bowl-v5';
+const CACHE = 'quiz-bowl-v6';
 const CORE = ['/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg'];
 
 self.addEventListener('install', event => {
@@ -22,6 +22,12 @@ self.addEventListener('fetch', event => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
+
+  /* Never cache API calls — they must always be fresh for the leaderboard. */
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(req));
+    return;
+  }
 
   const isHtmlLike =
     req.mode === 'navigate' ||

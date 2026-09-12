@@ -22,8 +22,10 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const raw = await redis.hgetall(KEY);
       const out = [];
+      const HIDE = new Set(['testuser', 'test', 'demo']);
       if (raw) {
         for (const [uname, value] of Object.entries(raw)) {
+          if (HIDE.has(uname.toLowerCase())) continue;
           try {
             const p = typeof value === 'string' ? JSON.parse(value) : value;
             if (!p) continue;

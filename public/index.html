@@ -1082,6 +1082,7 @@ function ensureUsername(student) {
     touched = true;
   }
   if (touched) saveCurrentStudent(student);
+  applyPinnedAvatar(student);
   return student;
 }
 /* Stable per-question key so we can track which questions a student has seen. */
@@ -1092,6 +1093,21 @@ function pickAvatar(name) {
   const list = ['🧒','👦','👧','🧑','🐱','🐶','🦊','🦁','🐼','🐨','🦄','🐸','🐵','🐧','🦉','🦋'];
   let sum = 0; for (let i=0;i<name.length;i++) sum += name.charCodeAt(i);
   return list[sum % list.length];
+}
+
+/* Pinned avatars — override the auto-picked one for specific @usernames.
+   Applied both on new signup (newStudent) and to existing profiles on load. */
+const PINNED_AVATARS = {
+  zoey: '🐷',
+};
+function applyPinnedAvatar(student) {
+  if (!student) return student;
+  const u = String(student.username || '').toLowerCase();
+  if (PINNED_AVATARS[u] && student.avatar !== PINNED_AVATARS[u]) {
+    student.avatar = PINNED_AVATARS[u];
+    saveCurrentStudent(student);
+  }
+  return student;
 }
 
 /* ============================ Achievements ============================ */

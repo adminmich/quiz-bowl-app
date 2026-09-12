@@ -736,8 +736,13 @@ function newStudent(name, age, grade) {
       bestScore: 0, currentAllTimeStreak: 0,
     },
     achievements: [],
+    seenQuestions: [],
     lastPlayed: null,
   };
+}
+/* Stable per-question key so we can track which questions a student has seen. */
+function questionKey(q) {
+  return q.subject + '|L' + q.level + '|' + (q.q || '').slice(0, 80);
 }
 function pickAvatar(name) {
   const list = ['🧒','👦','👧','🧑','🐱','🐶','🦊','🦁','🐼','🐨','🦄','🐸','🐵','🐧','🦉','🦋'];
@@ -967,12 +972,23 @@ function timePerQuestion(level) {
   return 15;                   // Grade 12
 }
 
-/* Strict per-level pool. Each question appears in exactly one level, so no cross-level repeat. */
+/* Strict per-level pool. Each question appears in exactly one level, so no cross-level repeat.
+   The pool is fully reshuffled every call. When a student has already seen some questions in
+   this (subject, level), unseen ones are drawn first so the student meets fresh questions
+   before seeing repeats. If unseen runs out, we top up from the seen pool (also reshuffled). */
 function pickQuestions(subject, level, count) {
   const pool = window.QUESTIONS.filter(q =>
     q.level === level && (subject === 'mixed' || q.subject === subject)
   );
-  return shuffle(pool).slice(0, count);
+  const student = currentStudent();
+  const seenSet = new Set((student && student.seenQuestions) || []);
+  const unseen = [], seen = [];
+  pool.forEach(q => (seenSet.has(questionKey(q)) ? seen : unseen).push(q));
+  let picks = shuffle(unseen).slice(0, count);
+  if (picks.length < count) {
+    picks = picks.concat(shuffle(seen).slice(0, count - picks.length));
+  }
+  return shuffle(picks); // final reshuffle so the order in the quiz is also random
 }
 
 function startQuiz(level) {
@@ -1145,6 +1161,24 @@ function finishQuiz() {
   }
   if (state.score > s.bestScore) s.bestScore = state.score;
   student.lastPlayed = new Date().toISOString();
+
+  // Record which questions were shown so future quizzes prefer fresh ones.
+  // If the student has already seen every question in this (subject, level) pool,
+  // reset the seen list for that pool so the rotation starts over.
+  if (!Array.isArray(student.seenQuestions)) student.seenQuestions = [];
+  const seenSet = new Set(student.seenQuestions);
+  state.questions.forEach(q => seenSet.add(questionKey(q)));
+  const poolAtLvl = window.QUESTIONS.filter(q =>
+    q.level === state.level && (state.subject === 'mixed' || q.subject === state.subject)
+  );
+  const poolKeys = poolAtLvl.map(questionKey);
+  const allSeen = poolKeys.every(k => seenSet.has(k));
+  if (allSeen) {
+    // Wipe this pool's keys so the next quiz picks all-fresh again
+    poolKeys.forEach(k => seenSet.delete(k));
+  }
+  // Cap total memory to keep localStorage tidy
+  student.seenQuestions = [...seenSet].slice(-2000);
 
   // Check achievements
   const unlocked = checkAchievements(student, {

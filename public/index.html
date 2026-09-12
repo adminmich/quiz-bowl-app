@@ -441,38 +441,91 @@
     display:flex; align-items:center; justify-content:center;
   }
 
-  /* Leaderboard */
-  .podium {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
-    align-items: end; margin: 16px 0 24px;
+  /* Leaderboard — top-notcher card + list */
+  .top-notcher {
+    position: relative;
+    display: flex; align-items: center; gap: 16px;
+    background: linear-gradient(135deg, #fef08a 0%, #fde047 50%, #fbbf24 100%);
+    border: 4px solid #f59e0b;
+    border-radius: 22px;
+    padding: 18px 20px;
+    margin: 12px 0 20px;
+    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.35), 0 4px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
   }
-  .pod {
-    background: white; border-radius: 16px 16px 8px 8px;
-    padding: 16px 8px 12px; text-align:center;
-    box-shadow: var(--shadow);
+  .top-notcher::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at top left, rgba(255,255,255,0.6) 0%, transparent 60%);
+    pointer-events: none;
   }
-  .pod .rank { font-size: 24px; font-weight: 700; }
-  .pod .avatar { font-size: 40px; display:block; margin: 4px 0; }
-  .pod .name { font-size: 14px; font-weight: 600; }
-  .pod .pts { font-size: 13px; color: var(--muted); }
-  .pod-1 { background: linear-gradient(180deg, #fef08a, #fde047); padding-top: 30px; }
-  .pod-1 .rank { color: #a16207; }
-  .pod-2 { background: linear-gradient(180deg, #e5e7eb, #d1d5db); padding-top: 22px; }
-  .pod-2 .rank { color: #374151; }
-  .pod-3 { background: linear-gradient(180deg, #fdba74, #fb923c); padding-top: 14px; }
-  .pod-3 .rank { color: #7c2d12; }
+  .top-notcher.you { border-color: var(--sky); box-shadow: 0 10px 30px rgba(56,189,248,0.35), 0 4px 8px rgba(0,0,0,0.08); }
+  .top-notcher .crown {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    font-size: 36px; filter: drop-shadow(0 3px 4px rgba(0,0,0,0.25));
+    animation: bob 3s ease-in-out infinite;
+    z-index: 2;
+  }
+  .top-notcher .top-avatar {
+    font-size: 60px;
+    background: white; border-radius: 50%;
+    width: 88px; height: 88px; line-height: 88px; text-align: center;
+    box-shadow: inset 0 -3px 8px rgba(0,0,0,0.08);
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .top-notcher .top-body { flex: 1; min-width: 0; z-index: 1; }
+  .top-notcher .top-label {
+    font-size: 11px; letter-spacing: 2px; font-weight: 700;
+    color: #7c2d12; opacity: 0.85; margin-bottom: 2px;
+  }
+  .top-notcher .top-name {
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    line-height: 1.1;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .top-notcher .top-meta {
+    font-size: 12px; color: var(--ink-2); margin-top: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .top-notcher .top-pts {
+    text-align: right; z-index: 1;
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: flex-end;
+  }
+  .top-notcher .top-pts .pts-num {
+    font-size: 32px; font-weight: 700; color: var(--ink);
+    line-height: 1;
+  }
+  .top-notcher .top-pts .pts-lbl {
+    font-size: 11px; color: var(--ink-2); font-weight: 600;
+    letter-spacing: 1px;
+  }
 
   .lb-row {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 12px;
     background: white; padding: 12px 16px;
     border-radius: 14px; margin-bottom: 8px;
     border: 3px solid #f1f5f9;
+    transition: transform .12s, border-color .15s;
   }
-  .lb-row.you { border-color: var(--sky); background: #f0f9ff; }
-  .lb-row .r { font-weight: 700; width: 28px; color: var(--muted); }
-  .lb-row .a { font-size: 24px; }
-  .lb-row .n { flex: 1; font-weight: 600; }
-  .lb-row .p { font-weight: 700; color: var(--sun); background: var(--ink); padding: 4px 12px; border-radius: 999px; font-size: 13px; }
+  .lb-row:hover { border-color: #cbd5e1; transform: translateX(2px); }
+  .lb-row.you { border-color: var(--sky); background: #f0f9ff; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+  .lb-row .r { font-weight: 700; width: 40px; color: var(--muted); font-size: 15px; flex-shrink: 0; }
+  .lb-row .a { font-size: 28px; flex-shrink: 0; }
+  .lb-row .n {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .lb-row .n .uname {
+    font-weight: 700; font-size: 15px; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .lb-row .n .submeta { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .lb-row .p {
+    font-weight: 700; color: var(--sun); background: var(--ink);
+    padding: 6px 12px; border-radius: 999px; font-size: 13px;
+    flex-shrink: 0;
+  }
 
   /* Toast */
   .toast-wrap {
@@ -612,19 +665,20 @@
     .ach-card .d { font-size: 10px; }
 
     /* Leaderboard */
-    .podium { gap: 6px; }
-    .pod { padding: 12px 4px 10px; }
-    .pod .rank { font-size: 18px; }
-    .pod .avatar { font-size: 28px; }
-    .pod .name { font-size: 12px; }
-    .pod .pts { font-size: 11px; }
-    .pod-1 { padding-top: 20px; }
-    .pod-2 { padding-top: 16px; }
-    .pod-3 { padding-top: 10px; }
-    .lb-row { padding: 10px 12px; }
-    .lb-row .a { font-size: 20px; }
-    .lb-row .n { font-size: 13px; }
-    .lb-row .p { font-size: 11px; padding: 3px 10px; }
+    .top-notcher { padding: 14px 14px; gap: 12px; margin: 18px 0 16px; border-width: 3px; }
+    .top-notcher .crown { font-size: 28px; top: -12px; }
+    .top-notcher .top-avatar { font-size: 44px; width: 66px; height: 66px; line-height: 66px; }
+    .top-notcher .top-name { font-size: 18px; }
+    .top-notcher .top-label { font-size: 10px; letter-spacing: 1.5px; }
+    .top-notcher .top-meta { font-size: 11px; }
+    .top-notcher .top-pts .pts-num { font-size: 24px; }
+    .top-notcher .top-pts .pts-lbl { font-size: 10px; }
+    .lb-row { padding: 10px 12px; gap: 10px; }
+    .lb-row .r { width: 32px; font-size: 13px; }
+    .lb-row .a { font-size: 22px; }
+    .lb-row .n .uname { font-size: 13px; }
+    .lb-row .n .submeta { font-size: 10px; }
+    .lb-row .p { font-size: 11px; padding: 4px 10px; }
 
     /* Toast */
     .toast-wrap { top: 8px; left: 8px; right: 8px; transform: none; }
@@ -1678,34 +1732,47 @@ function localLeaderboardEntries() {
 function renderLeaderboardRows(list) {
   const me = currentStudent();
   const myUname = me ? (me.username || '').toLowerCase() : null;
-  const podium = document.getElementById('podiumWrap');
+  const topWrap = document.getElementById('podiumWrap');
   const rest = document.getElementById('lbRest');
-  podium.innerHTML = ''; rest.innerHTML = '';
+  topWrap.innerHTML = ''; rest.innerHTML = '';
 
   if (!list.length) {
-    podium.innerHTML = '<p class="lead" style="text-align:center;">No scores yet. Play a quiz to be first! 🚀</p>';
+    topWrap.innerHTML = '<p class="lead" style="text-align:center;">No scores yet. Play a quiz to be first! 🚀</p>';
     return;
   }
 
-  const top3 = list.slice(0, 3);
-  const order = [top3[1], top3[0], top3[2]].filter(Boolean);
-  const pod = document.createElement('div');
-  pod.className = 'podium';
-  order.forEach(s => {
-    const rank = s === top3[0] ? 1 : s === top3[1] ? 2 : 3;
-    const div = document.createElement('div');
-    div.className = 'pod pod-' + rank;
-    const emoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : '🥉';
-    div.innerHTML = `<div class="rank">${emoji}</div><span class="avatar">${s.avatar || '🧑'}</span><div class="name">@${escapeHtml(s.username)}</div><div class="pts">${s.totalPoints} pts</div>`;
-    pod.appendChild(div);
-  });
-  podium.appendChild(pod);
+  /* Top notcher: full-width highlighted card at the top */
+  const top = list[0];
+  const topCard = document.createElement('div');
+  const iAmTop = myUname && top.username && top.username.toLowerCase() === myUname;
+  topCard.className = 'top-notcher' + (iAmTop ? ' you' : '');
+  topCard.innerHTML =
+    '<div class="crown">👑</div>' +
+    '<div class="top-avatar">' + (top.avatar || '🧑') + '</div>' +
+    '<div class="top-body">' +
+      '<div class="top-label">TOP NOTCHER</div>' +
+      '<div class="top-name">@' + escapeHtml(top.username) + '</div>' +
+      '<div class="top-meta">' + (top.name ? escapeHtml(top.name) + ' • ' : '') + 'Grade ' + top.grade + ' • ' + (top.trophies || 0) + ' 🏆</div>' +
+    '</div>' +
+    '<div class="top-pts">' +
+      '<span class="pts-num">' + top.totalPoints + '</span>' +
+      '<span class="pts-lbl">pts</span>' +
+    '</div>';
+  topWrap.appendChild(topCard);
 
-  list.slice(3).forEach((s, i) => {
+  /* Everyone else as a clean list, rank #2 onward */
+  list.slice(1).forEach((s, i) => {
     const row = document.createElement('div');
     const mine = myUname && s.username && s.username.toLowerCase() === myUname;
     row.className = 'lb-row' + (mine ? ' you' : '');
-    row.innerHTML = `<span class="r">#${i+4}</span><span class="a">${s.avatar || '🧑'}</span><span class="n">@${escapeHtml(s.username)} • G${s.grade}</span><span class="p">${s.totalPoints} pts</span>`;
+    row.innerHTML =
+      '<span class="r">#' + (i + 2) + '</span>' +
+      '<span class="a">' + (s.avatar || '🧑') + '</span>' +
+      '<span class="n">' +
+        '<span class="uname">@' + escapeHtml(s.username) + '</span>' +
+        '<span class="submeta">Grade ' + s.grade + ' • ' + (s.trophies || 0) + ' 🏆</span>' +
+      '</span>' +
+      '<span class="p">' + s.totalPoints + ' pts</span>';
     rest.appendChild(row);
   });
 }

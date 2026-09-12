@@ -23,43 +23,348 @@ window.LEVEL_GRADE = {
 };
 
 window.QUESTIONS = [
-  /* ============================ GRADES 1-4 (Levels 1-8) ============================
-     Very young learners. Content: math basics, first English words,
+  /* ============================ MATH (all 28 levels, 10 per level) ============================
+     Every math explanation shows the step-by-step derivation, not just the answer. */
+
+  /* ---- Grade 1 - Level 1 (very basic addition, counting, shapes) ---- */
+  { subject:'math', grade:1, level:1, type:'mc',    q:'What is 1 + 1?', choices:['1','2','3','4'], a:'2', e:'Start with 1 apple. Add 1 more apple. Count them: "1, 2". Total = 2.' },
+  { subject:'math', grade:1, level:1, type:'mc',    q:'What is 3 + 2?', choices:['4','5','6','7'], a:'5', e:'Start at 3. Count 2 more numbers: 3 -> 4 -> 5. So 3 + 2 = 5.' },
+  { subject:'math', grade:1, level:1, type:'mc',    q:'How many fingers on one hand?', choices:['3','4','5','6'], a:'5', e:'Count each finger: thumb (1), index (2), middle (3), ring (4), pinky (5). One hand has 5 fingers.' },
+  { subject:'math', grade:1, level:1, type:'mc',    q:'What comes after 4?', choices:['3','5','6','7'], a:'5', e:'Numbers in order: 1, 2, 3, 4, 5, 6... The next number after 4 is 5.' },
+  { subject:'math', grade:1, level:1, type:'mc',    q:'Which is bigger: 3 or 7?', choices:['3','7','same','none'], a:'7', e:'On a number line, 7 is further to the right than 3, so 7 is bigger. 7 > 3.' },
+  { subject:'math', grade:1, level:1, type:'fib',   q:'2 + 2 = ____.', a:'4', e:'2 + 2: take 2 fingers on one hand, 2 on the other, count all together = 4.' },
+  { subject:'math', grade:1, level:1, type:'fib',   q:'The number just before 6 is ____.', a:'5', e:'Counting: 4, 5, 6. The number right before 6 is 5.' },
+  { subject:'math', grade:1, level:1, type:'guess', q:'A round shape like a ball.', a:'circle', e:'A circle has no corners and looks like a wheel or a ball outline. Cars have circle wheels.' },
+  { subject:'math', grade:1, level:1, type:'guess', q:'A shape with 3 sides.', a:'triangle', e:'"Tri" means three. A triangle has 3 sides and 3 corners, like a slice of pizza.' },
+  { subject:'math', grade:1, level:1, type:'guess', q:'The word for adding numbers.', a:'plus', e:'The + sign is called "plus". "3 plus 2" means 3 + 2. Adding gives a total.' },
+
+  /* ---- Grade 1 - Level 2 ---- */
+  { subject:'math', grade:1, level:2, type:'mc',    q:'What is 8 + 2?', choices:['9','10','11','12'], a:'10', e:'Start at 8. Add 2: 8 + 1 = 9, then 9 + 1 = 10. Or: 8 needs 2 more to reach 10.' },
+  { subject:'math', grade:1, level:2, type:'mc',    q:'What is 7 - 3?', choices:['3','4','5','6'], a:'4', e:'Start at 7. Subtract 3 by counting back: 7 -> 6 -> 5 -> 4. So 7 - 3 = 4.' },
+  { subject:'math', grade:1, level:2, type:'mc',    q:'Which is smaller: 8 or 5?', choices:['8','5','same','none'], a:'5', e:'On the number line, 5 comes before 8, so 5 is smaller. 5 < 8.' },
+  { subject:'math', grade:1, level:2, type:'mc',    q:'How many days in a week?', choices:['5','6','7','8'], a:'7', e:'Count: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday = 7 days.' },
+  { subject:'math', grade:1, level:2, type:'mc',    q:'5 + 4 = ?', choices:['8','9','10','11'], a:'9', e:'Start at 5. Add 4 by counting up: 5 -> 6 -> 7 -> 8 -> 9. So 5 + 4 = 9.' },
+  { subject:'math', grade:1, level:2, type:'fib',   q:'The number before 10 is ____.', a:'9', e:'Counting up: 7, 8, 9, 10. The number just before 10 is 9.' },
+  { subject:'math', grade:1, level:2, type:'fib',   q:'1 + 1 + 1 + 1 = ____.', a:'4', e:'Four 1s added together: 1 + 1 = 2, 2 + 1 = 3, 3 + 1 = 4. Total is 4.' },
+  { subject:'math', grade:1, level:2, type:'fib',   q:'Count by 2s: 2, 4, ____, 8.', a:'6', e:'Skip counting by 2: start 2, add 2 = 4, add 2 = 6, add 2 = 8. The missing number is 6.' },
+  { subject:'math', grade:1, level:2, type:'guess', q:'A shape with 4 equal sides.', a:'square', e:'A square has 4 sides all the same length and 4 right-angle corners. Like a dice face.' },
+  { subject:'math', grade:1, level:2, type:'guess', q:'The word for taking away.', a:'minus', e:'The - sign is called "minus" or "subtract". "5 minus 2" means 5 - 2 = 3.' },
+
+  /* ---- Grade 2 - Level 3 ---- */
+  { subject:'math', grade:2, level:3, type:'mc',    q:'What is 9 + 4?', choices:['11','12','13','14'], a:'13', e:'Break it up: 9 + 1 = 10, leaving 3 more to add. 10 + 3 = 13. So 9 + 4 = 13.' },
+  { subject:'math', grade:2, level:3, type:'mc',    q:'What is 15 - 7?', choices:['6','7','8','9'], a:'8', e:'15 - 5 = 10, then 10 - 2 = 8 (since 7 = 5 + 2). Or count back: 15,14,13,12,11,10,9,8.' },
+  { subject:'math', grade:2, level:3, type:'mc',    q:'Which number is even?', choices:['3','5','7','8'], a:'8', e:'Even numbers can be split into two equal groups. 8 = 4 + 4, so it is even. Even numbers end in 0, 2, 4, 6, or 8.' },
+  { subject:'math', grade:2, level:3, type:'mc',    q:'What is 10 + 10?', choices:['15','20','25','100'], a:'20', e:'Two tens make twenty. 10 + 10 = 20. Think of two hands of 10 fingers each = 20 fingers.' },
+  { subject:'math', grade:2, level:3, type:'mc',    q:'The tens digit in 47 is', choices:['4','7','40','74'], a:'4', e:'In 47, the digit 4 is in the tens place (means 40) and the digit 7 is in the ones place (means 7). So the tens digit is 4.' },
+  { subject:'math', grade:2, level:3, type:'fib',   q:'The number after 19 is ____.', a:'20', e:'Counting up: 17, 18, 19, 20. Twenty (20) comes right after 19.' },
+  { subject:'math', grade:2, level:3, type:'fib',   q:'6 + 6 = ____.', a:'12', e:'Doubling 6: 6 + 6 = 12. Or use fingers on both hands: 5+5 = 10, plus 1+1 = 2, total 12.' },
+  { subject:'math', grade:2, level:3, type:'fib',   q:'20 - 10 = ____.', a:'10', e:'Two tens minus one ten leaves one ten. 20 - 10 = 10.' },
+  { subject:'math', grade:2, level:3, type:'guess', q:'The result of adding.', a:'sum', e:'Addition gives a sum. In 4 + 3 = 7, the number 7 is the sum. Subtraction gives a "difference".' },
+  { subject:'math', grade:2, level:3, type:'guess', q:'A shape like a stop sign, with 8 sides.', a:'octagon', e:'"Oct" means 8, like an octopus with 8 arms. Stop signs are octagons with 8 equal sides.' },
+
+  /* ---- Grade 2 - Level 4 ---- */
+  { subject:'math', grade:2, level:4, type:'mc',    q:'What is 20 - 8?', choices:['10','11','12','13'], a:'12', e:'20 - 8: subtract 10 first = 10, but we took 2 too many, so add them back: 10 + 2 = 12. Or count back 8 from 20.' },
+  { subject:'math', grade:2, level:4, type:'mc',    q:'25 + 15 = ?', choices:['30','35','40','45'], a:'40', e:'Add tens: 20 + 10 = 30. Add ones: 5 + 5 = 10. Total: 30 + 10 = 40.' },
+  { subject:'math', grade:2, level:4, type:'mc',    q:'Which is odd?', choices:['2','4','7','10'], a:'7', e:'Odd numbers cannot be split into two equal groups. 7 = 3 + 4 (unequal). Odd numbers end in 1, 3, 5, 7, or 9.' },
+  { subject:'math', grade:2, level:4, type:'mc',    q:'How many minutes in an hour?', choices:['30','45','60','100'], a:'60', e:'One hour is divided into 60 minutes. A clock face has 60 minute marks arranged around 12 numbered hours.' },
+  { subject:'math', grade:2, level:4, type:'mc',    q:'What is 3 x 2?', choices:['5','6','7','8'], a:'6', e:'3 groups of 2: 2 + 2 + 2 = 6. Multiplication is repeated addition. So 3 x 2 = 6.' },
+  { subject:'math', grade:2, level:4, type:'fib',   q:'10 tens = ____.', a:'100', e:'10 groups of 10 = 100. Think 10 + 10 + 10... ten times, or 10 x 10 = 100.' },
+  { subject:'math', grade:2, level:4, type:'fib',   q:'Skip count by 5s: 5, 10, 15, ____.', a:'20', e:'Each step adds 5. After 15, add 5 more = 20. Pattern: 5, 10, 15, 20, 25...' },
+  { subject:'math', grade:2, level:4, type:'fib',   q:'A pair means ____ things.', a:'2', e:'A pair is 2 of something (a pair of shoes, a pair of eyes). Also called a couple.' },
+  { subject:'math', grade:2, level:4, type:'guess', q:'A shape with 3 sides.', a:'triangle', e:'Triangle: "tri" means three. Has 3 sides, 3 corners, and 3 angles that always add to 180 degrees.' },
+  { subject:'math', grade:2, level:4, type:'guess', q:'The symbol for "equal to".', a:'equals', e:'The = sign means "equals" or "is the same as". Example: 2 + 3 = 5 means "2 plus 3 equals 5".' },
+
+  /* ---- Grade 3 - Level 5 ---- */
+  { subject:'math', grade:3, level:5, type:'mc',    q:'What is 6 x 4?', choices:['18','22','24','28'], a:'24', e:'6 groups of 4: 4 + 4 + 4 + 4 + 4 + 4 = 24. Or 6 x 4 = (5 x 4) + 4 = 20 + 4 = 24.' },
+  { subject:'math', grade:3, level:5, type:'mc',    q:'12 divided by 3 = ?', choices:['3','4','5','6'], a:'4', e:'Split 12 into 3 equal groups: 12 / 3 = 4 (each group has 4). Check: 3 x 4 = 12.' },
+  { subject:'math', grade:3, level:5, type:'mc',    q:'Half of 20 is', choices:['5','10','12','15'], a:'10', e:'Half means split into 2 equal parts. 20 / 2 = 10. Two halves of 10 make 20.' },
+  { subject:'math', grade:3, level:5, type:'mc',    q:'5 x 5 = ?', choices:['10','15','20','25'], a:'25', e:'Five groups of 5: 5 + 5 + 5 + 5 + 5 = 25. This is 5 squared, written 5^2 = 25.' },
+  { subject:'math', grade:3, level:5, type:'mc',    q:'How many sides does a hexagon have?', choices:['4','5','6','7'], a:'6', e:'"Hex" means six. A hexagon has 6 sides. Honeycombs are made of hexagons.' },
+  { subject:'math', grade:3, level:5, type:'fib',   q:'1/2 of 10 is ____.', a:'5', e:'Half of 10 means divide 10 by 2: 10 / 2 = 5. Two groups of 5 make 10.' },
+  { subject:'math', grade:3, level:5, type:'fib',   q:'The pattern 3, 6, 9, 12, ____ next is.', a:'15', e:'Each term goes up by 3 (multiples of 3). After 12, add 3 more: 12 + 3 = 15.' },
+  { subject:'math', grade:3, level:5, type:'fib',   q:'2 x 9 = ____.', a:'18', e:'Two 9s: 9 + 9 = 18. Or think 2 x 10 = 20, minus 2 = 18.' },
+  { subject:'math', grade:3, level:5, type:'guess', q:'The answer to a multiplication problem.', a:'product', e:'Multiplication gives a "product". In 4 x 5 = 20, the number 20 is the product.' },
+  { subject:'math', grade:3, level:5, type:'guess', q:'The line between the top and bottom of a fraction.', a:'fraction bar', e:'The horizontal line in a fraction separates the numerator (top) from the denominator (bottom). Also called a vinculum.' },
+
+  /* ---- Grade 3 - Level 6 ---- */
+  { subject:'math', grade:3, level:6, type:'mc',    q:'What is 100 - 45?', choices:['45','55','65','75'], a:'55', e:'100 - 40 = 60. Then 60 - 5 = 55. So 100 - 45 = 55.' },
+  { subject:'math', grade:3, level:6, type:'mc',    q:'Which is bigger: 1/2 or 1/4?', choices:['1/2','1/4','same','cannot say'], a:'1/2', e:'1/2 is one part of two equal pieces. 1/4 is one part of four equal pieces (smaller pieces). So 1/2 > 1/4.' },
+  { subject:'math', grade:3, level:6, type:'mc',    q:'7 x 8 = ?', choices:['48','54','56','63'], a:'56', e:'Times table for 7: ...49, 56, 63... Or 7 x 8 = 7 x (10 - 2) = 70 - 14 = 56.' },
+  { subject:'math', grade:3, level:6, type:'mc',    q:'36 / 6 = ?', choices:['4','5','6','7'], a:'6', e:'Ask: 6 times what equals 36? 6 x 6 = 36, so 36 / 6 = 6.' },
+  { subject:'math', grade:3, level:6, type:'mc',    q:'Perimeter of a triangle with sides 4, 5, 6?', choices:['12','14','15','20'], a:'15', e:'Perimeter = sum of all sides. 4 + 5 + 6 = 15.' },
+  { subject:'math', grade:3, level:6, type:'fib',   q:'A right angle has ____ degrees.', a:'90', e:'A right angle looks like the corner of a book or a wall. It measures exactly 90 degrees.' },
+  { subject:'math', grade:3, level:6, type:'fib',   q:'A quarter of 20 is ____.', a:'5', e:'A quarter means 1/4. Divide 20 into 4 equal parts: 20 / 4 = 5.' },
+  { subject:'math', grade:3, level:6, type:'fib',   q:'The number of sides in a pentagon is ____.', a:'5', e:'"Penta" means five. A pentagon has 5 sides. The US Pentagon building has 5 walls.' },
+  { subject:'math', grade:3, level:6, type:'guess', q:'The result of dividing.', a:'quotient', e:'Division gives a "quotient". In 12 / 4 = 3, the number 3 is the quotient.' },
+  { subject:'math', grade:3, level:6, type:'guess', q:'The bottom number in a fraction.', a:'denominator', e:'In 3/4, the 4 is the denominator (bottom, tells how many equal parts total). The 3 on top is the numerator.' },
+
+  /* ---- Grade 4 - Level 7 ---- */
+  { subject:'math', grade:4, level:7, type:'mc',    q:'What is 8 x 7?', choices:['48','54','56','64'], a:'56', e:'8 x 7 = (8 x 5) + (8 x 2) = 40 + 16 = 56. Or memorize: 7 x 8 = 56.' },
+  { subject:'math', grade:4, level:7, type:'mc',    q:'What is 125 + 275?', choices:['300','375','400','425'], a:'400', e:'125 + 275: add ones 5 + 5 = 10 (write 0, carry 1), tens 2+7+1 = 10 (write 0, carry 1), hundreds 1+2+1 = 4. Result: 400.' },
+  { subject:'math', grade:4, level:7, type:'mc',    q:'Area of a rectangle 5 by 6?', choices:['11','20','25','30'], a:'30', e:'Area of a rectangle = length x width. 5 x 6 = 30 square units.' },
+  { subject:'math', grade:4, level:7, type:'mc',    q:'42 / 7 = ?', choices:['5','6','7','8'], a:'6', e:'Ask: 7 times what = 42? 7 x 6 = 42, so 42 / 7 = 6.' },
+  { subject:'math', grade:4, level:7, type:'mc',    q:'Which number is prime?', choices:['4','9','11','15'], a:'11', e:'A prime has only 1 and itself as factors. 4=2x2, 9=3x3, 15=3x5. But 11 only divides by 1 and 11, so 11 is prime.' },
+  { subject:'math', grade:4, level:7, type:'fib',   q:'The perimeter of a square with side 4 is ____.', a:'16', e:'Perimeter of a square = 4 x side. 4 x 4 = 16. All four sides together.' },
+  { subject:'math', grade:4, level:7, type:'fib',   q:'Round 47 to the nearest 10 = ____.', a:'50', e:'47 is between 40 and 50. Since 7 is 5 or more, we round UP to 50.' },
+  { subject:'math', grade:4, level:7, type:'fib',   q:'The number of hours in a day is ____.', a:'24', e:'A day has 24 hours. 12 hours daytime (roughly) + 12 hours night = 24 total.' },
+  { subject:'math', grade:4, level:7, type:'guess', q:'A number that can be divided by 2 evenly.', a:'even', e:'Even numbers divide by 2 with no remainder. Examples: 2, 4, 6, 8, 10... They end in 0, 2, 4, 6, or 8.' },
+  { subject:'math', grade:4, level:7, type:'guess', q:'A polygon with all sides and angles equal.', a:'regular', e:'A regular polygon has all sides the same length AND all angles equal. Regular triangle = equilateral. Regular quadrilateral = square.' },
+
+  /* ---- Grade 4 - Level 8 ---- */
+  { subject:'math', grade:4, level:8, type:'mc',    q:'Which is greater: 0.5 or 0.05?', choices:['0.5','0.05','same','cannot tell'], a:'0.5', e:'0.5 = 5/10 = 50/100. 0.05 = 5/100. 50/100 > 5/100, so 0.5 > 0.05.' },
+  { subject:'math', grade:4, level:8, type:'mc',    q:'What is 2.5 + 1.7?', choices:['3.2','3.7','4.2','4.7'], a:'4.2', e:'Line up decimals: 2.5 + 1.7. Add tenths: 5 + 7 = 12 (write 2, carry 1). Add ones: 2 + 1 + 1 = 4. Result: 4.2.' },
+  { subject:'math', grade:4, level:8, type:'mc',    q:'2/3 + 1/3 = ?', choices:['1/3','2/6','1','3/6'], a:'1', e:'Same denominator, so add numerators: 2 + 1 = 3. Answer: 3/3 = 1.' },
+  { subject:'math', grade:4, level:8, type:'mc',    q:'Area of a square with side 7?', choices:['14','28','49','56'], a:'49', e:'Area of a square = side x side = side^2. 7 x 7 = 49 square units.' },
+  { subject:'math', grade:4, level:8, type:'mc',    q:'12 x 11 = ?', choices:['121','122','132','142'], a:'132', e:'12 x 11 = 12 x 10 + 12 x 1 = 120 + 12 = 132.' },
+  { subject:'math', grade:4, level:8, type:'fib',   q:'3/4 as a decimal is ____.', a:'0.75', e:'3/4: divide 3 by 4. 3.00 / 4 = 0.75. Check: 0.75 x 4 = 3.' },
+  { subject:'math', grade:4, level:8, type:'fib',   q:'The number of degrees in a full turn is ____.', a:'360', e:'A full circle contains 360 degrees. Half turn = 180 deg. Quarter turn (right angle) = 90 deg.' },
+  { subject:'math', grade:4, level:8, type:'fib',   q:'The smallest 3-digit number is ____.', a:'100', e:'3-digit numbers range from 100 to 999. The smallest is 100 (one hundred).' },
+  { subject:'math', grade:4, level:8, type:'guess', q:'A closed shape with 4 sides.', a:'quadrilateral', e:'"Quad" means four. Quadrilaterals include squares, rectangles, rhombuses, parallelograms, and trapezoids.' },
+  { subject:'math', grade:4, level:8, type:'guess', q:'The top number in a fraction.', a:'numerator', e:'In 3/4, the 3 is the numerator (tells how many parts we have). The 4 is the denominator (parts in the whole).' },
+
+  /* ---- Grade 5 - Level 9 ---- */
+  { subject:'math', grade:5, level:9, type:'mc',    q:'What is 7 x 8?', choices:['54','56','58','64'], a:'56', e:'7 x 8 method: (5 x 8) + (2 x 8) = 40 + 16 = 56. Or 7 x 8 = 7 x (10-2) = 70 - 14 = 56.' },
+  { subject:'math', grade:5, level:9, type:'mc',    q:'144 / 12 = ?', choices:['10','11','12','14'], a:'12', e:'Ask: 12 times what = 144? Try 12 x 12: (10 x 12) + (2 x 12) = 120 + 24 = 144. So 144 / 12 = 12.' },
+  { subject:'math', grade:5, level:9, type:'mc',    q:'Which is prime?', choices:['9','15','17','21'], a:'17', e:'Check each: 9 = 3 x 3, 15 = 3 x 5, 21 = 3 x 7. 17 has no factors besides 1 and itself, so 17 is prime.' },
+  { subject:'math', grade:5, level:9, type:'mc',    q:'Order of operations: 2 + 3 x 4 = ?', choices:['14','20','5+12','24'], a:'14', e:'PEMDAS: multiply before add. 3 x 4 = 12 first. Then 2 + 12 = 14.' },
+  { subject:'math', grade:5, level:9, type:'mc',    q:'12 + 24 + 36 + 48 = ?', choices:['110','120','130','140'], a:'120', e:'Pair up smart: (12 + 48) + (24 + 36) = 60 + 60 = 120.' },
+  { subject:'math', grade:5, level:9, type:'fib',   q:'The perimeter of a square with side 5 is ____.', a:'20', e:'Perimeter of a square = 4 x side. 4 x 5 = 20 units.' },
+  { subject:'math', grade:5, level:9, type:'fib',   q:'25 x 4 = ____.', a:'100', e:'25 x 4 = (25 x 2) x 2 = 50 x 2 = 100. Or think: four quarters make a dollar (100 cents).' },
+  { subject:'math', grade:5, level:9, type:'fib',   q:'The GCF of 12 and 18 is ____.', a:'6', e:'Factors of 12: 1,2,3,4,6,12. Factors of 18: 1,2,3,6,9,18. Common ones: 1,2,3,6. Greatest = 6.' },
+  { subject:'math', grade:5, level:9, type:'guess', q:'A shape with three sides.', a:'triangle', e:'Triangle: "tri" = three. 3 sides + 3 angles that sum to 180 degrees. Basic types: equilateral, isosceles, scalene.' },
+  { subject:'math', grade:5, level:9, type:'guess', q:'The result of subtraction.', a:'difference', e:'Subtraction produces a "difference". In 12 - 5 = 7, the number 7 is the difference between 12 and 5.' },
+
+  /* ---- Grade 5 - Level 10 ---- */
+  { subject:'math', grade:5, level:10, type:'mc',    q:'1/2 + 1/4 = ?', choices:['1/3','2/6','2/4','3/4'], a:'3/4', e:'Rewrite with a common denominator of 4: 1/2 = 2/4. Then 2/4 + 1/4 = 3/4.' },
+  { subject:'math', grade:5, level:10, type:'mc',    q:'Which fraction is largest?', choices:['1/2','2/5','3/8','1/3'], a:'1/2', e:'Convert to decimals: 1/2 = 0.500, 2/5 = 0.400, 3/8 = 0.375, 1/3 = 0.333. Largest is 0.500 = 1/2.' },
+  { subject:'math', grade:5, level:10, type:'mc',    q:'0.6 - 0.35 = ?', choices:['0.15','0.25','0.35','0.55'], a:'0.25', e:'Line up: 0.60 - 0.35. Subtract hundredths (0-5 borrow, becomes 10-5=5). Tenths: 5-3=2. Result: 0.25.' },
+  { subject:'math', grade:5, level:10, type:'mc',    q:'LCM of 4 and 6 = ?', choices:['10','12','18','24'], a:'12', e:'Multiples of 4: 4,8,12,16... Multiples of 6: 6,12,18... First one they share = 12.' },
+  { subject:'math', grade:5, level:10, type:'mc',    q:'Which fraction equals 1/2?', choices:['3/4','5/10','2/6','4/12'], a:'5/10', e:'Simplify each: 3/4 stays, 5/10 = 1/2, 2/6 = 1/3, 4/12 = 1/3. Only 5/10 equals 1/2.' },
+  { subject:'math', grade:5, level:10, type:'fib',   q:'The area of a rectangle 8 x 6 is ____.', a:'48', e:'Area of a rectangle = length x width = 8 x 6 = 48 square units.' },
+  { subject:'math', grade:5, level:10, type:'fib',   q:'Round 3.478 to 1 decimal place: ____.', a:'3.5', e:'Look at the hundredths digit (7). Since 7 >= 5, round the tenths up: 3.4 becomes 3.5.' },
+  { subject:'math', grade:5, level:10, type:'fib',   q:'A mixed number 2 3/4 as an improper fraction = ____/4.', a:'11', e:'Multiply whole by denominator: 2 x 4 = 8. Add numerator: 8 + 3 = 11. So 2 3/4 = 11/4.' },
+  { subject:'math', grade:5, level:10, type:'guess', q:'A polygon with eight sides.', a:'octagon', e:'"Octa" means eight (like octopus with 8 arms). Octagon has 8 sides. Stop signs are octagons.' },
+  { subject:'math', grade:5, level:10, type:'guess', q:'A number divisible by two.', a:'even', e:'Even numbers divide by 2 with no remainder. They end in 0, 2, 4, 6, or 8. Odd numbers end in 1, 3, 5, 7, or 9.' },
+
+  /* ---- Grade 5 - Level 11 ---- */
+  { subject:'math', grade:5, level:11, type:'mc',    q:'A book costs $8.50. What is the change from $20?', choices:['$10.50','$11.50','$12.50','$8.50'], a:'$11.50', e:'Subtract: $20.00 - $8.50 = $11.50. Method: 20 - 8 = 12, then 12 - 0.50 = 11.50.' },
+  { subject:'math', grade:5, level:11, type:'mc',    q:'6 x (4 + 2) = ?', choices:['24','28','32','36'], a:'36', e:'Parentheses first: (4 + 2) = 6. Then 6 x 6 = 36. PEMDAS says do parentheses before multiplication.' },
+  { subject:'math', grade:5, level:11, type:'mc',    q:'0.25 x 8 = ?', choices:['1.5','2','2.5','20'], a:'2', e:'0.25 = 1/4. 1/4 x 8 = 8/4 = 2. Or: 0.25 x 8 = 25 x 8 / 100 = 200/100 = 2.' },
+  { subject:'math', grade:5, level:11, type:'mc',    q:'3/5 as a decimal = ?', choices:['0.35','0.53','0.6','0.65'], a:'0.6', e:'Divide 3 by 5: 3.0 / 5 = 0.6. Check: 0.6 x 5 = 3. Also 3/5 = 6/10 = 0.6.' },
+  { subject:'math', grade:5, level:11, type:'mc',    q:'20 is what fraction of 100?', choices:['1/2','1/5','1/10','1/20'], a:'1/5', e:'20/100 simplifies: divide top and bottom by 20. 20/100 = 1/5.' },
+  { subject:'math', grade:5, level:11, type:'fib',   q:'The mean of 4, 8, 12, 16 is ____.', a:'10', e:'Mean = sum / count. Sum: 4+8+12+16 = 40. Count = 4. Mean = 40/4 = 10.' },
+  { subject:'math', grade:5, level:11, type:'fib',   q:'Convert 1.75 to a fraction (in simplest form): 1 and ____/4.', a:'3', e:'0.75 = 75/100 = 3/4 (divide top and bottom by 25). So 1.75 = 1 3/4.' },
+  { subject:'math', grade:5, level:11, type:'fib',   q:'The volume of a cube with side 3 is ____.', a:'27', e:'Volume of a cube = side^3 = side x side x side. 3 x 3 x 3 = 9 x 3 = 27 cubic units.' },
+  { subject:'math', grade:5, level:11, type:'guess', q:'The distance around a shape.', a:'perimeter', e:'Perimeter is the total distance around the outside of any 2D shape. Sum of all side lengths.' },
+  { subject:'math', grade:5, level:11, type:'guess', q:'The middle value in an ordered list.', a:'median', e:'Median is the middle number after sorting. For 3, 5, 7, 9, 11 the median is 7. If even count, average the two middle values.' },
+
+  /* ---- Grade 6 - Level 12 ---- */
+  { subject:'math', grade:6, level:12, type:'mc',    q:'15% of 200 = ?', choices:['20','25','30','35'], a:'30', e:'15% = 0.15. So 0.15 x 200 = 30. Alt: 10% of 200 = 20, and 5% = 10, so 15% = 20+10 = 30.' },
+  { subject:'math', grade:6, level:12, type:'mc',    q:'A ratio of 3:2 with 20 total means the smaller share is', choices:['4','6','8','10'], a:'8', e:'Total parts = 3+2 = 5. Each part = 20/5 = 4. Smaller share = 2 x 4 = 8. Larger = 3 x 4 = 12. Check: 8+12=20.' },
+  { subject:'math', grade:6, level:12, type:'mc',    q:'25% off a $60 shirt costs', choices:['$15','$40','$45','$50'], a:'$45', e:'Discount = 25% of 60 = 0.25 x 60 = $15. Sale price = 60 - 15 = $45. Or price = 75% x 60 = $45.' },
+  { subject:'math', grade:6, level:12, type:'mc',    q:'Solve for x: 3x = 21', choices:['3','6','7','9'], a:'7', e:'Divide both sides by 3: 3x/3 = 21/3, so x = 7. Check: 3 x 7 = 21.' },
+  { subject:'math', grade:6, level:12, type:'mc',    q:'0.4 as a percent = ?', choices:['0.4%','4%','40%','400%'], a:'40%', e:'To convert decimal to percent, multiply by 100 (or move decimal 2 places right). 0.4 x 100 = 40%.' },
+  { subject:'math', grade:6, level:12, type:'fib',   q:'The square root of 81 is ____.', a:'9', e:'sqrt(81) asks: what number times itself = 81? 9 x 9 = 81. So sqrt(81) = 9.' },
+  { subject:'math', grade:6, level:12, type:'fib',   q:'50% of 60 = ____.', a:'30', e:'50% = 1/2. Half of 60 = 30. Or 0.5 x 60 = 30.' },
+  { subject:'math', grade:6, level:12, type:'fib',   q:'If 4 apples cost $2, then 10 apples cost $____.', a:'5', e:'Cost per apple: 2 / 4 = $0.50. So 10 x $0.50 = $5. Or use ratio: 4:2 = 10:? -> ? = 10x2/4 = 5.' },
+  { subject:'math', grade:6, level:12, type:'guess', q:'A number that has factors other than 1 and itself.', a:'composite', e:'A composite number has more than 2 factors. Example: 12 (factors: 1,2,3,4,6,12). Opposite of prime.' },
+  { subject:'math', grade:6, level:12, type:'guess', q:'The distance around a circle.', a:'circumference', e:'The perimeter of a circle is called the circumference. Formula: C = 2 x pi x r, where r is the radius.' },
+
+  /* ---- Grade 6 - Level 13 ---- */
+  { subject:'math', grade:6, level:13, type:'mc',    q:'2^5 = ?', choices:['10','16','25','32'], a:'32', e:'2^5 = 2 x 2 x 2 x 2 x 2. Compute step by step: 2x2=4, 4x2=8, 8x2=16, 16x2=32.' },
+  { subject:'math', grade:6, level:13, type:'mc',    q:'Area of a triangle with base 6 and height 4?', choices:['10','12','20','24'], a:'12', e:'Area of triangle = (base x height) / 2. So (6 x 4) / 2 = 24 / 2 = 12 square units.' },
+  { subject:'math', grade:6, level:13, type:'mc',    q:'Volume of a rectangular box 3 x 4 x 5?', choices:['12','20','35','60'], a:'60', e:'Volume of a box = length x width x height = 3 x 4 x 5 = 12 x 5 = 60 cubic units.' },
+  { subject:'math', grade:6, level:13, type:'mc',    q:'The number 3.14159... is', choices:['e','pi','phi','tau'], a:'pi', e:'Pi (~3.14159) is the ratio of a circle\'s circumference to its diameter. Same for every circle.' },
+  { subject:'math', grade:6, level:13, type:'mc',    q:'Which is irrational?', choices:['0.5','1/3','pi','7'], a:'pi', e:'Irrational numbers cannot be written as fractions p/q. Their decimals never terminate or repeat. Pi = 3.14159... goes forever without pattern.' },
+  { subject:'math', grade:6, level:13, type:'fib',   q:'sqrt(64) = ____.', a:'8', e:'sqrt(64): what times itself = 64? 8 x 8 = 64. So sqrt(64) = 8.' },
+  { subject:'math', grade:6, level:13, type:'fib',   q:'3^3 = ____.', a:'27', e:'3 cubed = 3 x 3 x 3. First 3 x 3 = 9, then 9 x 3 = 27.' },
+  { subject:'math', grade:6, level:13, type:'fib',   q:'The circumference of a circle with diameter 10 (use pi = 3.14) is about ____.', a:'31.4', e:'Circumference = pi x diameter. 3.14 x 10 = 31.4 units.' },
+  { subject:'math', grade:6, level:13, type:'guess', q:'A polygon with all sides equal.', a:'regular', e:'A regular polygon has all sides AND all angles equal. Equilateral triangle and square are examples.' },
+  { subject:'math', grade:6, level:13, type:'guess', q:'The 3D shape of a soccer ball (approximately).', a:'sphere', e:'A sphere is a perfectly round 3D shape where every point on the surface is the same distance from the center.' },
+
+  /* ---- Grade 6 - Level 14 ---- */
+  { subject:'math', grade:6, level:14, type:'mc',    q:'The point (3, -2) is in which quadrant?', choices:['I','II','III','IV'], a:'IV', e:'On a coordinate plane, positive x with negative y = Quadrant IV (lower right). Quadrants: I (+,+), II (-,+), III (-,-), IV (+,-).' },
+  { subject:'math', grade:6, level:14, type:'mc',    q:'-5 + 3 = ?', choices:['-8','-2','2','8'], a:'-2', e:'Start at -5. Add 3 (move right on number line): -5 -> -4 -> -3 -> -2. So -5 + 3 = -2.' },
+  { subject:'math', grade:6, level:14, type:'mc',    q:'The product of a negative and a negative is', choices:['negative','positive','zero','same'], a:'positive', e:'Rules of signs: (-) x (-) = (+). Example: (-3) x (-4) = 12. (+) x (+) = (+). (+) x (-) = (-).' },
+  { subject:'math', grade:6, level:14, type:'mc',    q:'The reciprocal of 3/4 is', choices:['4/3','1/3','3/4','-3/4'], a:'4/3', e:'Reciprocal means flip the fraction: 3/4 becomes 4/3. Any number times its reciprocal = 1. Check: 3/4 x 4/3 = 12/12 = 1.' },
+  { subject:'math', grade:6, level:14, type:'mc',    q:'Simplify: 4 - (-6)', choices:['-10','-2','2','10'], a:'10', e:'Subtracting a negative = adding a positive. 4 - (-6) = 4 + 6 = 10.' },
+  { subject:'math', grade:6, level:14, type:'fib',   q:'|-9| = ____.', a:'9', e:'Absolute value gives distance from 0, always non-negative. |-9| = 9. |9| = 9 too.' },
+  { subject:'math', grade:6, level:14, type:'fib',   q:'The x-coordinate of the origin is ____.', a:'0', e:'The origin (0, 0) is where both axes cross. Its x is 0 and its y is 0.' },
+  { subject:'math', grade:6, level:14, type:'fib',   q:'The mean of 4, 8, 12, 16, 20 is ____.', a:'12', e:'Mean = sum / count. 4+8+12+16+20 = 60. Count = 5. Mean = 60/5 = 12.' },
+  { subject:'math', grade:6, level:14, type:'guess', q:'A polygon with exactly one pair of parallel sides.', a:'trapezoid', e:'Trapezoid = quadrilateral with exactly one pair of parallel sides. Parallelogram has two pairs.' },
+  { subject:'math', grade:6, level:14, type:'guess', q:'Numbers less than zero.', a:'negative', e:'Negative numbers sit to the left of 0 on the number line. Written with a minus sign, like -3, -7.5, -100.' },
+
+  /* ---- Grade 7 - Level 15 ---- */
+  { subject:'math', grade:7, level:15, type:'mc',    q:'Solve: x + 7 = 12', choices:['3','4','5','19'], a:'5', e:'Subtract 7 from both sides. x + 7 - 7 = 12 - 7. So x = 5. Check: 5 + 7 = 12.' },
+  { subject:'math', grade:7, level:15, type:'mc',    q:'Solve: 2x + 3 = 15', choices:['5','6','7','8'], a:'6', e:'Step 1: subtract 3 from both sides. 2x = 12. Step 2: divide by 2. x = 6. Check: 2(6)+3 = 15.' },
+  { subject:'math', grade:7, level:15, type:'mc',    q:'Which is a right triangle side set?', choices:['2,3,4','3,4,5','4,5,6','5,6,7'], a:'3,4,5', e:'Check Pythagorean: a^2+b^2=c^2. 3^2+4^2 = 9+16 = 25 = 5^2. Only 3-4-5 works. Others fail.' },
+  { subject:'math', grade:7, level:15, type:'mc',    q:'Solve: x/4 = 6', choices:['2','10','20','24'], a:'24', e:'Multiply both sides by 4: (x/4) x 4 = 6 x 4. So x = 24. Check: 24/4 = 6.' },
+  { subject:'math', grade:7, level:15, type:'mc',    q:'A triangle has angles 40 and 60. Third angle?', choices:['70','80','90','100'], a:'80', e:'Angles of any triangle sum to 180. So third angle = 180 - 40 - 60 = 80 degrees.' },
+  { subject:'math', grade:7, level:15, type:'fib',   q:'The hypotenuse of a right triangle with legs 3 and 4 is ____.', a:'5', e:'Pythagorean theorem: c^2 = a^2 + b^2 = 3^2 + 4^2 = 9 + 16 = 25. So c = sqrt(25) = 5.' },
+  { subject:'math', grade:7, level:15, type:'fib',   q:'3(x + 4) expanded is 3x + ____.', a:'12', e:'Distribute: 3 x (x + 4) = 3 x x + 3 x 4 = 3x + 12.' },
+  { subject:'math', grade:7, level:15, type:'fib',   q:'Solve: x - 8 = -3, x = ____.', a:'5', e:'Add 8 to both sides: x - 8 + 8 = -3 + 8. So x = 5. Check: 5 - 8 = -3.' },
+  { subject:'math', grade:7, level:15, type:'guess', q:'The Greek letter used for the circle ratio.', a:'pi', e:'Pi (about 3.14159) is the ratio of a circle\'s circumference to its diameter. Written with the symbol pi.' },
+  { subject:'math', grade:7, level:15, type:'guess', q:'The value of a letter that makes an equation true.', a:'solution', e:'A solution (or root) is the value of the variable that makes both sides of the equation equal.' },
+
+  /* ---- Grade 7 - Level 16 ---- */
+  { subject:'math', grade:7, level:16, type:'mc',    q:'Solve: 3x - 5 = 16', choices:['5','6','7','8'], a:'7', e:'Step 1: add 5 to both sides. 3x = 21. Step 2: divide by 3. x = 7. Check: 3(7) - 5 = 21 - 5 = 16.' },
+  { subject:'math', grade:7, level:16, type:'mc',    q:'|x| = 5 means x = ?', choices:['5','-5','5 or -5','0'], a:'5 or -5', e:'Absolute value = distance from 0. Both 5 and -5 are 5 units from 0. Solutions: x = 5 or x = -5.' },
+  { subject:'math', grade:7, level:16, type:'mc',    q:'-3 x (-4) + 2 = ?', choices:['-14','-10','10','14'], a:'14', e:'Order of ops: multiply first. -3 x -4 = 12 (negative times negative is positive). Then 12 + 2 = 14.' },
+  { subject:'math', grade:7, level:16, type:'mc',    q:'Solve: 2(x - 3) = 10', choices:['4','5','7','8'], a:'8', e:'Method 1: divide by 2 first: x - 3 = 5, so x = 8. Method 2: distribute: 2x - 6 = 10, 2x = 16, x = 8.' },
+  { subject:'math', grade:7, level:16, type:'mc',    q:'The slope of y = 4x - 7 is', choices:['-7','4','-4','7'], a:'4', e:'In slope-intercept form y = mx + b, m is the slope. Here m = 4, b = -7 (y-intercept).' },
+  { subject:'math', grade:7, level:16, type:'fib',   q:'If x/5 + 2 = 6, then x = ____.', a:'20', e:'Step 1: subtract 2 from both sides. x/5 = 4. Step 2: multiply both sides by 5. x = 20.' },
+  { subject:'math', grade:7, level:16, type:'fib',   q:'|-12| + |-3| = ____.', a:'15', e:'|-12| = 12. |-3| = 3. Add them: 12 + 3 = 15.' },
+  { subject:'math', grade:7, level:16, type:'fib',   q:'The mean of 5, 10, 15, 20 is ____.', a:'12.5', e:'Mean = sum/count. Sum = 5+10+15+20 = 50. Count = 4. Mean = 50/4 = 12.5.' },
+  { subject:'math', grade:7, level:16, type:'guess', q:'The middle value in an ordered dataset.', a:'median', e:'Median is the middle value after sorting. For an even count, take the mean of the two middle values.' },
+  { subject:'math', grade:7, level:16, type:'guess', q:'A quadrilateral with two pairs of parallel sides.', a:'parallelogram', e:'A parallelogram has both pairs of opposite sides parallel. Rectangles, rhombuses, and squares are all parallelograms.' },
+
+  /* ---- Grade 7 - Level 17 ---- */
+  { subject:'math', grade:7, level:17, type:'mc',    q:'The slope between (1,2) and (4,8)?', choices:['1','2','3','6'], a:'2', e:'Slope = (y2-y1)/(x2-x1) = (8-2)/(4-1) = 6/3 = 2.' },
+  { subject:'math', grade:7, level:17, type:'mc',    q:'The equation of a horizontal line at y = 5 has slope', choices:['0','1','5','undefined'], a:'0', e:'A horizontal line does not rise or fall, so slope = rise/run = 0/anything = 0.' },
+  { subject:'math', grade:7, level:17, type:'mc',    q:'Solve: -2x + 5 > 1', choices:['x > 2','x < 2','x > -2','x < -2'], a:'x < 2', e:'Subtract 5: -2x > -4. Divide by -2 (flip inequality!): x < 2.' },
+  { subject:'math', grade:7, level:17, type:'mc',    q:'The mode of 3, 5, 7, 5, 9, 5 is', choices:['3','5','7','9'], a:'5', e:'Mode = most common value. 5 appears three times; others appear once. So mode = 5.' },
+  { subject:'math', grade:7, level:17, type:'mc',    q:'Which represents 15% as a fraction?', choices:['1/15','3/20','15/10','3/50'], a:'3/20', e:'15% = 15/100. Divide both by 5: 3/20. Check: 3/20 = 0.15 = 15%.' },
+  { subject:'math', grade:7, level:17, type:'fib',   q:'The y-intercept of y = -2x + 7 is ____.', a:'7', e:'In y = mx + b, b is the y-intercept. Here b = 7. When x = 0, y = 7.' },
+  { subject:'math', grade:7, level:17, type:'fib',   q:'12% of 250 = ____.', a:'30', e:'12% = 0.12. 0.12 x 250 = 30. Alt: 10% of 250 = 25, 2% = 5, so 12% = 30.' },
+  { subject:'math', grade:7, level:17, type:'fib',   q:'The range of the data 3, 7, 12, 15, 20 is ____.', a:'17', e:'Range = max - min = 20 - 3 = 17.' },
+  { subject:'math', grade:7, level:17, type:'guess', q:'The value that appears most often.', a:'mode', e:'Mode = most frequent value. Data can have no mode, one mode, or multiple modes.' },
+  { subject:'math', grade:7, level:17, type:'guess', q:'The point where a curve crosses the x-axis.', a:'root', e:'A root (or zero) of a function is any x-value where the graph crosses the x-axis, meaning f(x) = 0.' },
+
+  /* ---- Grade 8 - Level 18 ---- */
+  { subject:'math', grade:8, level:18, type:'mc',    q:'Solve: 5x - 4 = 21', choices:['3','4','5','7'], a:'5', e:'Step 1: add 4 to both sides. 5x = 25. Step 2: divide by 5. x = 5. Check: 5(5) - 4 = 21.' },
+  { subject:'math', grade:8, level:18, type:'mc',    q:'Solve for y: 2x + 3y = 12 at x = 3', choices:['1','2','3','4'], a:'2', e:'Substitute x = 3: 2(3) + 3y = 12, so 6 + 3y = 12. Subtract 6: 3y = 6. Divide by 3: y = 2.' },
+  { subject:'math', grade:8, level:18, type:'mc',    q:'Simplify: (3x + 4) + (2x - 1)', choices:['5x + 3','5x - 3','5x + 5','x + 3'], a:'5x + 3', e:'Combine like terms. x terms: 3x + 2x = 5x. Constants: 4 + (-1) = 3. Result: 5x + 3.' },
+  { subject:'math', grade:8, level:18, type:'mc',    q:'Which is a linear equation?', choices:['y = x^2','y = 2x + 1','y = sqrt(x)','y = 1/x'], a:'y = 2x + 1', e:'A linear equation has variables to the first power only. y = 2x + 1 is a straight line (y = mx + b form).' },
+  { subject:'math', grade:8, level:18, type:'mc',    q:'The graph of y = 3x is', choices:['a curve','a horizontal line','a line through origin','a parabola'], a:'a line through origin', e:'y = mx passes through (0,0) because when x=0, y=0. Slope m = 3.' },
+  { subject:'math', grade:8, level:18, type:'fib',   q:'The y-intercept of y = 3x + 8 is ____.', a:'8', e:'In y = mx + b, b is the y-intercept. Here b = 8. The line crosses the y-axis at (0, 8).' },
+  { subject:'math', grade:8, level:18, type:'fib',   q:'Solve for x: 4x + 2 = 3x + 9. x = ____.', a:'7', e:'Subtract 3x from both sides: x + 2 = 9. Subtract 2: x = 7. Check: 4(7)+2 = 30 and 3(7)+9 = 30. Both sides equal.' },
+  { subject:'math', grade:8, level:18, type:'fib',   q:'Given 2x - y = 5, if x = 4, then y = ____.', a:'3', e:'Substitute x = 4: 2(4) - y = 5. 8 - y = 5. Subtract 8: -y = -3. Multiply by -1: y = 3.' },
+  { subject:'math', grade:8, level:18, type:'guess', q:'Two equations solved together for the same variables.', a:'system', e:'A system of equations is two or more equations that share variables and are solved simultaneously.' },
+  { subject:'math', grade:8, level:18, type:'guess', q:'Terms with the same variable to the same power.', a:'like terms', e:'Like terms have identical variable parts (e.g., 3x and 5x). Only like terms can be combined by adding coefficients.' },
+
+  /* ---- Grade 8 - Level 19 ---- */
+  { subject:'math', grade:8, level:19, type:'mc',    q:'Simplify: (2^3)(2^4)', choices:['2^7','2^12','4^7','8^4'], a:'2^7', e:'When multiplying powers with the same base, add the exponents: 2^3 x 2^4 = 2^(3+4) = 2^7 = 128.' },
+  { subject:'math', grade:8, level:19, type:'mc',    q:'Simplify: 2^8 / 2^3', choices:['2^5','2^11','2^24','2^-5'], a:'2^5', e:'When dividing powers with the same base, subtract exponents: 2^(8-3) = 2^5 = 32.' },
+  { subject:'math', grade:8, level:19, type:'mc',    q:'(3^2)^4 = ?', choices:['3^6','3^8','3^24','9^4'], a:'3^8', e:'Power of a power: multiply exponents. (3^2)^4 = 3^(2 x 4) = 3^8.' },
+  { subject:'math', grade:8, level:19, type:'mc',    q:'sqrt(50) simplified = ?', choices:['5 sqrt(2)','2 sqrt(5)','10 sqrt(5)','25 sqrt(2)'], a:'5 sqrt(2)', e:'Factor 50 = 25 x 2. sqrt(25 x 2) = sqrt(25) x sqrt(2) = 5 sqrt(2).' },
+  { subject:'math', grade:8, level:19, type:'mc',    q:'2^0 = ?', choices:['0','1','2','undefined'], a:'1', e:'Any nonzero number to the 0 power = 1. This keeps the exponent rules consistent: 2^0 = 2^(3-3) = 2^3/2^3 = 1.' },
+  { subject:'math', grade:8, level:19, type:'fib',   q:'Scientific notation: 45,000 = 4.5 x 10^____.', a:'4', e:'Move the decimal 4 places left (from 45000. to 4.5). So 45,000 = 4.5 x 10^4.' },
+  { subject:'math', grade:8, level:19, type:'fib',   q:'0.00035 in scientific notation is 3.5 x 10^____.', a:'-4', e:'Move decimal 4 places right (from 0.00035 to 3.5). For small numbers, exponent is negative: 3.5 x 10^-4.' },
+  { subject:'math', grade:8, level:19, type:'fib',   q:'3^-2 = 1/____.', a:'9', e:'Negative exponent means reciprocal: 3^-2 = 1/3^2 = 1/9.' },
+  { subject:'math', grade:8, level:19, type:'guess', q:'A number written as one digit times a power of ten.', a:'scientific notation', e:'Scientific notation writes numbers as a x 10^n where 1 <= |a| < 10. Handy for very large or very small numbers.' },
+  { subject:'math', grade:8, level:19, type:'guess', q:'The small raised number in a power.', a:'exponent', e:'In 2^5, the small "5" is the exponent (tells how many times to multiply). The "2" is the base.' },
+
+  /* ---- Grade 8 - Level 20 ---- */
+  { subject:'math', grade:8, level:20, type:'mc',    q:'Factor: x^2 - 9', choices:['(x-3)(x-3)','(x+3)(x+3)','(x-3)(x+3)','(x-9)(x+1)'], a:'(x-3)(x+3)', e:'Difference of squares: a^2 - b^2 = (a-b)(a+b). Here x^2 - 3^2 = (x-3)(x+3). Check: (x-3)(x+3) = x^2 - 9.' },
+  { subject:'math', grade:8, level:20, type:'mc',    q:'Factor: x^2 + 5x + 6', choices:['(x+1)(x+6)','(x+2)(x+3)','(x-2)(x-3)','(x+5)(x+1)'], a:'(x+2)(x+3)', e:'Find two numbers that multiply to 6 and add to 5: 2 and 3. So x^2 + 5x + 6 = (x+2)(x+3). Check by FOIL.' },
+  { subject:'math', grade:8, level:20, type:'mc',    q:'Expand: (x + 2)(x + 5)', choices:['x^2 + 7','x^2 + 10','x^2 + 7x + 10','x^2 + 3x + 10'], a:'x^2 + 7x + 10', e:'FOIL: First (x)(x)=x^2. Outer (x)(5)=5x. Inner (2)(x)=2x. Last (2)(5)=10. Combine: x^2 + 7x + 10.' },
+  { subject:'math', grade:8, level:20, type:'mc',    q:'The roots of (x-2)(x+5) = 0 are', choices:['-2, 5','2, 5','2, -5','-2, -5'], a:'2, -5', e:'Zero product property: each factor = 0. x-2 = 0 gives x = 2. x+5 = 0 gives x = -5.' },
+  { subject:'math', grade:8, level:20, type:'mc',    q:'The volume of a cube with side 4 is', choices:['16','48','64','96'], a:'64', e:'Volume of a cube = side^3 = 4 x 4 x 4 = 16 x 4 = 64 cubic units.' },
+  { subject:'math', grade:8, level:20, type:'fib',   q:'Factor: x^2 - 16 = (x - ____)(x + 4).', a:'4', e:'Difference of squares: x^2 - 16 = x^2 - 4^2 = (x-4)(x+4).' },
+  { subject:'math', grade:8, level:20, type:'fib',   q:'Simplify: x^3 x x^5 = x^____.', a:'8', e:'Multiplying same-base powers: add exponents. x^3 x x^5 = x^(3+5) = x^8.' },
+  { subject:'math', grade:8, level:20, type:'fib',   q:'(2x)^3 = ____ x^3.', a:'8', e:'Distribute the exponent: (2x)^3 = 2^3 x x^3 = 8 x^3.' },
+  { subject:'math', grade:8, level:20, type:'guess', q:'A polynomial with three terms.', a:'trinomial', e:'One term: monomial. Two: binomial. Three: trinomial. Four or more: just polynomial.' },
+  { subject:'math', grade:8, level:20, type:'guess', q:'The point (2, -5): x is 2, y is what?', a:'-5', e:'In (x, y) notation, the first value is x and the second is y. Here y = -5.' },
+
+  /* ---- Grade 9 - Level 21 ---- */
+  { subject:'math', grade:9, level:21, type:'mc',    q:'What is the derivative of x^3?', choices:['x^2','3x','3x^2','x^4/4'], a:'3x^2', e:'Power rule for derivatives: d/dx(x^n) = n x^(n-1). For x^3: 3 x^(3-1) = 3x^2.' },
+  { subject:'math', grade:9, level:21, type:'mc',    q:'Solve: x^2 = 49', choices:['7','-7','7 or -7','no solution'], a:'7 or -7', e:'Take square root of both sides, but include both signs. x = +sqrt(49) or x = -sqrt(49), so x = 7 or -7.' },
+  { subject:'math', grade:9, level:21, type:'mc',    q:'sin(90 degrees) = ?', choices:['0','1/2','1','undefined'], a:'1', e:'On the unit circle at 90 degrees, the point is (0, 1). Sine gives the y-coordinate: sin(90) = 1.' },
+  { subject:'math', grade:9, level:21, type:'mc',    q:'cos(60 degrees) = ?', choices:['0','1/2','sqrt(2)/2','1'], a:'1/2', e:'From the unit circle at 60 degrees: point is (1/2, sqrt(3)/2). Cosine is x-coordinate: cos(60) = 1/2.' },
+  { subject:'math', grade:9, level:21, type:'mc',    q:'The quadratic formula solves ax^2 + bx + c = 0. It is x = (-b +- sqrt(?)) / 2a', choices:['b^2 + 4ac','b^2 - 4ac','a^2 - 4bc','ac - 4b^2'], a:'b^2 - 4ac', e:'The quadratic formula: x = (-b +- sqrt(b^2 - 4ac)) / (2a). The b^2 - 4ac is called the discriminant.' },
+  { subject:'math', grade:9, level:21, type:'fib',   q:'log base 10 of 1000 = ____.', a:'3', e:'log10(1000) asks: 10 to what power = 1000? 10^3 = 1000, so log10(1000) = 3.' },
+  { subject:'math', grade:9, level:21, type:'fib',   q:'The derivative of 5x^2 is ____ x.', a:'10', e:'Power rule: d/dx(5x^2) = 5 x d/dx(x^2) = 5 x 2x = 10x.' },
+  { subject:'math', grade:9, level:21, type:'fib',   q:'The reciprocal of sine is called ____ (cosecant abbreviated).', a:'csc', e:'csc(x) = 1/sin(x). Similarly sec = 1/cos, cot = 1/tan.' },
+  { subject:'math', grade:9, level:21, type:'guess', q:'A triangle with all sides equal.', a:'equilateral', e:'Equilateral = "equal sides". All 3 sides same length, all 3 angles = 60 degrees.' },
+  { subject:'math', grade:9, level:21, type:'guess', q:'The value where a curve equals zero.', a:'root', e:'A root (or zero) of a function is any input x where the output f(x) = 0. Graphically, where the curve crosses the x-axis.' },
+
+  /* ---- Grade 9 - Level 22 ---- */
+  { subject:'math', grade:9, level:22, type:'mc',    q:'log(a) + log(b) = ?', choices:['log(a+b)','log(a-b)','log(ab)','log(a/b)'], a:'log(ab)', e:'Log product rule: log(a) + log(b) = log(ab). Similarly log(a) - log(b) = log(a/b).' },
+  { subject:'math', grade:9, level:22, type:'mc',    q:'Solve: 2x + y = 7, x - y = 2. What is x?', choices:['1','2','3','4'], a:'3', e:'Add equations: 3x = 9, so x = 3. Then y = 3 - 2 = 1. Check: 2(3)+1=7 and 3-1=2.' },
+  { subject:'math', grade:9, level:22, type:'mc',    q:'ln(e) = ?', choices:['0','1','e','undefined'], a:'1', e:'Natural log ln uses base e. ln(e) asks: e to what power = e? e^1 = e, so ln(e) = 1.' },
+  { subject:'math', grade:9, level:22, type:'mc',    q:'Which value of x satisfies |2x - 6| = 4?', choices:['1','5','1 or 5','2 or 3'], a:'1 or 5', e:'|2x-6| = 4 splits: 2x-6 = 4 (x = 5) or 2x-6 = -4 (x = 1). Both work.' },
+  { subject:'math', grade:9, level:22, type:'mc',    q:'The graph of y = x^2 is a', choices:['line','parabola','circle','hyperbola'], a:'parabola', e:'Any quadratic y = ax^2 + bx + c graphs as a parabola. Opens upward if a > 0, downward if a < 0.' },
+  { subject:'math', grade:9, level:22, type:'fib',   q:'e (Euler\'s number) is about 2. ____ (2 decimals).', a:'72', e:'e = 2.71828... Rounded to 2 decimals: 2.72. Used in continuous growth and natural log.' },
+  { subject:'math', grade:9, level:22, type:'fib',   q:'The vertex of y = (x - 3)^2 + 2 is at x = ____.', a:'3', e:'For y = a(x-h)^2 + k, the vertex is at (h, k). Here h = 3, k = 2. Vertex = (3, 2).' },
+  { subject:'math', grade:9, level:22, type:'fib',   q:'log10(100) = ____.', a:'2', e:'log10(100) asks: 10 to what power = 100? 10^2 = 100. So the answer is 2.' },
+  { subject:'math', grade:9, level:22, type:'guess', q:'A function that undoes another function.', a:'inverse', e:'Inverse functions "undo" each other. Example: log and exp. If f(g(x)) = x and g(f(x)) = x, they are inverses.' },
+  { subject:'math', grade:9, level:22, type:'guess', q:'The set of possible input values of a function.', a:'domain', e:'Domain = all valid inputs (x-values). Range = all possible outputs (y-values).' },
+
+  /* ---- Grade 10 - Level 23 ---- */
+  { subject:'math', grade:10, level:23, type:'mc',    q:'Discriminant of x^2 - 4x + 4?', choices:['-8','0','4','8'], a:'0', e:'Discriminant D = b^2 - 4ac. Here a=1, b=-4, c=4. D = 16 - 16 = 0. One repeated root.' },
+  { subject:'math', grade:10, level:23, type:'mc',    q:'Solve using the quadratic formula: x^2 - 5x + 6 = 0', choices:['1 or 2','2 or 3','3 or 4','2 or 6'], a:'2 or 3', e:'a=1, b=-5, c=6. x = (5 +- sqrt(25-24))/2 = (5 +- 1)/2 = 3 or 2. Check by factoring: (x-2)(x-3)=0.' },
+  { subject:'math', grade:10, level:23, type:'mc',    q:'For y = x^2 + 4x, the axis of symmetry is x = ?', choices:['-4','-2','2','4'], a:'-2', e:'Axis of symmetry: x = -b/(2a). Here a=1, b=4. x = -4/2 = -2.' },
+  { subject:'math', grade:10, level:23, type:'mc',    q:'Which set contains only real numbers?', choices:['{i, 2i}','{-3, 0, pi}','{sqrt(-4)}','{2+i}'], a:'{-3, 0, pi}', e:'Real numbers exclude i (imaginary unit). -3, 0, pi are all real. Anything with sqrt(negative) or +i is complex.' },
+  { subject:'math', grade:10, level:23, type:'mc',    q:'sqrt(-9) equals', choices:['-3','3','3i','not defined'], a:'3i', e:'sqrt(-9) = sqrt(9) x sqrt(-1) = 3i. Here i is the imaginary unit where i^2 = -1.' },
+  { subject:'math', grade:10, level:23, type:'fib',   q:'cos(0 degrees) = ____.', a:'1', e:'At 0 degrees on the unit circle, the point is (1, 0). Cosine is the x-coordinate: cos(0) = 1.' },
+  { subject:'math', grade:10, level:23, type:'fib',   q:'sin(30 degrees) = ____ (as a decimal).', a:'0.5', e:'From the unit circle at 30 degrees, y = 1/2. So sin(30) = 1/2 = 0.5.' },
+  { subject:'math', grade:10, level:23, type:'fib',   q:'The discriminant of ax^2+bx+c is b^2 - ____ ac.', a:'4', e:'Discriminant formula: D = b^2 - 4ac. Positive D = 2 real roots, zero = 1 root, negative = 2 complex roots.' },
+  { subject:'math', grade:10, level:23, type:'guess', q:'Numbers that involve the square root of -1.', a:'imaginary', e:'Imaginary numbers use i = sqrt(-1). Complex numbers combine real and imaginary parts: a + bi.' },
+  { subject:'math', grade:10, level:23, type:'guess', q:'A U-shape graph from a quadratic function.', a:'parabola', e:'Every quadratic y = ax^2 + bx + c graphs as a parabola. It opens up (a > 0) or down (a < 0).' },
+
+  /* ---- Grade 10 - Level 24 ---- */
+  { subject:'math', grade:10, level:24, type:'mc',    q:'A line that a curve approaches but never crosses', choices:['tangent','asymptote','normal','secant'], a:'asymptote', e:'Asymptotes appear in rational and exponential functions. The curve gets arbitrarily close but never touches them.' },
+  { subject:'math', grade:10, level:24, type:'mc',    q:'The vertex of y = -2(x-1)^2 + 5?', choices:['(-1, -5)','(1, -5)','(-1, 5)','(1, 5)'], a:'(1, 5)', e:'Vertex form: y = a(x-h)^2 + k. Vertex = (h, k). Here h=1, k=5. Since a=-2 < 0, opens downward.' },
+  { subject:'math', grade:10, level:24, type:'mc',    q:'The distance from (1,2) to (4,6)?', choices:['3','4','5','7'], a:'5', e:'Distance formula: sqrt((x2-x1)^2 + (y2-y1)^2) = sqrt(9 + 16) = sqrt(25) = 5.' },
+  { subject:'math', grade:10, level:24, type:'mc',    q:'(2 + 3i) + (4 - i) = ?', choices:['6 + 2i','6 + 4i','8 + 2i','2 + 2i'], a:'6 + 2i', e:'Add real parts and imaginary parts separately: (2+4) + (3i + (-i)) = 6 + 2i.' },
+  { subject:'math', grade:10, level:24, type:'mc',    q:'tan(45 degrees) = ?', choices:['0','1/2','1','sqrt(2)'], a:'1', e:'tan = sin/cos. At 45 degrees, sin(45) = cos(45) = sqrt(2)/2. Ratio = 1.' },
+  { subject:'math', grade:10, level:24, type:'fib',   q:'e (Euler\'s number) is approximately ____ (2 decimals).', a:'2.72', e:'Euler\'s number e ≈ 2.71828, rounds to 2.72 at 2 decimal places.' },
+  { subject:'math', grade:10, level:24, type:'fib',   q:'sin^2(x) + cos^2(x) = ____.', a:'1', e:'The Pythagorean identity: sin^2(x) + cos^2(x) = 1 for any angle x. From the unit circle.' },
+  { subject:'math', grade:10, level:24, type:'fib',   q:'The slope of a line perpendicular to y = 3x + 2 is ____ (as a fraction).', a:'-1/3', e:'Perpendicular slopes multiply to -1. If original slope is 3, perpendicular slope = -1/3.' },
+  { subject:'math', grade:10, level:24, type:'guess', q:'A quadrilateral with 4 right angles.', a:'rectangle', e:'A rectangle has 4 right angles and opposite sides equal. A square is a special rectangle with all sides equal.' },
+  { subject:'math', grade:10, level:24, type:'guess', q:'A number formed by combining real and imaginary parts.', a:'complex', e:'Complex numbers have form a + bi, where a is real, b is real, and i = sqrt(-1).' },
+
+  /* ---- Grade 11 - Level 25 ---- */
+  { subject:'math', grade:11, level:25, type:'mc',    q:'Sum 1+2+3+...+100?', choices:['5000','5050','5500','10000'], a:'5050', e:'Formula: n(n+1)/2 = 100 x 101 / 2 = 10100 / 2 = 5050. Gauss method: pair 1+100, 2+99... 50 pairs of 101 = 5050.' },
+  { subject:'math', grade:11, level:25, type:'mc',    q:'A geometric sequence: 3, 6, 12, ?', choices:['15','18','20','24'], a:'24', e:'Common ratio = 6/3 = 2. Each term multiplies by 2: 12 x 2 = 24.' },
+  { subject:'math', grade:11, level:25, type:'mc',    q:'nCr formula: The number of ways to choose 2 from 5', choices:['5','10','15','20'], a:'10', e:'5C2 = 5! / (2! x 3!) = (5x4)/(2x1) = 10.' },
+  { subject:'math', grade:11, level:25, type:'mc',    q:'A permutation of 3 objects from 5', choices:['10','15','60','120'], a:'60', e:'5P3 = 5! / (5-3)! = (5x4x3) = 60. Order matters in permutations.' },
+  { subject:'math', grade:11, level:25, type:'mc',    q:'lim(x->2) (x + 3)?', choices:['0','2','3','5'], a:'5', e:'For continuous functions, just plug in: 2 + 3 = 5.' },
+  { subject:'math', grade:11, level:25, type:'fib',   q:'The common difference of 5, 9, 13, 17 is ____.', a:'4', e:'Each term is 4 more than the previous. This is an arithmetic sequence with d = 4.' },
+  { subject:'math', grade:11, level:25, type:'fib',   q:'5! = ____.', a:'120', e:'5! = 5 x 4 x 3 x 2 x 1 = 120. Compute: 5x4=20, 20x3=60, 60x2=120.' },
+  { subject:'math', grade:11, level:25, type:'fib',   q:'The probability of rolling a 6 on a fair die is 1/____.', a:'6', e:'A die has 6 equally likely outcomes; only one shows 6. P = 1/6.' },
+  { subject:'math', grade:11, level:25, type:'guess', q:'The ratio between consecutive terms in a geometric sequence.', a:'common ratio', e:'In a geometric sequence, each term is multiplied by the same factor to get the next. That factor is the common ratio r.' },
+  { subject:'math', grade:11, level:25, type:'guess', q:'Number of ways to arrange objects where order matters.', a:'permutation', e:'Permutation counts orderings. Formula: nPr = n! / (n-r)!.' },
+
+  /* ---- Grade 11 - Level 26 ---- */
+  { subject:'math', grade:11, level:26, type:'mc',    q:'P(A and B) for independent events = ?', choices:['P(A) + P(B)','P(A) x P(B)','P(A) - P(B)','P(A) / P(B)'], a:'P(A) x P(B)', e:'For independent events A and B: P(A and B) = P(A) x P(B).' },
+  { subject:'math', grade:11, level:26, type:'mc',    q:'Sum of geometric series 1 + 1/2 + 1/4 + 1/8 + ... (infinite)?', choices:['1','2','3','infinity'], a:'2', e:'Infinite geometric sum = a/(1-r) if |r|<1. Here a=1, r=1/2. Sum = 1/(1-1/2) = 2.' },
+  { subject:'math', grade:11, level:26, type:'mc',    q:'lim(x->3) (x^2 - 9)/(x - 3)?', choices:['0','3','6','undefined'], a:'6', e:'Factor: (x^2-9) = (x-3)(x+3). Cancel (x-3): x+3. Then evaluate at x=3: 3+3 = 6.' },
+  { subject:'math', grade:11, level:26, type:'mc',    q:'From a deck of 52 cards, P(drawing a king)?', choices:['1/13','1/26','1/52','4/52'], a:'1/13', e:'There are 4 kings in 52 cards. P = 4/52 = 1/13.' },
+  { subject:'math', grade:11, level:26, type:'mc',    q:'The 10th term of an arithmetic sequence with a1=3 and d=4?', choices:['30','36','39','43'], a:'39', e:'an = a1 + (n-1)d = 3 + 9(4) = 3 + 36 = 39.' },
+  { subject:'math', grade:11, level:26, type:'fib',   q:'The area under y = 2x from x=0 to x=3 is ____.', a:'9', e:'Integral: integral from 0 to 3 of 2x dx = [x^2] from 0 to 3 = 9 - 0 = 9. Or triangle area: (1/2)(3)(6) = 9.' },
+  { subject:'math', grade:11, level:26, type:'fib',   q:'sigma notation Sum k=1 to 4 of k = ____.', a:'10', e:'Sum: 1+2+3+4 = 10.' },
+  { subject:'math', grade:11, level:26, type:'fib',   q:'0! = ____.', a:'1', e:'By convention, 0! = 1. This makes formulas like nCr = n!/(r!(n-r)!) work when r = n.' },
+  { subject:'math', grade:11, level:26, type:'guess', q:'The average of possible outcomes weighted by probability.', a:'expected value', e:'E[X] = sum of xi x P(xi). For a fair die, E[X] = (1+2+3+4+5+6)/6 = 3.5.' },
+  { subject:'math', grade:11, level:26, type:'guess', q:'The specific sum of a finite series.', a:'partial sum', e:'A partial sum Sn is the sum of the first n terms of a series. Different from the infinite sum.' },
+
+  /* ---- Grade 12 - Level 27 ---- */
+  { subject:'math', grade:12, level:27, type:'mc',    q:'The integral of 2x dx =', choices:['x^2','x^2 + C','2 + C','x^3/3'], a:'x^2 + C', e:'Antiderivative of 2x is x^2 (power rule reverse). Add C because indefinite integrals have a family of solutions.' },
+  { subject:'math', grade:12, level:27, type:'mc',    q:'lim(x->0) sin(x)/x = ?', choices:['0','1','pi','undefined'], a:'1', e:'A fundamental limit. As x -> 0, sin(x) ≈ x. So sin(x)/x -> 1.' },
+  { subject:'math', grade:12, level:27, type:'mc',    q:'derivative of e^x is', choices:['e^x','x e^(x-1)','ln(x)','x e^x'], a:'e^x', e:'e^x is the unique function whose derivative is itself: d/dx(e^x) = e^x.' },
+  { subject:'math', grade:12, level:27, type:'mc',    q:'integral of 1/x dx = ?', choices:['ln|x| + C','1/x^2 + C','x^0 + C','-1/x^2 + C'], a:'ln|x| + C', e:'The antiderivative of 1/x is ln|x| + C (absolute value handles negative x).' },
+  { subject:'math', grade:12, level:27, type:'mc',    q:'derivative of ln(x) is', choices:['1/x','x','ln(x)','1/ln(x)'], a:'1/x', e:'d/dx(ln x) = 1/x for x > 0.' },
+  { subject:'math', grade:12, level:27, type:'fib',   q:'The number of degrees in a full rotation is ____.', a:'360', e:'A complete rotation is 360 degrees, or equivalently 2 pi radians.' },
+  { subject:'math', grade:12, level:27, type:'fib',   q:'integral from 0 to 1 of x dx = ____.', a:'0.5', e:'integral of x dx = x^2/2. Evaluate from 0 to 1: (1^2)/2 - (0^2)/2 = 1/2 = 0.5.' },
+  { subject:'math', grade:12, level:27, type:'fib',   q:'derivative of sin(x) is ____.', a:'cos(x)', e:'Standard rule: d/dx sin(x) = cos(x). Note that d/dx cos(x) = -sin(x).' },
+  { subject:'math', grade:12, level:27, type:'guess', q:'Branch of mathematics for change and motion.', a:'calculus', e:'Calculus studies derivatives (rates of change) and integrals (accumulation). Developed by Newton and Leibniz.' },
+  { subject:'math', grade:12, level:27, type:'guess', q:'A number that cannot be a fraction of two integers.', a:'irrational', e:'Irrationals (pi, e, sqrt(2)) cannot be written p/q. Decimals never terminate or repeat.' },
+
+  /* ---- Grade 12 - Level 28 ---- */
+  { subject:'math', grade:12, level:28, type:'mc',    q:'A matrix with determinant 0 is called', choices:['singular','identity','orthogonal','symmetric'], a:'singular', e:'Determinant 0 means no inverse exists. Such matrices are singular. Nonzero det means invertible.' },
+  { subject:'math', grade:12, level:28, type:'mc',    q:'Which theorem relates the sides of a right triangle?', choices:['Fermat','Pythagorean','Euclid','Thales'], a:'Pythagorean', e:'Pythagoras: a^2 + b^2 = c^2 for the legs (a, b) and hypotenuse (c) of a right triangle.' },
+  { subject:'math', grade:12, level:28, type:'mc',    q:'The determinant of [[2,3],[1,4]] is', choices:['5','8','11','24'], a:'5', e:'Determinant of a 2x2 matrix [[a,b],[c,d]] = ad - bc. Here (2)(4) - (3)(1) = 8 - 3 = 5.' },
+  { subject:'math', grade:12, level:28, type:'mc',    q:'The chain rule computes derivative of', choices:['product of functions','sum of functions','composition of functions','quotient of functions'], a:'composition of functions', e:'Chain rule: for f(g(x)), derivative is f\'(g(x)) x g\'(x). Handles nested/composed functions.' },
+  { subject:'math', grade:12, level:28, type:'mc',    q:'The dot product of vectors [1,2] and [3,4] is', choices:['5','7','10','11'], a:'11', e:'Dot product: sum of component-wise products. (1)(3) + (2)(4) = 3 + 8 = 11.' },
+  { subject:'math', grade:12, level:28, type:'fib',   q:'integral from 0 to pi of sin(x) dx = ____.', a:'2', e:'integral sin(x) dx = -cos(x). Evaluate 0 to pi: -cos(pi) - (-cos(0)) = -(-1) - (-1) = 1 + 1 = 2.' },
+  { subject:'math', grade:12, level:28, type:'fib',   q:'The second derivative of x^4 is ____ x^2.', a:'12', e:'First derivative: 4x^3. Second derivative: derivative of 4x^3 = 12x^2.' },
+  { subject:'math', grade:12, level:28, type:'fib',   q:'The Fibonacci sequence starts 1, 1, 2, 3, 5, ____.', a:'8', e:'Fibonacci: each term = sum of the two previous. After 3, 5: 3+5 = 8. Then 8+5 = 13, etc.' },
+  { subject:'math', grade:12, level:28, type:'guess', q:'A matrix with 1s on diagonal and 0s elsewhere.', a:'identity', e:'The identity matrix I acts like the number 1 for matrices: A x I = A. Diagonal is 1s, rest is 0.' },
+  { subject:'math', grade:12, level:28, type:'guess', q:'The Greek letter used for summation.', a:'sigma', e:'Sigma (capital form) means "sum". Used as sigma from i=1 to n means summing over an index.' },
+
+  /* ============================ GRADES 1-4 (Levels 1-8, non-math) ============================
+     Very young learners. Content: first English words,
      Filipino vocabulary, simple science. */
-
-  /* ---- MATH: Grades 1-4 ---- */
-  /* Grade 1 - L1, L2 */
-  { subject:'math', grade:1, level:1, type:'mc',    q:'What is 2 + 3?', choices:['4','5','6','7'], a:'5', e:'Count on fingers: 2, then 3 more makes 5.' },
-  { subject:'math', grade:1, level:1, type:'mc',    q:'How many fingers on one hand?', choices:['3','4','5','6'], a:'5', e:'One hand has 5 fingers. Two hands have 10.' },
-  { subject:'math', grade:1, level:1, type:'fib',   q:'1 + 1 = ____.', a:'2', e:'One plus one equals two.' },
-  { subject:'math', grade:1, level:1, type:'guess', q:'A shape that is round like a ball.', a:'circle', e:'A circle is perfectly round with no corners.' },
-  { subject:'math', grade:1, level:2, type:'mc',    q:'What comes after 7?', choices:['5','6','8','9'], a:'8', e:'Counting up: 5, 6, 7, 8. After 7 is 8.' },
-  { subject:'math', grade:1, level:2, type:'fib',   q:'5 + 5 = ____.', a:'10', e:'Five plus five equals ten.' },
-  { subject:'math', grade:1, level:2, type:'guess', q:'A shape with 4 equal sides.', a:'square', e:'A square has 4 sides all the same length.' },
-
-  /* Grade 2 - L3, L4 */
-  { subject:'math', grade:2, level:3, type:'mc',    q:'What is 9 + 4?', choices:['11','12','13','14'], a:'13', e:'Break it up: 9 + 1 = 10, then 10 + 3 = 13.' },
-  { subject:'math', grade:2, level:3, type:'fib',   q:'The number after 19 is ____.', a:'20', e:'Counting up: 18, 19, 20. Two tens make twenty.' },
-  { subject:'math', grade:2, level:3, type:'guess', q:'The result of adding two numbers.', a:'sum', e:'Adding gives a sum. Subtracting gives a difference.' },
-  { subject:'math', grade:2, level:4, type:'mc',    q:'What is 20 - 8?', choices:['10','11','12','13'], a:'12', e:'20 minus 8. Count back from 20: 19, 18, 17, 16, 15, 14, 13, 12.' },
-  { subject:'math', grade:2, level:4, type:'fib',   q:'A group of 10 tens is ____.', a:'100', e:'Ten tens make 100. Or a hundred.' },
-  { subject:'math', grade:2, level:4, type:'guess', q:'A shape with 3 sides.', a:'triangle', e:'Triangle: tri means 3, so 3 sides and 3 corners.' },
-
-  /* Grade 3 - L5, L6 */
-  { subject:'math', grade:3, level:5, type:'mc',    q:'What is 6 x 4?', choices:['18','22','24','28'], a:'24', e:'6 times 4 = 6 + 6 + 6 + 6 = 24.' },
-  { subject:'math', grade:3, level:5, type:'fib',   q:'1/2 of 10 is ____.', a:'5', e:'Half of 10 is 5. Divide 10 into 2 equal groups.' },
-  { subject:'math', grade:3, level:5, type:'guess', q:'The answer to a multiplication problem.', a:'product', e:'Multiplication gives a product. 3 x 4 has a product of 12.' },
-  { subject:'math', grade:3, level:6, type:'mc',    q:'What is 100 - 45?', choices:['45','55','65','75'], a:'55', e:'100 - 45: 100 - 40 = 60, then 60 - 5 = 55.' },
-  { subject:'math', grade:3, level:6, type:'fib',   q:'A right angle has ____ degrees.', a:'90', e:'A right angle looks like the corner of a book: 90 degrees.' },
-  { subject:'math', grade:3, level:6, type:'guess', q:'The answer to a division problem.', a:'quotient', e:'Division gives a quotient. 12 divided by 4 has a quotient of 3.' },
-
-  /* Grade 4 - L7, L8 */
-  { subject:'math', grade:4, level:7, type:'mc',    q:'What is 8 x 7?', choices:['48','54','56','64'], a:'56', e:'8 x 7 = 56. Or think of 8 x 6 = 48, plus one more 8 = 56.' },
-  { subject:'math', grade:4, level:7, type:'fib',   q:'The perimeter of a square with side 4 is ____.', a:'16', e:'Perimeter of a square = 4 x side = 4 x 4 = 16.' },
-  { subject:'math', grade:4, level:7, type:'guess', q:'A number that can be divided by 2 evenly.', a:'even', e:'Even numbers end in 0, 2, 4, 6, or 8.' },
-  { subject:'math', grade:4, level:8, type:'mc',    q:'Which is greater: 0.5 or 0.05?', choices:['0.5','0.05','same','cannot tell'], a:'0.5', e:'0.5 = 5 tenths. 0.05 = 5 hundredths. 5 tenths is bigger.' },
-  { subject:'math', grade:4, level:8, type:'fib',   q:'3/4 as a decimal is ____.', a:'0.75', e:'3 divided by 4 = 0.75.' },
-  { subject:'math', grade:4, level:8, type:'guess', q:'A closed shape with 4 sides.', a:'quadrilateral', e:'Quad means 4. Squares, rectangles, and rhombuses are all quadrilaterals.' },
 
   /* ---- SCIENCE: Grades 1-4 ---- */
   { subject:'science', grade:1, level:1, type:'mc',    q:'What do you use to see?', choices:['ears','eyes','nose','mouth'], a:'eyes', e:'Eyes let us see. Ears let us hear. Nose lets us smell.' },
@@ -126,78 +431,20 @@ window.QUESTIONS = [
 
   /* ============================ MATH ============================ */
   /* Grade 5 - L1..L3 */
-  { subject:'math', grade:5, level:9, type:'mc',    q:'What is 7 x 8?', choices:['54','56','58','64'], a:'56', e:'7 x 8 = 56. That is 8 added 7 times.' },
-  { subject:'math', grade:5, level:9, type:'mc',    q:'What is 144 / 12?', choices:['10','11','12','14'], a:'12', e:'12 x 12 = 144, so 144 / 12 = 12.' },
-  { subject:'math', grade:5, level:9, type:'guess', q:'A shape with three sides.', a:'triangle', e:'"Tri" means three, so a three-sided polygon is a triangle.' },
-  { subject:'math', grade:5, level:10, type:'mc',    q:'Which number is a prime?', choices:['9','15','17','21'], a:'17', e:'A prime has only 1 and itself as factors. 17 has no factors besides 1 and 17.' },
-  { subject:'math', grade:5, level:10, type:'fib',   q:'The perimeter of a square with side 5 is ____.', a:'20', e:'Perimeter of a square = 4 x side. So 4 x 5 = 20.' },
-  { subject:'math', grade:5, level:10, type:'guess', q:'The result of subtraction.', a:'difference', e:'Add: sum. Subtract: difference. Multiply: product. Divide: quotient.' },
-  { subject:'math', grade:5, level:11, type:'fib',   q:'1/2 + 1/4 = ____ (as a fraction).', a:'3/4', e:'Give both fractions the same denominator: 1/2 = 2/4. Then 2/4 + 1/4 = 3/4.' },
-  { subject:'math', grade:5, level:11, type:'mc',    q:'Which fraction is largest?', choices:['1/2','2/5','3/8','1/3'], a:'1/2', e:'As decimals: 1/2=0.50, 2/5=0.40, 3/8=0.375, 1/3=0.333. 1/2 is biggest.' },
-  { subject:'math', grade:5, level:11, type:'mc',    q:'What is 12 + 24 + 36 + 48?', choices:['110','120','130','140'], a:'120', e:'Pair up: (12+48) + (24+36) = 60 + 60 = 120.' },
 
   /* Grade 6 - L4..L6 */
-  { subject:'math', grade:6, level:12, type:'mc',    q:'What is 15% of 200?', choices:['20','25','30','35'], a:'30', e:'15% = 0.15. So 0.15 x 200 = 30.' },
-  { subject:'math', grade:6, level:12, type:'fib',   q:'The area of a rectangle 8 by 6 is ____.', a:'48', e:'Area of a rectangle = length x width = 8 x 6 = 48.' },
-  { subject:'math', grade:6, level:12, type:'guess', q:'A polygon with eight sides.', a:'octagon', e:'"Octa" means eight. An 8-sided polygon is an octagon.' },
-  { subject:'math', grade:6, level:13, type:'mc',    q:'Solve: 3x = 21. x = ?', choices:['3','6','7','9'], a:'7', e:'Divide both sides by 3: x = 21 / 3 = 7.' },
-  { subject:'math', grade:6, level:13, type:'fib',   q:'The square root of 81 is ____.', a:'9', e:'9 x 9 = 81, so sqrt(81) = 9.' },
-  { subject:'math', grade:6, level:13, type:'guess', q:'The distance around a circle.', a:'circumference', e:'Perimeter of a circle is called circumference. Formula: C = 2 pi r.' },
-  { subject:'math', grade:6, level:14, type:'mc',    q:'Which is an irrational number?', choices:['0.5','1/3','pi','7'], a:'pi', e:'Irrational numbers cannot be written as a fraction of two integers; pi never terminates or repeats.' },
-  { subject:'math', grade:6, level:14, type:'mc',    q:'What is 2^5?', choices:['10','16','25','32'], a:'32', e:'2 x 2 x 2 x 2 x 2 = 32.' },
 
   /* Grade 7 - L7..L9 */
-  { subject:'math', grade:7, level:15, type:'mc',    q:'Solve: 2x + 3 = 15. x = ?', choices:['5','6','7','8'], a:'6', e:'Subtract 3 from both sides: 2x = 12. Then divide by 2: x = 6.' },
-  { subject:'math', grade:7, level:15, type:'guess', q:'A quadrilateral with exactly one pair of parallel sides.', a:'trapezoid', e:'A parallelogram has two pairs of parallel sides; a trapezoid has only one.' },
-  { subject:'math', grade:7, level:15, type:'mc',    q:'Which is the value of |-9|?', choices:['-9','0','9','18'], a:'9', e:'Absolute value bars give the distance from zero, always non-negative.' },
-  { subject:'math', grade:7, level:16, type:'fib',   q:'The hypotenuse of a right triangle with legs 3 and 4 is ____.', a:'5', e:'Pythagorean theorem: 3^2 + 4^2 = 9 + 16 = 25, sqrt(25) = 5.' },
-  { subject:'math', grade:7, level:16, type:'fib',   q:'If a triangle has angles 40 and 60, the third angle is ____ degrees.', a:'80', e:'Angles of any triangle add to 180. 180 - 40 - 60 = 80.' },
-  { subject:'math', grade:7, level:16, type:'guess', q:'The Greek letter for the ratio of a circle\'s circumference to its diameter.', a:'pi', e:'That ratio is pi, about 3.14159.' },
-  { subject:'math', grade:7, level:17, type:'mc',    q:'What is the slope of y = 4x - 7?', choices:['-7','4','-4','7'], a:'4', e:'In y = mx + b, m is the slope. Here m = 4.' },
-  { subject:'math', grade:7, level:17, type:'fib',   q:'The mean of 4, 8, 12, 16 is ____.', a:'10', e:'Mean = sum / count = (4+8+12+16)/4 = 40/4 = 10.' },
 
   /* Grade 8 - L10..L12 (new content) */
-  { subject:'math', grade:8, level:18, type:'mc',    q:'Solve for x: 5x - 4 = 21', choices:['3','4','5','7'], a:'5', e:'Add 4: 5x = 25. Divide by 5: x = 5.' },
-  { subject:'math', grade:8, level:18, type:'fib',   q:'The y-intercept of y = 3x + 8 is ____.', a:'8', e:'In y = mx + b, b is the y-intercept. Here b = 8.' },
-  { subject:'math', grade:8, level:18, type:'guess', q:'A pair of equations solved together for the same variables.', a:'system', e:'A system of equations has two or more equations solved simultaneously.' },
-  { subject:'math', grade:8, level:19, type:'mc',    q:'Simplify: (2^3)(2^4)', choices:['2^7','2^12','4^7','8^4'], a:'2^7', e:'When multiplying same bases, add exponents: 3+4 = 7, so 2^7 = 128.' },
-  { subject:'math', grade:8, level:19, type:'fib',   q:'Scientific notation: 45,000 = 4.5 x 10^____.', a:'4', e:'Move the decimal 4 places left: 45,000 = 4.5 x 10^4.' },
-  { subject:'math', grade:8, level:19, type:'mc',    q:'What is sqrt(50) simplified?', choices:['5 sqrt(2)','2 sqrt(5)','10 sqrt(5)','25 sqrt(2)'], a:'5 sqrt(2)', e:'sqrt(50) = sqrt(25 x 2) = 5 sqrt(2).' },
-  { subject:'math', grade:8, level:20, type:'mc',    q:'Factor: x^2 - 9', choices:['(x-3)(x-3)','(x+3)(x+3)','(x-3)(x+3)','(x-9)(x+1)'], a:'(x-3)(x+3)', e:'Difference of squares: a^2 - b^2 = (a-b)(a+b). x^2 - 9 = (x-3)(x+3).' },
-  { subject:'math', grade:8, level:20, type:'guess', q:'A polynomial with three terms.', a:'trinomial', e:'One term: monomial. Two terms: binomial. Three terms: trinomial.' },
-  { subject:'math', grade:8, level:20, type:'fib',   q:'The volume of a cube with side 4 is ____.', a:'64', e:'Volume of a cube = side^3 = 4^3 = 64.' },
 
   /* Grade 9 - L13..L14 */
-  { subject:'math', grade:9, level:21, type:'mc',    q:'What is the derivative of x^3?', choices:['x^2','3x','3x^2','x^4/4'], a:'3x^2', e:'Power rule: d/dx(x^n) = n x^(n-1). For x^3: 3 x^2.' },
-  { subject:'math', grade:9, level:21, type:'fib',   q:'log base 10 of 1000 = ____.', a:'3', e:'10^3 = 1000, so log10(1000) = 3.' },
-  { subject:'math', grade:9, level:21, type:'guess', q:'A triangle with all sides equal.', a:'equilateral', e:'Equilateral = equal sides. Each angle is 60 degrees.' },
-  { subject:'math', grade:9, level:22, type:'mc',    q:'sin(90 degrees) = ?', choices:['0','1/2','1','undefined'], a:'1', e:'At 90 degrees on the unit circle, the y-coordinate is 1.' },
-  { subject:'math', grade:9, level:22, type:'fib',   q:'The quadratic formula solves ax^2 + bx + ____ = 0.', a:'c', e:'Standard quadratic form is ax^2 + bx + c = 0.' },
-  { subject:'math', grade:9, level:22, type:'guess', q:'The point where a curve crosses the x-axis.', a:'root', e:'A root (or zero) of a function is any x where f(x) = 0.' },
 
   /* Grade 10 - L15..L16 */
-  { subject:'math', grade:10, level:23, type:'mc',    q:'Which set contains only real numbers?', choices:['{i, 2i}','{-3, 0, pi}','{sqrt(-4)}','{2+i}'], a:'{-3, 0, pi}', e:'Reals exclude i (imaginary unit). Anything with i is complex.' },
-  { subject:'math', grade:10, level:23, type:'fib',   q:'e (Euler\'s number) is approximately ____ (2 decimals).', a:'2.72', e:'e is about 2.71828. Rounded to two decimals: 2.72.' },
-  { subject:'math', grade:10, level:23, type:'mc',    q:'For y = x^2, the graph is a', choices:['line','parabola','circle','hyperbola'], a:'parabola', e:'Any y = ax^2 + bx + c is a parabola. If a > 0 it opens upward.' },
-  { subject:'math', grade:10, level:24, type:'mc',    q:'The discriminant of ax^2+bx+c is', choices:['b^2 - 4ac','b^2 + 4ac','2b - 4ac','4ac - b^2'], a:'b^2 - 4ac', e:'The discriminant b^2 - 4ac tells how many real roots a quadratic has.' },
-  { subject:'math', grade:10, level:24, type:'fib',   q:'cos(0 degrees) = ____.', a:'1', e:'At 0 degrees on the unit circle, the x-coordinate is 1, so cos(0) = 1.' },
-  { subject:'math', grade:10, level:24, type:'guess', q:'A line that a curve approaches but never touches.', a:'asymptote', e:'Asymptotes appear in rational and exponential functions; the curve gets arbitrarily close but never crosses.' },
 
   /* Grade 11 - L17..L18 */
-  { subject:'math', grade:11, level:25, type:'mc',    q:'The sum 1+2+3+...+100 equals', choices:['5000','5050','5500','10000'], a:'5050', e:'Sum of first n integers = n(n+1)/2 = 100 x 101 / 2 = 5050.' },
-  { subject:'math', grade:11, level:25, type:'fib',   q:'The common difference of 5, 9, 13, 17 is ____.', a:'4', e:'Each term is 4 more than the last. Arithmetic sequence with d = 4.' },
-  { subject:'math', grade:11, level:25, type:'guess', q:'The ratio between consecutive terms in a geometric sequence.', a:'common ratio', e:'A geometric sequence multiplies by the same factor each step; that factor is called the common ratio.' },
-  { subject:'math', grade:11, level:26, type:'mc',    q:'What is 5!? (5 factorial)', choices:['15','20','60','120'], a:'120', e:'5! = 5 x 4 x 3 x 2 x 1 = 120.' },
-  { subject:'math', grade:11, level:26, type:'fib',   q:'The probability of rolling a 6 on a fair die is 1/____.', a:'6', e:'A die has 6 equally likely outcomes and only one is a 6, so P = 1/6.' },
 
   /* Grade 12 - L19..L20 */
-  { subject:'math', grade:12, level:27, type:'mc',    q:'The integral of 2x dx =', choices:['x^2','x^2 + C','2 + C','x^3/3'], a:'x^2 + C', e:'Antiderivative of 2x is x^2. Indefinite integrals need "+ C".' },
-  { subject:'math', grade:12, level:27, type:'guess', q:'Branch of mathematics dealing with change and motion.', a:'calculus', e:'Calculus studies rates of change (derivatives) and accumulation (integrals).' },
-  { subject:'math', grade:12, level:27, type:'fib',   q:'The limit as x approaches 0 of sin(x)/x is ____.', a:'1', e:'As x tends to 0, sin(x) is approximately x, so sin(x)/x approaches 1.' },
-  { subject:'math', grade:12, level:28, type:'mc',    q:'A matrix with determinant 0 is called', choices:['singular','identity','orthogonal','symmetric'], a:'singular', e:'A matrix with det = 0 has no inverse and is called singular.' },
-  { subject:'math', grade:12, level:28, type:'guess', q:'A number that cannot be expressed as a fraction of two integers.', a:'irrational', e:'Irrationals (pi, sqrt(2), e) cannot be written as p/q; decimals never repeat.' },
-  { subject:'math', grade:12, level:28, type:'fib',   q:'The number of degrees in a full rotation is ____.', a:'360', e:'A full circle is 360 degrees or 2 pi radians.' },
-  { subject:'math', grade:12, level:28, type:'mc',    q:'Which theorem relates the sides of a right triangle?', choices:['Fermat','Pythagorean','Euclid','Thales'], a:'Pythagorean', e:'The Pythagorean theorem: a^2 + b^2 = c^2.' },
 
   /* ============================ SCIENCE ============================ */
   /* Grade 5 - L1..L3 */

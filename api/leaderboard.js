@@ -29,6 +29,9 @@ export default async function handler(req, res) {
           try {
             const p = typeof value === 'string' ? JSON.parse(value) : value;
             if (!p) continue;
+            /* Legacy values on the 1-28 grade scale get clamped to 1-5. */
+            let hl = p.highestLevel | 0;
+            if (hl > 5) hl = hl >= 27 ? 5 : hl >= 21 ? 4 : hl >= 15 ? 3 : hl >= 9 ? 2 : 1;
             out.push({
               username: uname,
               name: p.name,
@@ -37,7 +40,7 @@ export default async function handler(req, res) {
               totalPoints: p.totalPoints | 0,
               quizzesCompleted: p.quizzesCompleted | 0,
               correctAnswers: p.correctAnswers | 0,
-              highestLevel: p.highestLevel | 0,
+              highestLevel: hl,
               trophies: p.trophies | 0,
               lastPlayed: p.lastPlayed || null,
             });
@@ -64,7 +67,7 @@ export default async function handler(req, res) {
         totalPoints: Math.max(0, Math.min(10_000_000, Number(body.totalPoints) || 0)),
         quizzesCompleted: Math.max(0, Math.min(100_000, Number(body.quizzesCompleted) || 0)),
         correctAnswers: Math.max(0, Math.min(1_000_000, Number(body.correctAnswers) || 0)),
-        highestLevel: Math.max(0, Math.min(28, Number(body.highestLevel) || 0)),
+        highestLevel: Math.max(0, Math.min(5, Number(body.highestLevel) || 0)),
         trophies: Math.max(0, Math.min(50, Number(body.trophies) || 0)),
         lastPlayed: new Date().toISOString(),
       };
@@ -75,7 +78,9 @@ export default async function handler(req, res) {
         clean.totalPoints = Math.max(clean.totalPoints, existing.totalPoints | 0);
         clean.quizzesCompleted = Math.max(clean.quizzesCompleted, existing.quizzesCompleted | 0);
         clean.correctAnswers = Math.max(clean.correctAnswers, existing.correctAnswers | 0);
-        clean.highestLevel = Math.max(clean.highestLevel, existing.highestLevel | 0);
+        /* Cap the merged highestLevel at 5 (the new tier scale) so any legacy
+           1-28 value stored from before the tier refactor gets clamped down. */
+        clean.highestLevel = Math.min(5, Math.max(clean.highestLevel, existing.highestLevel | 0));
         clean.trophies = Math.max(clean.trophies, existing.trophies | 0);
       }
       await redis.hset(KEY, { [username]: JSON.stringify(clean) });

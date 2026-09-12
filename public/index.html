@@ -214,11 +214,29 @@
   .tile.level {
     background: linear-gradient(135deg, #f8fafc, white);
   }
-  .tile.level-1 { border-color: #a3e635; }
-  .tile.level-2 { border-color: #38bdf8; }
-  .tile.level-3 { border-color: #a855f7; }
-  .tile.level-4 { border-color: #f97316; }
-  .tile.level-5 { border-color: #ef4444; background: linear-gradient(135deg, #fee2e2, #fef3c7); }
+  .tile.level.g5  { border-color: #a3e635; }
+  .tile.level.g6  { border-color: #22d3ee; }
+  .tile.level.g7  { border-color: #38bdf8; }
+  .tile.level.g8  { border-color: #818cf8; }
+  .tile.level.g9  { border-color: #a855f7; }
+  .tile.level.g10 { border-color: #ec4899; }
+  .tile.level.g11 { border-color: #f97316; }
+  .tile.level.g12 { border-color: #ef4444; background: linear-gradient(135deg, #fee2e2, #fef3c7); }
+  .tile.grade { text-align:center; }
+  .tile.grade .grade-num { font-size: 32px; font-weight: 700; color: var(--ink); line-height: 1; }
+  .tile.grade .grade-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; letter-spacing: 1px; text-transform: uppercase; }
+  .tile.grade .grade-lvls { font-size: 13px; color: var(--ink-2); font-weight: 600; margin-top: 8px; }
+  .tile.grade.mine { border-color: var(--sun); background: linear-gradient(135deg, #fef9c3, #fef3c7); position: relative; }
+  .tile.grade.mine::after {
+    content: "MY GRADE"; position: absolute; top: -10px; right: 12px;
+    background: var(--sun); color: var(--ink); font-size: 10px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px; letter-spacing: 1px;
+  }
+  .tile.grade.allg { background: linear-gradient(135deg, #fef3c7, #ffe4e6, #dbeafe, #dcfce7); }
+  .level-row-hint {
+    display:block; margin: 14px 0 6px; font-size: 12px;
+    color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+  }
 
   /* Quiz screen */
   .quiz-head {
@@ -510,12 +528,20 @@
     <button class="btn ghost" data-nav="home" style="margin-top:20px;">← Back to Home</button>
   </section>
 
+  <!-- GRADE PICKER -->
+  <section id="screen-grade" class="card hidden">
+    <h2>Pick a Grade Level 🎓</h2>
+    <p class="lead">Choose questions from your grade, or explore other grades!</p>
+    <div class="grid" id="gradeGrid"></div>
+    <button class="btn ghost" data-nav="subject" style="margin-top:20px;">← Back to Subject</button>
+  </section>
+
   <!-- LEVEL -->
   <section id="screen-level" class="card hidden">
     <h2>Pick Your Difficulty 🎯</h2>
-    <p class="lead">Higher levels give harder questions, less time, and more points!</p>
+    <p class="lead" id="levelLead">Each level is harder than the last. Same time, tougher questions!</p>
     <div class="grid" id="levelGrid"></div>
-    <button class="btn ghost" data-nav="subject" style="margin-top:20px;">← Back</button>
+    <button class="btn ghost" data-nav="grade" style="margin-top:20px;">← Back to Grades</button>
   </section>
 
   <!-- QUIZ -->
@@ -769,7 +795,7 @@ function escapeHtml(s) {
 }
 
 /* ============================ Navigation ============================ */
-const SCREENS = ['login','home','subject','level','quiz','results','achievements','leaderboard'];
+const SCREENS = ['login','home','subject','grade','level','quiz','results','achievements','leaderboard'];
 function show(name) {
   SCREENS.forEach(s => {
     const el = document.getElementById('screen-' + s);
@@ -778,6 +804,7 @@ function show(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'home') renderHome();
   if (name === 'subject') renderSubjects();
+  if (name === 'grade') renderGrades();
   if (name === 'level') renderLevels();
   if (name === 'achievements') renderAchievements();
   if (name === 'leaderboard') renderLeaderboard();
@@ -830,55 +857,117 @@ function renderSubjects() {
     const el = document.createElement('div');
     el.className = 'tile ' + st.cls;
     el.innerHTML = `<span class="ico">${st.ico}</span><div class="name">${s.label}</div><div class="desc">${st.desc}</div>`;
-    el.addEventListener('click', () => { state.subject = s.id; show('level'); });
+    el.addEventListener('click', () => { state.subject = s.id; show('grade'); });
+    grid.appendChild(el);
+  });
+}
+
+/* ============================ Render: grades ============================ */
+function gradesForSubject(subjectId) {
+  const grades = new Set();
+  window.QUESTIONS.forEach(q => {
+    if (subjectId === 'mixed' || q.subject === subjectId) grades.add(q.grade);
+  });
+  return [...grades].sort((a,b)=>a-b);
+}
+function renderGrades() {
+  const student = currentStudent(); if (!student) { show('login'); return; }
+  const grid = document.getElementById('gradeGrid');
+  grid.innerHTML = '';
+  const available = gradesForSubject(state.subject);
+
+  // "All grades" tile first
+  const all = document.createElement('div');
+  all.className = 'tile grade allg';
+  const allLvls = Array.from(new Set(window.QUESTIONS
+      .filter(q => state.subject === 'mixed' || q.subject === state.subject)
+      .map(q => q.level))).sort((a,b)=>a-b);
+  all.innerHTML = `<div class="grade-num">🌟</div><div class="grade-lbl">All Grades</div><div class="grade-lvls">Levels ${Math.min(...allLvls)} - ${Math.max(...allLvls)}</div>`;
+  all.addEventListener('click', () => { state.gradeFilter = 'all'; show('level'); });
+  grid.appendChild(all);
+
+  // One tile per grade with questions in this subject
+  available.forEach(g => {
+    const lvls = Object.entries(window.LEVEL_GRADE)
+      .filter(([, gg]) => gg === g)
+      .map(([lv]) => parseInt(lv, 10));
+    const isMine = g === student.grade;
+    const el = document.createElement('div');
+    el.className = 'tile grade' + (isMine ? ' mine' : '');
+    el.innerHTML = `<div class="grade-num">${g}</div><div class="grade-lbl">Grade ${g}</div><div class="grade-lvls">Levels ${Math.min(...lvls)} - ${Math.max(...lvls)}</div>`;
+    el.addEventListener('click', () => { state.gradeFilter = g; show('level'); });
     grid.appendChild(el);
   });
 }
 
 /* ============================ Render: levels ============================ */
+const LEVEL_ICON = {1:'🐣',2:'🐣',3:'🐣',4:'🌱',5:'🌱',6:'🌱',7:'🍀',8:'🍀',9:'🍀',10:'🌟',11:'🌟',12:'🌟',13:'🔥',14:'🔥',15:'⚡',16:'⚡',17:'💎',18:'💎',19:'👑',20:'🏆'};
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
-  const info = [
-    { level:1, name:'Level 1', desc:'Beginner • 30s', ico:'🐣' },
-    { level:2, name:'Level 2', desc:'Easy • 25s',     ico:'🌱' },
-    { level:3, name:'Level 3', desc:'Medium • 20s',   ico:'🌟' },
-    { level:4, name:'Level 4', desc:'Hard • 18s',     ico:'🔥' },
-    { level:5, name:'Level 5', desc:'Expert • 15s',   ico:'👑' },
-  ];
-  info.forEach(l => {
+  const lead = document.getElementById('levelLead');
+  const filter = state.gradeFilter;
+  let levels;
+  if (filter === 'all') {
+    levels = [];
+    for (let L = 1; L <= 20; L++) levels.push(L);
+    lead.textContent = 'All 20 levels across every grade. Pick any!';
+  } else {
+    levels = Object.entries(window.LEVEL_GRADE)
+      .filter(([, g]) => g === filter)
+      .map(([lv]) => parseInt(lv, 10))
+      .sort((a,b)=>a-b);
+    lead.textContent = 'Grade ' + filter + ' levels. Each level is harder than the last!';
+  }
+
+  levels.forEach(L => {
+    const grade = window.LEVEL_GRADE[L];
+    const pool = window.QUESTIONS.filter(q =>
+      q.level === L && (state.subject === 'mixed' || q.subject === state.subject)
+    );
     const el = document.createElement('div');
-    el.className = 'tile level level-' + l.level;
-    el.innerHTML = `<span class="ico">${l.ico}</span><div class="name">${l.name}</div><div class="desc">${l.desc}</div>`;
-    el.addEventListener('click', () => startQuiz(l.level));
+    el.className = 'tile level g' + grade;
+    const disabled = pool.length === 0;
+    if (disabled) el.style.opacity = '0.4';
+    el.innerHTML = `<span class="ico">${LEVEL_ICON[L] || '⭐'}</span>` +
+      `<div class="name">Level ${L}</div>` +
+      `<div class="desc">Grade ${grade} • ${pool.length} q${pool.length !== 1 ? 's' : ''}</div>`;
+    if (!disabled) el.addEventListener('click', () => startQuiz(L));
     grid.appendChild(el);
   });
 }
 
 /* ============================ Quiz state ============================ */
 const state = {
-  subject: null, level: 1,
+  subject: null, gradeFilter: null, level: 1,
   questions: [], idx: 0, score: 0,
   wrong: [], streak: 0, maxStreak: 0,
-  timer: null, timeLeft: 0, timePerQ: 30, totalQ: 10,
+  timer: null, timeLeft: 0, timePerQ: 20, totalQ: 10,
   answered: false, points: 0,
   qStartMs: 0, fastestAnswerMs: null,
 };
-function timePerQuestion(level) { return ({1:30,2:25,3:20,4:18,5:15})[level] || 30; }
+/* Default is 20s per question. Higher levels tighten it a bit. */
+function timePerQuestion(level) {
+  if (level <= 15) return 20;
+  if (level <= 18) return 18;
+  return 15;
+}
 
+/* Strict per-level pool. Each question appears in exactly one level, so no cross-level repeat. */
 function pickQuestions(subject, level, count) {
-  let pool = window.QUESTIONS.filter(q => q.level === level);
-  if (subject !== 'mixed') pool = pool.filter(q => q.subject === subject);
-  if (pool.length < count) {
-    pool = window.QUESTIONS.filter(q => Math.abs(q.level - level) <= 1 && (subject === 'mixed' || q.subject === subject));
-  }
+  const pool = window.QUESTIONS.filter(q =>
+    q.level === level && (subject === 'mixed' || q.subject === subject)
+  );
   return shuffle(pool).slice(0, count);
 }
 
 function startQuiz(level) {
   state.level = level;
   state.timePerQ = timePerQuestion(level);
-  state.totalQ = 10;
+  const pool = window.QUESTIONS.filter(q =>
+    q.level === level && (state.subject === 'mixed' || q.subject === state.subject)
+  );
+  state.totalQ = Math.min(pool.length, 10);
   state.questions = pickQuestions(state.subject, level, state.totalQ);
   state.idx = 0; state.score = 0; state.wrong = [];
   state.streak = 0; state.maxStreak = 0; state.points = 0;
@@ -1082,7 +1171,7 @@ function finishQuiz() {
   });
 
   const nextBtn = document.getElementById('nextLevelBtn');
-  if (state.level < 5) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
+  if (state.level < 20) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
   else nextBtn.textContent = 'Play Again ↻';
 
   Sound.victory();
@@ -1103,7 +1192,16 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  const nextLevel = state.level < 5 ? state.level + 1 : state.level;
+  let nextLevel = state.level < 20 ? state.level + 1 : state.level;
+  // If the immediate next level has no questions for this subject, hop to the next level that does
+  while (nextLevel <= 20) {
+    const pool = window.QUESTIONS.filter(q =>
+      q.level === nextLevel && (state.subject === 'mixed' || q.subject === state.subject)
+    );
+    if (pool.length > 0) break;
+    nextLevel++;
+  }
+  if (nextLevel > 20) nextLevel = state.level;
   startQuiz(nextLevel);
 });
 

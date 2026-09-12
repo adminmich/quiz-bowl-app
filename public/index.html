@@ -765,35 +765,52 @@
 
   <!-- LOGIN -->
   <section id="screen-login" class="card">
-    <h2>Hi there, superstar! 🌟</h2>
-    <p class="lead">Type your info to begin your quiz adventure. We'll remember you next time!</p>
-    <label for="inName">Your name</label>
-    <input id="inName" type="text" placeholder="e.g. Alex" autocomplete="name" />
-    <div class="row" style="margin-top:14px;">
-      <div>
-        <label for="inAge">Age</label>
-        <input id="inAge" type="number" min="4" max="25" placeholder="10" />
+    <!-- STUDENT LOGIN -->
+    <div id="studentLoginForm">
+      <h2>Hi there, superstar! 🌟</h2>
+      <p class="lead">Type your info to begin your quiz adventure. We'll remember you next time!</p>
+      <label for="inName">Your name</label>
+      <input id="inName" type="text" placeholder="e.g. Alex" autocomplete="name" />
+      <div class="row" style="margin-top:14px;">
+        <div>
+          <label for="inAge">Age</label>
+          <input id="inAge" type="number" min="4" max="25" placeholder="10" />
+        </div>
+        <div>
+          <label for="inGrade">Grade</label>
+          <select id="inGrade">
+            <option value="">Pick one</option>
+            <option value="1">Grade 1</option>
+            <option value="2">Grade 2</option>
+            <option value="3">Grade 3</option>
+            <option value="4">Grade 4</option>
+            <option value="5">Grade 5</option>
+            <option value="6">Grade 6</option>
+            <option value="7">Grade 7</option>
+            <option value="8">Grade 8</option>
+            <option value="9">Grade 9</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label for="inGrade">Grade</label>
-        <select id="inGrade">
-          <option value="">Pick one</option>
-          <option value="1">Grade 1</option>
-          <option value="2">Grade 2</option>
-          <option value="3">Grade 3</option>
-          <option value="4">Grade 4</option>
-          <option value="5">Grade 5</option>
-          <option value="6">Grade 6</option>
-          <option value="7">Grade 7</option>
-          <option value="8">Grade 8</option>
-          <option value="9">Grade 9</option>
-          <option value="10">Grade 10</option>
-          <option value="11">Grade 11</option>
-          <option value="12">Grade 12</option>
-        </select>
-      </div>
+      <button class="btn big coral" id="loginBtn">Let's Play! 🚀</button>
+      <button class="btn ghost" id="showAdminLoginBtn" style="width:100%;margin-top:10px;">🛠️ Login as Admin</button>
     </div>
-    <button class="btn big coral" id="loginBtn">Let's Play! 🚀</button>
+
+    <!-- ADMIN LOGIN -->
+    <div id="adminLoginForm" class="hidden">
+      <h2>Admin Login 🛠️</h2>
+      <p class="lead">Enter the admin username and password.</p>
+      <label for="inAdminUser">Username</label>
+      <input id="inAdminUser" type="text" placeholder="e.g. michelleorte" autocomplete="username" />
+      <label for="inAdminPass" style="margin-top:14px;">Password</label>
+      <input id="inAdminPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+      <div id="adminLoginError" class="feedback wrong" style="margin-top:12px;"></div>
+      <button class="btn big grape" id="adminLoginBtn">🔓 Log In</button>
+      <button class="btn ghost" id="showStudentLoginBtn" style="width:100%;margin-top:10px;">← Back to Student Login</button>
+    </div>
   </section>
 
   <!-- HOME HUB -->
@@ -1234,10 +1251,23 @@ function escapeHtml(s) {
 
 /* ============================ Navigation ============================ */
 const SCREENS = ['login','home','profile','subject','grade','level','quiz','results','achievements','leaderboard','admin'];
-const ADMINS = new Set(['michelleorte']); // usernames granted the admin dashboard
+
+/* Admin accounts. Each entry: username → password. Passwords are compared
+   client-side (this is a light gate, not a bank vault — anyone opening
+   dev tools can read them). Change the string below to rotate the password. */
+const ADMIN_ACCOUNTS = {
+  michelleorte: 'admin2026',
+};
+function isAdminUser(username) {
+  return !!(username && Object.prototype.hasOwnProperty.call(ADMIN_ACCOUNTS, username.toLowerCase()));
+}
+function verifyAdminPassword(username, password) {
+  const expected = ADMIN_ACCOUNTS[String(username || '').toLowerCase()];
+  return expected != null && password === expected;
+}
 function isAdmin() {
   const s = currentStudent();
-  return !!(s && s.username && ADMINS.has(s.username.toLowerCase()));
+  return !!(s && s.isAdmin && isAdminUser(s.username));
 }
 function show(name) {
   if (name === 'admin' && !isAdmin()) name = 'home';
@@ -1747,6 +1777,63 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   document.getElementById('inGrade').value = '';
   renderWho();
   show('home');
+});
+
+/* Switch between student and admin login forms on the login screen. */
+function showLoginForm(which) {
+  document.getElementById('studentLoginForm').classList.toggle('hidden', which !== 'student');
+  document.getElementById('adminLoginForm').classList.toggle('hidden', which !== 'admin');
+  const err = document.getElementById('adminLoginError');
+  err.classList.remove('show');
+  err.textContent = '';
+  if (which === 'admin') setTimeout(() => document.getElementById('inAdminUser').focus(), 80);
+}
+document.getElementById('showAdminLoginBtn').addEventListener('click', () => showLoginForm('admin'));
+document.getElementById('showStudentLoginBtn').addEventListener('click', () => showLoginForm('student'));
+
+document.getElementById('adminLoginBtn').addEventListener('click', () => {
+  const username = String(document.getElementById('inAdminUser').value || '').trim().toLowerCase();
+  const password = String(document.getElementById('inAdminPass').value || '');
+  const err = document.getElementById('adminLoginError');
+  if (!username || !password) {
+    err.textContent = 'Please enter username and password.';
+    err.classList.add('show');
+    return;
+  }
+  if (!verifyAdminPassword(username, password)) {
+    err.textContent = 'Wrong username or password.';
+    err.classList.add('show');
+    Sound.wrong();
+    return;
+  }
+  /* Create or load the admin's student profile, mark as admin, land on Home. */
+  const all = loadStudents();
+  let existing = Object.values(all).find(s => (s.username || '').toLowerCase() === username);
+  if (!existing) {
+    /* Bootstrap a new admin profile — assume grade 12 / age 18 as sensible defaults. */
+    const stud = newStudent(username, 18, 12);
+    stud.username = username;
+    stud.isAdmin = true;
+    all[stud.id] = stud;
+    saveStudents(all);
+    existing = stud;
+  } else {
+    existing.isAdmin = true;
+    saveStudents(all);
+  }
+  setCurrent(existing.id);
+  Sound.unlock();
+  Sound.start();
+  document.getElementById('inAdminUser').value = '';
+  document.getElementById('inAdminPass').value = '';
+  err.classList.remove('show');
+  showLoginForm('student'); // reset visibility for next time
+  renderWho();
+  show('home');
+});
+/* Pressing Enter in the admin password field submits. */
+document.getElementById('inAdminPass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
 });
 
 function doLogout(silent) {

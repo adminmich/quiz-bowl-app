@@ -193,6 +193,34 @@
   .hub-tile.switch { border-color: var(--sky); background: linear-gradient(135deg, #e0f2fe, #dbeafe); }
   .hub-tile.profile { border-color: var(--coral); background: linear-gradient(135deg, #ffe4e6, #fef3c7); }
   .hub-tile.profile:hover { border-color: #ef4444; }
+  .hub-tile.admin { border-color: var(--ink-2); background: linear-gradient(135deg, #e5e7eb, #fef3c7); }
+  .hub-tile.admin:hover { border-color: var(--ink); }
+
+  /* Admin dashboard */
+  .admin-table-wrap {
+    overflow-x: auto;
+    margin: 8px -6px 0;
+    padding: 0 6px;
+  }
+  .admin-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .admin-table thead th {
+    text-align: left; color: var(--muted);
+    font-weight: 700; font-size: 11px; letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 8px; border-bottom: 2px solid #e2e8f0;
+  }
+  .admin-table tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--ink);
+  }
+  .admin-table tbody tr:hover td { background: #fafbfc; }
+  .admin-table td:nth-child(1) { color: var(--muted); font-weight: 700; width: 34px; }
+  .admin-table td:nth-child(2) { font-weight: 700; }
+  .admin-table td .avatar { margin-right: 6px; font-size: 18px; }
+  .admin-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
   /* Profile screen */
   .profile-hero {
@@ -793,6 +821,11 @@
         <div class="name">My Profile</div>
         <div class="desc">Stats and settings</div>
       </div>
+      <div class="hub-tile admin hidden" id="adminHubTile" data-nav="admin">
+        <span class="ico">🛠️</span>
+        <div class="name">Admin</div>
+        <div class="desc">Bandwidth & users</div>
+      </div>
     </div>
     <div class="home-stats">
       <div class="stat-pill"><div class="val" id="statPoints">0</div><div class="lbl">Points</div></div>
@@ -830,6 +863,38 @@
       <button class="btn ghost" data-nav="home">← Home</button>
       <button class="btn grape" id="switchAcctBtn">👥 Switch Student</button>
       <button class="btn coral" id="logoutBtn2">↪ Log Out</button>
+    </div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section id="screen-admin" class="card hidden">
+    <h2>Admin Dashboard 🛠️</h2>
+    <p class="lead">Global usage and per-user bandwidth estimates.</p>
+
+    <h3>Global Totals</h3>
+    <div class="home-stats">
+      <div class="stat-pill"><div class="val" id="adminTotalUsers">0</div><div class="lbl">Users</div></div>
+      <div class="stat-pill"><div class="val" id="adminTotalQuizzes">0</div><div class="lbl">Quizzes</div></div>
+      <div class="stat-pill"><div class="val" id="adminTotalQuestions">0</div><div class="lbl">Answers</div></div>
+      <div class="stat-pill"><div class="val" id="adminBandwidth">0 MB</div><div class="lbl">Est. Bandwidth</div></div>
+    </div>
+    <p class="lead" id="adminCapNote" style="font-size:12px;margin-top:8px;">Free tier cap: 100 GB / month.</p>
+
+    <h3>Per-User Usage</h3>
+    <div class="admin-table-wrap">
+      <table class="admin-table" id="adminUserTable">
+        <thead>
+          <tr>
+            <th>#</th><th>User</th><th>Quizzes</th><th>Answers</th><th>Points</th><th>Est. BW</th>
+          </tr>
+        </thead>
+        <tbody id="adminUserRows"></tbody>
+      </table>
+    </div>
+
+    <div class="actions" style="margin-top:22px;">
+      <button class="btn ghost" data-nav="home">← Home</button>
+      <button class="btn sun" id="adminRefreshBtn">↻ Refresh</button>
     </div>
   </section>
 
@@ -1168,8 +1233,14 @@ function escapeHtml(s) {
 }
 
 /* ============================ Navigation ============================ */
-const SCREENS = ['login','home','profile','subject','grade','level','quiz','results','achievements','leaderboard'];
+const SCREENS = ['login','home','profile','subject','grade','level','quiz','results','achievements','leaderboard','admin'];
+const ADMINS = new Set(['michelleorte']); // usernames granted the admin dashboard
+function isAdmin() {
+  const s = currentStudent();
+  return !!(s && s.username && ADMINS.has(s.username.toLowerCase()));
+}
 function show(name) {
+  if (name === 'admin' && !isAdmin()) name = 'home';
   SCREENS.forEach(s => {
     const el = document.getElementById('screen-' + s);
     if (el) el.classList.toggle('hidden', s !== name);
@@ -1182,6 +1253,7 @@ function show(name) {
   if (name === 'level') renderLevels();
   if (name === 'achievements') renderAchievements();
   if (name === 'leaderboard') renderLeaderboard();
+  if (name === 'admin') renderAdmin();
 }
 document.addEventListener('click', e => {
   const nav = e.target.closest('[data-nav]');
@@ -1235,6 +1307,7 @@ function renderHome() {
   document.getElementById('statCorrect').textContent = s.stats.correctAnswers;
   document.getElementById('statBest').textContent = 'L' + (s.stats.highestLevel || 1);
   document.getElementById('achCount').textContent = s.achievements.length + ' of ' + ACHIEVEMENTS.length + ' earned';
+  document.getElementById('adminHubTile').classList.toggle('hidden', !isAdmin());
   renderWho();
 }
 
@@ -1815,6 +1888,77 @@ async function renderLeaderboard() {
     rest.appendChild(note);
   }
 }
+
+/* ============================ Admin dashboard ============================
+   Estimated bandwidth uses fixed cost buckets per action:
+    - Fresh page load  = ~180 KB (index.html + questions.js compressed + assets)
+    - Score sync POST  = ~0.6 KB (request + response)
+    - Leaderboard GET  = ~1.5 KB (grows with #players; average estimate)
+   Per user, we assume 1 page load per quiz session + 1 POST per quiz + a few
+   leaderboard views. It's a rough proxy, not a real network trace. */
+const BW_KB_PAGE_LOAD = 180;
+const BW_KB_QUIZ_POST = 0.6;
+const BW_KB_LB_FETCH  = 1.5;
+
+function estimateBandwidthKB(quizzes) {
+  const pageLoads = Math.max(1, quizzes);              // ~1 fresh page per quiz session
+  const posts     = quizzes;                            // one score sync per quiz
+  const lbViews   = Math.max(0, Math.ceil(quizzes / 2)); // rough: leaderboard checked ~half the time
+  return pageLoads * BW_KB_PAGE_LOAD + posts * BW_KB_QUIZ_POST + lbViews * BW_KB_LB_FETCH;
+}
+
+function formatKB(kb) {
+  if (kb < 1024) return kb.toFixed(1) + ' KB';
+  const mb = kb / 1024;
+  if (mb < 1024) return mb.toFixed(2) + ' MB';
+  return (mb / 1024).toFixed(2) + ' GB';
+}
+
+async function renderAdmin() {
+  if (!isAdmin()) { show('home'); return; }
+  const rowsEl = document.getElementById('adminUserRows');
+  rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Loading…</td></tr>';
+  try {
+    const r = await fetch('/api/leaderboard', { cache: 'no-store' });
+    const j = await r.json();
+    const players = j.players || [];
+
+    let totalQuizzes = 0, totalAnswers = 0;
+    players.forEach(p => { totalQuizzes += p.quizzesCompleted | 0; totalAnswers += p.correctAnswers | 0; });
+    const globalKB = players.reduce((sum, p) => sum + estimateBandwidthKB(p.quizzesCompleted | 0), 0);
+
+    document.getElementById('adminTotalUsers').textContent = players.length;
+    document.getElementById('adminTotalQuizzes').textContent = totalQuizzes;
+    document.getElementById('adminTotalQuestions').textContent = totalAnswers;
+    document.getElementById('adminBandwidth').textContent = formatKB(globalKB);
+    const pctOfCap = ((globalKB / 1024 / 1024) / 100 * 100).toFixed(4); // 100 GB cap
+    document.getElementById('adminCapNote').textContent =
+      'Free tier: 100 GB / month. Estimated global usage so far: ' + formatKB(globalKB) +
+      ' (~' + pctOfCap + '% of cap).';
+
+    rowsEl.innerHTML = '';
+    // Sort by bandwidth desc (proxied by quizzes)
+    const sorted = players.slice().sort((a, b) => (b.quizzesCompleted | 0) - (a.quizzesCompleted | 0));
+    sorted.forEach((p, i) => {
+      const bwKB = estimateBandwidthKB(p.quizzesCompleted | 0);
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>#' + (i + 1) + '</td>' +
+        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>@' + escapeHtml(p.username) + '</td>' +
+        '<td class="num">' + (p.quizzesCompleted | 0) + '</td>' +
+        '<td class="num">' + (p.correctAnswers | 0) + '</td>' +
+        '<td class="num">' + (p.totalPoints | 0) + '</td>' +
+        '<td class="num">' + formatKB(bwKB) + '</td>';
+      rowsEl.appendChild(tr);
+    });
+    if (sorted.length === 0) {
+      rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No users yet.</td></tr>';
+    }
+  } catch (err) {
+    rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--coral);padding:20px;">Failed to load: ' + escapeHtml(err.message || 'unknown error') + '</td></tr>';
+  }
+}
+document.getElementById('adminRefreshBtn').addEventListener('click', () => renderAdmin());
 
 /* ============================ Boot ============================ */
 (function boot() {

@@ -100,7 +100,7 @@ export default async function handler(req, res) {
       const raw = await redis.hgetall(KEY);
       const blockedList = await redis.smembers(BLOCK_KEY);
       const blocked = new Set((blockedList || []).map(u => String(u).toLowerCase()));
-      const HIDE = new Set(['testuser', 'test', 'demo']);
+      const HIDE = new Set(['testuser', 'test', 'demo', 'loginpingtest']);
       const out = [];
       if (raw) {
         for (const [uname, value] of Object.entries(raw)) {

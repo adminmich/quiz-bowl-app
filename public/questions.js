@@ -429,6 +429,173 @@ window.QUESTIONS = [
   { subject:'filipino', grade:4, level:8, type:'fib',   q:'Ang panghalip para sa sarili mo ay ____.', a:'ako', e:'Ako ang panghalip panao para sa sarili. Ikaw naman para sa kausap.' },
   { subject:'filipino', grade:4, level:8, type:'mc',    q:'Ilang bahagi ng katawan sa mukha ang nakikita?', choices:['mata, ilong, bibig','paa, kamay, ulo','tenga, buhok, leeg','lahat ng ito'], a:'mata, ilong, bibig', e:'Sa mukha nakikita ang mata (eyes), ilong (nose), bibig (mouth), at tenga (ears).' },
 
+  /* ============================ GRADES 1-4 EXPANSION ============================
+     One extra question per (subject, level) for science/english/filipino;
+     three per level for history, geography, araling panlipunan, and MAPEH,
+     bringing every subject to 3+ questions at every grade 1-4 level. */
+
+  /* ---- SCIENCE fillers ---- */
+  { subject:'science', grade:1, level:1, type:'mc',    q:'How many wings does a bird have?', choices:['1','2','3','4'], a:'2', e:'Birds have 2 wings that let them fly. Some birds like penguins have wings but cannot fly.' },
+  { subject:'science', grade:1, level:2, type:'guess', q:'The season when it is hottest.', a:'summer', e:'Summer is the warmest season. In the Philippines, the hot season is roughly March to May.' },
+  { subject:'science', grade:2, level:3, type:'fib',   q:'A cow says "____".', a:'moo', e:'Cows make a "moo" sound. Dogs bark, cats meow, cows moo.' },
+  { subject:'science', grade:2, level:4, type:'mc',    q:'What color is grass?', choices:['red','blue','green','yellow'], a:'green', e:'Healthy grass is green because it has chlorophyll, which absorbs sunlight for photosynthesis.' },
+  { subject:'science', grade:3, level:5, type:'guess', q:'The body part we use to smell.', a:'nose', e:'The nose senses smells through cells inside it. Also helps us breathe.' },
+  { subject:'science', grade:3, level:6, type:'mc',    q:'Which lights up the night sky?', choices:['sun','moon','tree','cloud'], a:'moon', e:'The Moon reflects the Sun\'s light and glows in the night sky. Stars also shine at night.' },
+  { subject:'science', grade:4, level:7, type:'fib',   q:'Fish breathe using ____.', a:'gills', e:'Fish use gills to take oxygen from water, just as we use lungs to breathe air.' },
+  { subject:'science', grade:4, level:8, type:'mc',    q:'What do plants breathe in?', choices:['oxygen','nitrogen','carbon dioxide','hydrogen'], a:'carbon dioxide', e:'Plants take in CO2 during photosynthesis and release oxygen. That is why plants are called Earth\'s lungs.' },
+
+  /* ---- ENGLISH fillers ---- */
+  { subject:'english', grade:1, level:1, type:'fib',   q:'The letter after A is ____.', a:'B', e:'The alphabet order: A, B, C, D... So after A comes B.' },
+  { subject:'english', grade:1, level:2, type:'mc',    q:'How many letters in the word "cat"?', choices:['2','3','4','5'], a:'3', e:'C-A-T has three letters.' },
+  { subject:'english', grade:2, level:3, type:'guess', q:'The animal that says "meow".', a:'cat', e:'Cats say "meow". Dogs say "woof". Cows say "moo".' },
+  { subject:'english', grade:2, level:4, type:'fib',   q:'The opposite of "big" is ____.', a:'small', e:'Antonyms are opposites: big/small, hot/cold, tall/short.' },
+  { subject:'english', grade:3, level:5, type:'mc',    q:'The plural of "book" is', choices:['book','books','bookes','bookies'], a:'books', e:'Most nouns just add -s to make the plural: book -> books.' },
+  { subject:'english', grade:3, level:6, type:'fib',   q:'The past tense of "play" is ____.', a:'played', e:'Regular verbs add -ed for past tense: play -> played, jump -> jumped.' },
+  { subject:'english', grade:4, level:7, type:'guess', q:'The punctuation that ends a question.', a:'question mark', e:'A question mark (?) ends every question. Statements end with a period (.). Excitement uses (!).' },
+  { subject:'english', grade:4, level:8, type:'mc',    q:'Which word is an adjective?', choices:['run','happy','table','loudly'], a:'happy', e:'Adjectives describe nouns. "Happy" describes how someone feels.' },
+
+  /* ---- FILIPINO fillers ---- */
+  { subject:'filipino', grade:1, level:1, type:'guess', q:'Ang salitang Filipino para sa "moon".', a:'buwan', e:'Ang buwan ay lumilitaw tuwing gabi. Nagbibigay ng liwanag sa dilim.' },
+  { subject:'filipino', grade:1, level:2, type:'fib',   q:'Ilang paa mayroon ang aso? ____.', a:'4', e:'Ang aso ay may 4 na paa, tulad ng ibang mga hayop na tulad ng pusa at kabayo.' },
+  { subject:'filipino', grade:2, level:3, type:'guess', q:'Ang lugar kung saan tayo natututo.', a:'paaralan', e:'Ang paaralan (school) ay pinupuntahan natin araw-araw para matuto.' },
+  { subject:'filipino', grade:2, level:4, type:'mc',    q:'Sino ang magulang na babae?', choices:['tatay','tita','nanay','lolo'], a:'nanay', e:'Nanay o ina ang tawag sa magulang na babae. Tatay o ama ang magulang na lalaki.' },
+  { subject:'filipino', grade:3, level:5, type:'guess', q:'Ang taong nagtuturo sa paaralan.', a:'guro', e:'Guro o titser ang tumuturo sa mga estudyante sa paaralan.' },
+  { subject:'filipino', grade:3, level:6, type:'fib',   q:'Ang salitang Filipino para sa "sun" ay ____.', a:'araw', e:'"Araw" ay ang salita para sa sun. Nagbibigay ng liwanag at init sa mundo.' },
+  { subject:'filipino', grade:4, level:7, type:'mc',    q:'Ang kabaligtaran ng "mabuti"?', choices:['masaya','masama','malaki','maganda'], a:'masama', e:'Mabuti (good) at masama (bad) ay magkasalungat na salita.' },
+  { subject:'filipino', grade:4, level:8, type:'guess', q:'Ang tawag sa mga salitang tumutukoy sa aksyon.', a:'pandiwa', e:'Ang pandiwa (verb) ay salitang nagpapahayag ng kilos: tumakbo, kumain, sumulat.' },
+
+  /* ---- HISTORY: Grade 1-4 ---- */
+  { subject:'history', grade:1, level:1, type:'mc',    q:'Who was the first President of the USA?', choices:['Lincoln','Jefferson','Washington','Adams'], a:'Washington', e:'George Washington was the very first President of the United States, from 1789 to 1797.' },
+  { subject:'history', grade:1, level:1, type:'fib',   q:'The USA celebrates Independence Day on July ____.', a:'4', e:'July 4, 1776 is when the Declaration of Independence was signed. It is celebrated every year with fireworks.' },
+  { subject:'history', grade:1, level:1, type:'guess', q:'The people who built the huge pyramids in Africa.', a:'Egyptians', e:'The ancient Egyptians built the pyramids as tombs for their kings, called pharaohs.' },
+
+  { subject:'history', grade:1, level:2, type:'mc',    q:'Which country\'s flag has stars and stripes?', choices:['UK','USA','France','China'], a:'USA', e:'The US flag has 50 stars (one per state) and 13 stripes (one per original colony).' },
+  { subject:'history', grade:1, level:2, type:'fib',   q:'Christopher Columbus first reached America in ____.', a:'1492', e:'In 1492 Columbus sailed with 3 ships across the Atlantic and reached islands in the Caribbean.' },
+  { subject:'history', grade:1, level:2, type:'guess', q:'The nickname of George Washington.', a:'Father of Our Country', e:'George Washington is called "Father of Our Country" for leading America\'s founding.' },
+
+  { subject:'history', grade:2, level:3, type:'mc',    q:'Which holiday celebrates the birth of Jesus?', choices:['Easter','Christmas','Thanksgiving','New Year'], a:'Christmas', e:'Christmas is celebrated on December 25 to remember the birth of Jesus.' },
+  { subject:'history', grade:2, level:3, type:'guess', q:'The ancient wonder in Egypt that looks like a triangle.', a:'pyramid', e:'The Great Pyramid of Giza was built about 4,500 years ago as a tomb.' },
+  { subject:'history', grade:2, level:3, type:'fib',   q:'The president on the $1 bill is ____.', a:'Washington', e:'George Washington\'s face appears on the US $1 bill.' },
+
+  { subject:'history', grade:2, level:4, type:'mc',    q:'Which US president led during the Civil War?', choices:['Washington','Jefferson','Lincoln','Roosevelt'], a:'Lincoln', e:'Abraham Lincoln was the 16th President; he led the Union during the Civil War (1861-1865).' },
+  { subject:'history', grade:2, level:4, type:'guess', q:'The people from long ago who lived in caves and hunted with spears.', a:'cavemen', e:'Prehistoric humans lived in caves before farms and cities were invented.' },
+  { subject:'history', grade:2, level:4, type:'fib',   q:'The Wright Brothers invented the first ____.', a:'airplane', e:'Orville and Wilbur Wright flew the first airplane on December 17, 1903.' },
+
+  { subject:'history', grade:3, level:5, type:'mc',    q:'The Great Wall was built in which country?', choices:['India','China','Japan','Egypt'], a:'China', e:'The Great Wall of China was built over many centuries to keep out invaders from the north.' },
+  { subject:'history', grade:3, level:5, type:'guess', q:'The country that gave the USA the Statue of Liberty.', a:'France', e:'France gifted the Statue of Liberty to the USA in 1886 as a symbol of friendship.' },
+  { subject:'history', grade:3, level:5, type:'fib',   q:'The Native Americans lived in America long before ____ arrived.', a:'Europeans', e:'Native American tribes lived across the Americas for thousands of years before European explorers.' },
+
+  { subject:'history', grade:3, level:6, type:'mc',    q:'Who led African-Americans in the fight for civil rights in the 1960s?', choices:['Washington','Lincoln','Martin Luther King Jr.','Franklin'], a:'Martin Luther King Jr.', e:'Dr. Martin Luther King Jr. led non-violent protests and gave the "I Have a Dream" speech in 1963.' },
+  { subject:'history', grade:3, level:6, type:'guess', q:'The country of the ancient Colosseum.', a:'Italy', e:'The Colosseum is in Rome, Italy. Gladiators fought there about 2,000 years ago.' },
+  { subject:'history', grade:3, level:6, type:'fib',   q:'Abraham Lincoln freed people who were held as ____.', a:'slaves', e:'Lincoln signed the Emancipation Proclamation in 1863, freeing enslaved people in Confederate states.' },
+
+  { subject:'history', grade:4, level:7, type:'mc',    q:'Who was the first person to walk on the Moon?', choices:['John Glenn','Neil Armstrong','Buzz Aldrin','Yuri Gagarin'], a:'Neil Armstrong', e:'Neil Armstrong stepped onto the Moon on July 20, 1969 and said, "That\'s one small step for man..."' },
+  { subject:'history', grade:4, level:7, type:'guess', q:'The war in the USA where the North fought the South.', a:'Civil War', e:'The American Civil War (1861-1865) was fought over slavery and the future of the Union.' },
+  { subject:'history', grade:4, level:7, type:'fib',   q:'The Founding Fathers wrote the Declaration of Independence in ____.', a:'1776', e:'The Declaration of Independence was adopted on July 4, 1776, declaring independence from Britain.' },
+
+  { subject:'history', grade:4, level:8, type:'mc',    q:'The 13 American colonies broke away from which country?', choices:['France','Britain','Spain','Portugal'], a:'Britain', e:'The 13 colonies were part of Great Britain until they declared independence in 1776.' },
+  { subject:'history', grade:4, level:8, type:'guess', q:'The event where colonists dumped tea into Boston Harbor to protest taxes.', a:'Boston Tea Party', e:'In 1773, colonists disguised as Native Americans dumped 342 chests of tea to protest British taxes.' },
+  { subject:'history', grade:4, level:8, type:'fib',   q:'The first African-American US president was Barack ____.', a:'Obama', e:'Barack Obama became the 44th US President on January 20, 2009.' },
+
+  /* ---- GEOGRAPHY: Grade 1-4 ---- */
+  { subject:'geography', grade:1, level:1, type:'mc',    q:'The largest ocean is', choices:['Atlantic','Pacific','Indian','Arctic'], a:'Pacific', e:'The Pacific Ocean is the biggest, covering about a third of the Earth\'s surface.' },
+  { subject:'geography', grade:1, level:1, type:'guess', q:'The frozen continent with penguins.', a:'Antarctica', e:'Antarctica is Earth\'s southernmost continent, covered in ice, home to penguins.' },
+  { subject:'geography', grade:1, level:1, type:'fib',   q:'There are ____ continents on Earth.', a:'7', e:'Africa, Antarctica, Asia, Australia, Europe, North America, and South America = 7 continents.' },
+
+  { subject:'geography', grade:1, level:2, type:'mc',    q:'The tallest mountain in the world is', choices:['K2','Mount Fuji','Everest','Kilimanjaro'], a:'Everest', e:'Mount Everest (8,849 m) sits on the Nepal-China border.' },
+  { subject:'geography', grade:1, level:2, type:'guess', q:'The largest hot desert.', a:'Sahara', e:'The Sahara covers most of North Africa and is roughly the size of the United States.' },
+  { subject:'geography', grade:1, level:2, type:'fib',   q:'Kangaroos live in the country of ____.', a:'Australia', e:'Australia is both a country and a continent, and kangaroos are native there.' },
+
+  { subject:'geography', grade:2, level:3, type:'mc',    q:'The country famous for pizza and pasta is', choices:['France','Spain','Italy','Greece'], a:'Italy', e:'Italy is where pizza and pasta come from. Also famous for the Leaning Tower of Pisa and Rome.' },
+  { subject:'geography', grade:2, level:3, type:'guess', q:'The direction the Sun rises.', a:'east', e:'The Sun rises in the east and sets in the west because Earth spins from west to east.' },
+  { subject:'geography', grade:2, level:3, type:'fib',   q:'Water covers about ____% of Earth.', a:'70', e:'About 71% of Earth\'s surface is water, mostly in oceans. So Earth looks blue from space.' },
+
+  { subject:'geography', grade:2, level:4, type:'mc',    q:'The Eiffel Tower is in which country?', choices:['USA','France','Spain','Germany'], a:'France', e:'The Eiffel Tower is in Paris, the capital of France. It was built in 1889.' },
+  { subject:'geography', grade:2, level:4, type:'guess', q:'The largest continent by land area.', a:'Asia', e:'Asia is the largest continent (about 30% of land) and has the most people (more than half the world).' },
+  { subject:'geography', grade:2, level:4, type:'fib',   q:'Earth spins around an imaginary line called the ____.', a:'axis', e:'Earth\'s axis runs from the North Pole to the South Pole. One spin takes about 24 hours.' },
+
+  { subject:'geography', grade:3, level:5, type:'mc',    q:'The country north of the USA is', choices:['Mexico','Canada','Cuba','Alaska'], a:'Canada', e:'Canada is the huge country to the north of the USA. Its capital is Ottawa.' },
+  { subject:'geography', grade:3, level:5, type:'guess', q:'The longest river in the world.', a:'Nile', e:'The Nile flows about 6,650 km through northeast Africa into the Mediterranean.' },
+  { subject:'geography', grade:3, level:5, type:'fib',   q:'The capital of France is ____.', a:'Paris', e:'Paris has been France\'s capital since about the 10th century.' },
+
+  { subject:'geography', grade:3, level:6, type:'mc',    q:'Which country is famous for the Great Wall?', choices:['Japan','India','China','Russia'], a:'China', e:'The Great Wall of China stretches thousands of kilometers across northern China.' },
+  { subject:'geography', grade:3, level:6, type:'guess', q:'The capital of the United States.', a:'Washington DC', e:'Washington, D.C. is the US capital. Different from Washington State on the west coast.' },
+  { subject:'geography', grade:3, level:6, type:'fib',   q:'The compass direction opposite of North is ____.', a:'south', e:'Compass has 4 main directions: North, South, East, West. North and South are opposites.' },
+
+  { subject:'geography', grade:4, level:7, type:'mc',    q:'The state where Hollywood is located.', choices:['New York','Texas','California','Florida'], a:'California', e:'Hollywood is in Los Angeles, California. Famous for movies and entertainment.' },
+  { subject:'geography', grade:4, level:7, type:'guess', q:'The country of Mount Fuji.', a:'Japan', e:'Mount Fuji (3,776 m) is Japan\'s tallest mountain and a sacred symbol.' },
+  { subject:'geography', grade:4, level:7, type:'fib',   q:'The 50 US states include Alaska and Hawaii, which are ____ from the mainland.', a:'separate', e:'Alaska is far northwest (north of Canada) and Hawaii is in the middle of the Pacific Ocean.' },
+
+  { subject:'geography', grade:4, level:8, type:'mc',    q:'The smallest country in the world is', choices:['Monaco','Vatican City','San Marino','Liechtenstein'], a:'Vatican City', e:'Vatican City (~0.44 sq km) is a walled enclave inside Rome, home to the Pope.' },
+  { subject:'geography', grade:4, level:8, type:'guess', q:'The northernmost US state.', a:'Alaska', e:'Alaska is the largest state and reaches the farthest north, into the Arctic Circle.' },
+  { subject:'geography', grade:4, level:8, type:'fib',   q:'The Rocky Mountains are in North ____.', a:'America', e:'The Rockies stretch from Canada down through the western US to New Mexico.' },
+
+  /* ---- ARALING PANLIPUNAN: Grade 1-4 (Tagalog) ---- */
+  { subject:'araling', grade:1, level:1, type:'mc',    q:'Sino ang pinuno ng Pilipinas?', choices:['Alkalde','Senador','Pangulo','Guro'], a:'Pangulo', e:'Ang Pangulo (President) ay ang pinakamataas na pinuno ng bansa.' },
+  { subject:'araling', grade:1, level:1, type:'guess', q:'Ang pambansang bulaklak ng Pilipinas.', a:'sampaguita', e:'Ang sampaguita ay puting bulaklak na mabango, itinalagang pambansang bulaklak noong 1934.' },
+  { subject:'araling', grade:1, level:1, type:'fib',   q:'Ang kabisera ng Pilipinas ay ____.', a:'Manila', e:'Ang Maynila (Manila) ay ang opisyal na kabisera ng Pilipinas.' },
+
+  { subject:'araling', grade:1, level:2, type:'mc',    q:'Ilang kulay ang watawat ng Pilipinas?', choices:['2','3','4','5'], a:'4', e:'Ang watawat ay may apat na kulay: asul, pula, puti, at ginto/dilaw.' },
+  { subject:'araling', grade:1, level:2, type:'guess', q:'Ang tinatawag na tirahan ng pamilya.', a:'tahanan', e:'Ang tahanan (home) ay ang lugar na tinitirhan ng pamilya.' },
+  { subject:'araling', grade:1, level:2, type:'fib',   q:'Ang pambansang bayani ng Pilipinas ay si Jose ____.', a:'Rizal', e:'Si Dr. Jose Rizal ang kinikilalang pambansang bayani dahil sa kanyang mga akda para sa kalayaan.' },
+
+  { subject:'araling', grade:2, level:3, type:'mc',    q:'Ang pambansang hayop ng Pilipinas ay', choices:['aso','kalabaw','manok','baka'], a:'kalabaw', e:'Ang kalabaw (carabao) ay pambansang hayop, tumutulong sa mga magsasaka.' },
+  { subject:'araling', grade:2, level:3, type:'guess', q:'Ang tinatawag na maliit na barangay noong araw.', a:'balangay', e:'Ang balangay (bangka na malaki) ay ginagamit ng mga sinaunang Pilipino. Naging "barangay" ngayon.' },
+  { subject:'araling', grade:2, level:3, type:'fib',   q:'Ang tinaguriang "Ama ng Rebolusyong Pilipino" ay si Andres ____.', a:'Bonifacio', e:'Si Andres Bonifacio ang nagtatag ng Katipunan noong 1892.' },
+
+  { subject:'araling', grade:2, level:4, type:'mc',    q:'Kailan ang Araw ng Kalayaan ng Pilipinas?', choices:['Hunyo 12','Hulyo 4','Agosto 21','Nobyembre 30'], a:'Hunyo 12', e:'Noong Hunyo 12, 1898, ipinahayag ni Emilio Aguinaldo ang kalayaan mula sa Espanya sa Kawit, Cavite.' },
+  { subject:'araling', grade:2, level:4, type:'guess', q:'Ang salitang Filipino para sa "government".', a:'pamahalaan', e:'Ang pamahalaan ang namamahala sa bansa, kabilang ang Pangulo, Kongreso, at Korte Suprema.' },
+  { subject:'araling', grade:2, level:4, type:'fib',   q:'Ang pambansang wika ng Pilipinas ay ____.', a:'Filipino', e:'Ang Filipino, na batay sa Tagalog, ang pambansang wika ayon sa 1987 Konstitusyon.' },
+
+  { subject:'araling', grade:3, level:5, type:'mc',    q:'Sino ang pumatay kay Ferdinand Magellan?', choices:['Rizal','Bonifacio','Lapu-Lapu','Aguinaldo'], a:'Lapu-Lapu', e:'Si Lapu-Lapu, datu ng Mactan, ang tumalo at pumatay kay Magellan noong Abril 27, 1521.' },
+  { subject:'araling', grade:3, level:5, type:'guess', q:'Ang pinakamalaking isla ng Pilipinas.', a:'Luzon', e:'Ang Luzon ang pinakamalaki sa 3 pangunahing pangkat ng isla (Luzon, Visayas, Mindanao).' },
+  { subject:'araling', grade:3, level:5, type:'fib',   q:'Ang bansang unang nakatuklas sa Pilipinas ay ang ____.', a:'Espanya', e:'Ang Espanya ang unang naghari sa Pilipinas mula noong 1565 hanggang 1898.' },
+
+  { subject:'araling', grade:3, level:6, type:'mc',    q:'Ilang pangunahing pangkat ng isla mayroon ang Pilipinas?', choices:['2','3','7','17'], a:'3', e:'Ang Pilipinas ay may 3 pangunahing pangkat ng isla: Luzon, Visayas, at Mindanao.' },
+  { subject:'araling', grade:3, level:6, type:'guess', q:'Ang unang pangulo ng Pilipinas.', a:'Aguinaldo', e:'Si Emilio Aguinaldo ang unang pangulo ng Pilipinas sa ilalim ng Republikang Malolos noong 1899.' },
+  { subject:'araling', grade:3, level:6, type:'fib',   q:'Nakamit ng Pilipinas ang tunay na kalayaan mula sa Amerika noong ____.', a:'1946', e:'Noong Hulyo 4, 1946, opisyal na kinilala ng Amerika ang kalayaan ng Pilipinas.' },
+
+  { subject:'araling', grade:4, level:7, type:'mc',    q:'Ilang bituin mayroon sa watawat ng Pilipinas?', choices:['3','5','7','8'], a:'3', e:'3 bituin sa watawat, na kumakatawan sa Luzon, Visayas, at Mindanao.' },
+  { subject:'araling', grade:4, level:7, type:'guess', q:'Ang unang misa sa Pilipinas ay ginanap sa isla ng ____.', a:'Limasawa', e:'Ang unang misa sa Pilipinas ay ginanap sa Limasawa, Southern Leyte noong Marso 31, 1521.' },
+  { subject:'araling', grade:4, level:7, type:'fib',   q:'Ilang sinag ang araw sa watawat? ____.', a:'8', e:'8 sinag, na kumakatawan sa 8 unang lalawigang naghimagsik laban sa Espanya noong 1896.' },
+
+  { subject:'araling', grade:4, level:8, type:'mc',    q:'Ilang rehiyon mayroon ang Pilipinas?', choices:['12','15','17','20'], a:'17', e:'Ang Pilipinas ay may 17 rehiyon, kabilang ang NCR, CAR, at BARMM.' },
+  { subject:'araling', grade:4, level:8, type:'guess', q:'Ang pinakamataas na bundok sa Pilipinas.', a:'Apo', e:'Ang Mount Apo (2,954 m) sa Davao ang pinakamataas na bundok ng bansa.' },
+  { subject:'araling', grade:4, level:8, type:'fib',   q:'Naghari ang Espanya sa Pilipinas ng ____ na taon.', a:'333', e:'Ang Pilipinas ay sinakop ng Espanya mula 1565 hanggang 1898 — humigit-kumulang 333 taon.' },
+
+  /* ---- MAPEH: Grade 1-4 ---- */
+  { subject:'mapeh', grade:1, level:1, type:'mc',    q:'How many legs does a person have?', choices:['1','2','3','4'], a:'2', e:'People are bipedal — we walk on 2 legs. Most animals have 4 legs.' },
+  { subject:'mapeh', grade:1, level:1, type:'guess', q:'The color of blood.', a:'red', e:'Blood is red because of the iron in hemoglobin, which carries oxygen.' },
+  { subject:'mapeh', grade:1, level:1, type:'fib',   q:'Yellow and blue mixed together make ____.', a:'green', e:'Mixing primary colors yellow + blue creates the secondary color green.' },
+
+  { subject:'mapeh', grade:1, level:2, type:'mc',    q:'The Filipino folk song "Bahay Kubo" is about a', choices:['ship','tree','hut','song'], a:'hut', e:'"Bahay Kubo" is a small hut. The song lists many vegetables that grow around it.' },
+  { subject:'mapeh', grade:1, level:2, type:'guess', q:'The sport with a hoop and orange ball.', a:'basketball', e:'Basketball is played on a court where teams shoot the ball through hoops. Very popular in the Philippines.' },
+  { subject:'mapeh', grade:1, level:2, type:'fib',   q:'You should brush your teeth ____ times a day.', a:'2', e:'Dentists recommend brushing twice a day (morning and night) for 2 minutes each time.' },
+
+  { subject:'mapeh', grade:2, level:3, type:'mc',    q:'Which is a Filipino folk dance with bamboo poles?', choices:['Tinikling','Cha-cha','Salsa','Ballet'], a:'Tinikling', e:'Tinikling is our national folk dance. Dancers hop between clapping bamboo poles.' },
+  { subject:'mapeh', grade:2, level:3, type:'guess', q:'The three primary colors: red, yellow, and ____.', a:'blue', e:'Red, yellow, and blue are primary colors. Mixing them makes every other color.' },
+  { subject:'mapeh', grade:2, level:3, type:'fib',   q:'Foods like rice and bread give us ____.', a:'energy', e:'Carbs from rice and bread are "Go" foods that give the body energy for playing and learning.' },
+
+  { subject:'mapeh', grade:2, level:4, type:'mc',    q:'Which meal starts the day?', choices:['lunch','breakfast','dinner','snack'], a:'breakfast', e:'Breakfast is the first meal, giving energy after sleep. Skipping it can make you feel tired.' },
+  { subject:'mapeh', grade:2, level:4, type:'guess', q:'A sport where players kick a ball into a goal.', a:'soccer', e:'Soccer (also called football) is played with feet; the goalkeeper is the only one who can use hands.' },
+  { subject:'mapeh', grade:2, level:4, type:'fib',   q:'The color you get from mixing red and yellow is ____.', a:'orange', e:'Red + yellow = orange. It is a secondary color, like the fruit or the sunset.' },
+
+  { subject:'mapeh', grade:3, level:5, type:'mc',    q:'The Filipino martial art with sticks is called', choices:['Karate','Arnis','Judo','Taekwondo'], a:'Arnis', e:'Arnis (also known as Eskrima or Kali) is our national martial art, using rattan sticks.' },
+  { subject:'mapeh', grade:3, level:5, type:'guess', q:'Which color is called cool: blue or red?', a:'blue', e:'Cool colors (blue, green) suggest cold and calm. Warm colors (red, orange, yellow) suggest heat.' },
+  { subject:'mapeh', grade:3, level:5, type:'fib',   q:'A note that is round with a stem is a ____ note.', a:'quarter', e:'A quarter note has a filled round head with one stem; held for one beat in 4/4 time.' },
+
+  { subject:'mapeh', grade:3, level:6, type:'mc',    q:'How many players from a basketball team are on the court?', choices:['3','5','6','11'], a:'5', e:'Basketball plays 5 vs 5. Positions include point guard, shooting guard, forwards, and center.' },
+  { subject:'mapeh', grade:3, level:6, type:'guess', q:'The vitamin our skin makes when we spend time in sunlight.', a:'D', e:'Vitamin D is made when UVB rays hit the skin. Helps our bodies absorb calcium for strong bones.' },
+  { subject:'mapeh', grade:3, level:6, type:'fib',   q:'"Bayan Ko" is a Filipino patriotic ____.', a:'song', e:'"Bayan Ko" (My Country) is a beloved Filipino patriotic song about love for the homeland.' },
+
+  { subject:'mapeh', grade:4, level:7, type:'mc',    q:'The largest organ of the human body is', choices:['heart','liver','skin','brain'], a:'skin', e:'The skin covers about 2 sq m in an adult. It protects us and helps regulate temperature.' },
+  { subject:'mapeh', grade:4, level:7, type:'guess', q:'A Filipino folk dance that imitates the movements of a duck.', a:'Itik-Itik', e:'Itik-Itik copies the way ducks walk and shake water off. From Surigao.' },
+  { subject:'mapeh', grade:4, level:7, type:'fib',   q:'A team sport with 6 players who spike the ball over a net is ____.', a:'volleyball', e:'Volleyball has 6 players per side: 3 in the front row (near the net), 3 in the back row.' },
+
+  { subject:'mapeh', grade:4, level:8, type:'mc',    q:'The Filipino boxing champion with world titles in 8 weight classes is', choices:['Nonito Donaire','Manny Pacquiao','Efren Reyes','Hidilyn Diaz'], a:'Manny Pacquiao', e:'Manny Pacquiao is the only boxer to win world titles in 8 different weight divisions.' },
+  { subject:'mapeh', grade:4, level:8, type:'guess', q:'The Filipina athlete who won the first Olympic gold for the Philippines.', a:'Hidilyn Diaz', e:'Hidilyn Diaz won weightlifting gold at Tokyo 2020 (held in 2021), the first Filipino Olympic gold.' },
+  { subject:'mapeh', grade:4, level:8, type:'fib',   q:'Three primary colors of paint: red, yellow, and ____.', a:'blue', e:'In pigment mixing (paint), primary colors are red, yellow, and blue. In light (RGB), they are red, green, blue.' },
+
   /* ============================ MATH ============================ */
   /* Grade 5 - L1..L3 */
 

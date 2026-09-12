@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ffd93d" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Quiz Bowl" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icon-192.svg" />
 <title>Student Quiz Bowl! Fun learning for kids</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%89%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="/icon-192.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -86,9 +94,17 @@
   }
   .brand .who-chip button {
     background: none; border: none; cursor: pointer; color: var(--muted);
-    font-size: 16px; font-family: inherit; padding: 0 4px;
+    font-size: 16px; font-family: inherit; padding: 4px 8px;
+    border-radius: 999px;
+    min-width: 32px; min-height: 32px;
   }
-  .brand .who-chip button:hover { color: var(--coral); }
+  .brand .who-chip button:hover { color: var(--coral); background: rgba(0,0,0,0.04); }
+  .brand .who-chip .who-clickable {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink); font-weight: 600; font-size: 14px;
+    padding: 2px 6px;
+  }
+  .brand .who-chip .who-clickable:hover { background: rgba(0,0,0,0.04); color: var(--ink); }
 
   .card {
     background: var(--card);
@@ -175,6 +191,39 @@
   .hub-tile.trophy { border-color: var(--grape); background: linear-gradient(135deg, #f5e9ff, #ede9fe); }
   .hub-tile.chart { border-color: var(--mint); background: linear-gradient(135deg, #e0f7e1, #dcfce7); }
   .hub-tile.switch { border-color: var(--sky); background: linear-gradient(135deg, #e0f2fe, #dbeafe); }
+  .hub-tile.profile { border-color: var(--coral); background: linear-gradient(135deg, #ffe4e6, #fef3c7); }
+  .hub-tile.profile:hover { border-color: #ef4444; }
+
+  /* Profile screen */
+  .profile-hero {
+    text-align: center; padding: 12px 0 18px;
+    border-bottom: 3px dashed #f1f5f9;
+    margin-bottom: 18px;
+  }
+  .profile-avatar {
+    font-size: 78px; display:inline-block;
+    animation: bob 3s ease-in-out infinite;
+    background: linear-gradient(135deg, #fef3c7, #ffe4e6);
+    border-radius: 50%;
+    width: 130px; height: 130px;
+    line-height: 130px;
+    box-shadow: var(--shadow);
+    border: 4px solid white;
+  }
+  .profile-uname {
+    font-size: 28px; font-weight: 700; margin-top: 12px;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .profile-meta {
+    display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .profile-meta span {
+    background: #f1f5f9; color: var(--ink-2);
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+  }
 
   .home-stats {
     display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;
@@ -453,10 +502,12 @@
     </div>
     <div id="whoBar" class="hidden">
       <div class="who-chip">
-        <span id="whoAvatar">🧒</span>
-        <span id="whoName">Player</span>
+        <button class="who-clickable" id="profileBtn" data-nav="profile" title="View profile">
+          <span id="whoAvatar">🧒</span>
+          <span id="whoName">@player</span>
+        </button>
         <span class="pts" id="whoPoints">0 pts</span>
-        <button id="switchBtn" title="Switch student">🔄</button>
+        <button id="logoutBtn" title="Log out" aria-label="Log out">↪</button>
       </div>
     </div>
   </div>
@@ -514,10 +565,10 @@
         <div class="name">Leaderboard</div>
         <div class="desc">Top scores</div>
       </div>
-      <div class="hub-tile switch" data-nav="login">
-        <span class="ico">👥</span>
-        <div class="name">New Student</div>
-        <div class="desc">Add or switch</div>
+      <div class="hub-tile profile" data-nav="profile">
+        <span class="ico">👤</span>
+        <div class="name">My Profile</div>
+        <div class="desc">Stats and settings</div>
       </div>
     </div>
     <div class="home-stats">
@@ -525,6 +576,37 @@
       <div class="stat-pill"><div class="val" id="statQuizzes">0</div><div class="lbl">Quizzes</div></div>
       <div class="stat-pill"><div class="val" id="statCorrect">0</div><div class="lbl">Correct</div></div>
       <div class="stat-pill"><div class="val" id="statBest">L1</div><div class="lbl">Highest Level</div></div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section id="screen-profile" class="card hidden">
+    <div class="profile-hero">
+      <div class="profile-avatar" id="profileAvatar">🧒</div>
+      <div class="profile-uname" id="profileUsername">@player</div>
+      <div class="profile-meta">
+        <span id="profileGradeChip">Grade 5</span>
+        <span id="profileAgeChip">Age 10</span>
+        <span id="profileJoinedChip">Joined today</span>
+      </div>
+    </div>
+
+    <h3>My Stats</h3>
+    <div class="home-stats">
+      <div class="stat-pill"><div class="val" id="pfPoints">0</div><div class="lbl">Total Points</div></div>
+      <div class="stat-pill"><div class="val" id="pfQuizzes">0</div><div class="lbl">Quizzes Done</div></div>
+      <div class="stat-pill"><div class="val" id="pfCorrect">0</div><div class="lbl">Correct</div></div>
+      <div class="stat-pill"><div class="val" id="pfHighest">L1</div><div class="lbl">Highest Level</div></div>
+      <div class="stat-pill"><div class="val" id="pfAccuracy">0%</div><div class="lbl">Accuracy</div></div>
+      <div class="stat-pill"><div class="val" id="pfPerfect">0</div><div class="lbl">Perfect Runs</div></div>
+      <div class="stat-pill"><div class="val" id="pfBest">0</div><div class="lbl">Best Score</div></div>
+      <div class="stat-pill"><div class="val" id="pfTrophies">0/0</div><div class="lbl">Trophies</div></div>
+    </div>
+
+    <div class="actions" style="margin-top:22px;">
+      <button class="btn ghost" data-nav="home">← Home</button>
+      <button class="btn grape" id="switchAcctBtn">👥 Switch Student</button>
+      <button class="btn coral" id="logoutBtn2">↪ Log Out</button>
     </div>
   </section>
 
@@ -723,9 +805,23 @@ function saveCurrentStudent(student) {
 function makeStudentId(name, grade) {
   return (name.trim().toLowerCase().replace(/\s+/g, '-') + '-g' + grade).replace(/[^a-z0-9\-]/g, '');
 }
+/* Generate a unique username from a name. If taken, append a number. */
+function generateUsername(name) {
+  const base = String(name || 'student').trim().toLowerCase()
+    .replace(/[^a-z0-9]+/g, '')
+    .slice(0, 12) || 'student';
+  const taken = new Set(Object.values(loadStudents()).map(s => (s.username || '').toLowerCase()));
+  if (!taken.has(base)) return base;
+  for (let i = 2; i < 1000; i++) {
+    const cand = base + i;
+    if (!taken.has(cand)) return cand;
+  }
+  return base + Date.now();
+}
 function newStudent(name, age, grade) {
   return {
     id: makeStudentId(name, grade),
+    username: generateUsername(name),
     name, age, grade,
     avatar: pickAvatar(name),
     joinedAt: new Date().toISOString(),
@@ -739,6 +835,14 @@ function newStudent(name, age, grade) {
     seenQuestions: [],
     lastPlayed: null,
   };
+}
+/* Older student records may not have a username yet — assign one on first read. */
+function ensureUsername(student) {
+  if (student && !student.username) {
+    student.username = generateUsername(student.name || 'student');
+    saveCurrentStudent(student);
+  }
+  return student;
 }
 /* Stable per-question key so we can track which questions a student has seen. */
 function questionKey(q) {
@@ -808,7 +912,7 @@ function escapeHtml(s) {
 }
 
 /* ============================ Navigation ============================ */
-const SCREENS = ['login','home','subject','grade','level','quiz','results','achievements','leaderboard'];
+const SCREENS = ['login','home','profile','subject','grade','level','quiz','results','achievements','leaderboard'];
 function show(name) {
   SCREENS.forEach(s => {
     const el = document.getElementById('screen-' + s);
@@ -816,6 +920,7 @@ function show(name) {
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'home') renderHome();
+  if (name === 'profile') renderProfile();
   if (name === 'subject') renderSubjects();
   if (name === 'grade') renderGrades();
   if (name === 'level') renderLevels();
@@ -829,13 +934,39 @@ document.addEventListener('click', e => {
 
 /* ============================ Render: who bar ============================ */
 function renderWho() {
-  const s = currentStudent();
+  let s = currentStudent();
   const bar = document.getElementById('whoBar');
   if (!s) { bar.classList.add('hidden'); return; }
+  s = ensureUsername(s);
   bar.classList.remove('hidden');
   document.getElementById('whoAvatar').textContent = s.avatar;
-  document.getElementById('whoName').textContent = s.name;
+  document.getElementById('whoName').textContent = '@' + s.username;
   document.getElementById('whoPoints').textContent = s.stats.totalPoints + ' pts';
+}
+
+/* ============================ Render: profile ============================ */
+function renderProfile() {
+  let s = currentStudent(); if (!s) { show('login'); return; }
+  s = ensureUsername(s);
+  document.getElementById('profileAvatar').textContent = s.avatar;
+  document.getElementById('profileUsername').textContent = '@' + s.username;
+  document.getElementById('profileGradeChip').textContent = 'Grade ' + s.grade;
+  document.getElementById('profileAgeChip').textContent = 'Age ' + s.age;
+  const joined = new Date(s.joinedAt);
+  const days = Math.floor((Date.now() - joined.getTime()) / 86400000);
+  document.getElementById('profileJoinedChip').textContent =
+    days === 0 ? 'Joined today' : days === 1 ? 'Joined yesterday' : 'Joined ' + days + ' days ago';
+
+  const st = s.stats;
+  document.getElementById('pfPoints').textContent = st.totalPoints;
+  document.getElementById('pfQuizzes').textContent = st.quizzesCompleted;
+  document.getElementById('pfCorrect').textContent = st.correctAnswers;
+  document.getElementById('pfHighest').textContent = 'L' + st.highestLevel;
+  const acc = st.totalQuestions ? Math.round(100 * st.correctAnswers / st.totalQuestions) : 0;
+  document.getElementById('pfAccuracy').textContent = acc + '%';
+  document.getElementById('pfPerfect').textContent = st.perfectRuns;
+  document.getElementById('pfBest').textContent = st.bestScore;
+  document.getElementById('pfTrophies').textContent = s.achievements.length + '/' + ACHIEVEMENTS.length;
 }
 
 /* ============================ Render: home ============================ */
@@ -1280,8 +1411,15 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   show('home');
 });
 
-document.getElementById('switchBtn').addEventListener('click', () => {
-  if (!confirm('Switch to a different student? Your progress stays saved.')) return;
+function doLogout(silent) {
+  if (!silent && !confirm('Log out? Your progress stays saved on this device.')) return;
+  setCurrent(null);
+  renderWho();
+  show('login');
+}
+document.getElementById('logoutBtn').addEventListener('click', () => doLogout(false));
+document.getElementById('logoutBtn2').addEventListener('click', () => doLogout(false));
+document.getElementById('switchAcctBtn').addEventListener('click', () => {
   setCurrent(null);
   renderWho();
   show('login');
@@ -1348,6 +1486,13 @@ function renderLeaderboard() {
   if (currentStudent()) { renderWho(); show('home'); }
   else { show('login'); }
   document.addEventListener('click', () => Sound.unlock(), { once: true });
+
+  /* Register the service worker for offline / installable PWA behavior. */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
 })();
 </script>
 </body>

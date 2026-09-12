@@ -221,6 +221,46 @@
   .admin-table td:nth-child(2) { font-weight: 700; }
   .admin-table td .avatar { margin-right: 6px; font-size: 18px; }
   .admin-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .admin-table td.admin-actions { text-align: right; white-space: nowrap; }
+
+  .admin-btn {
+    background: white; border: 2px solid #e2e8f0; color: var(--ink-2);
+    padding: 5px 10px; margin-left: 4px; border-radius: 8px;
+    cursor: pointer; font-size: 12px; font-weight: 600; font-family: inherit;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .admin-btn:hover { border-color: var(--sky); color: var(--sky); }
+  .admin-btn.view:hover { border-color: var(--grape); color: var(--grape); }
+  .admin-btn.block { border-color: #fbbf24; color: #92400e; background: #fef9c3; }
+  .admin-btn.block:hover { background: #fbbf24; color: white; border-color: #d97706; }
+  .admin-btn.unblock { border-color: var(--mint); color: #065f46; background: #dcfce7; }
+  .admin-btn.unblock:hover { background: var(--mint); color: white; }
+  .admin-btn.remove { border-color: var(--coral); color: #991b1b; background: #fee2e2; }
+  .admin-btn.remove:hover { background: var(--coral); color: white; border-color: #ef4444; }
+
+  .admin-tag {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 999px; margin-left: 6px;
+    background: #ef4444; color: white; letter-spacing: 0.5px;
+  }
+
+  .admin-detail-row td { background: #f8fafc; padding: 0 !important; }
+  .admin-detail-row.hidden { display: none; }
+  .admin-detail { padding: 14px 16px; border-bottom: 3px solid #e2e8f0; }
+  .admin-detail-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px 16px;
+  }
+  .admin-detail-grid > div { display: flex; flex-direction: column; }
+  .admin-detail-grid .k, .admin-detail-subjects .k {
+    font-size: 10px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 700;
+  }
+  .admin-detail-grid .v {
+    font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 2px;
+  }
+  .admin-detail-subjects { margin-top: 12px; }
+  .admin-detail-subjects .v { font-size: 13px; color: var(--ink-2); margin-top: 4px; display: block; }
 
   /* Profile screen */
   .profile-hero {
@@ -902,7 +942,7 @@
       <table class="admin-table" id="adminUserTable">
         <thead>
           <tr>
-            <th>#</th><th>User</th><th>Quizzes</th><th>Answers</th><th>Points</th><th>Est. BW</th>
+            <th>#</th><th>User</th><th>Quizzes</th><th>Answers</th><th>Points</th><th>Est. BW</th><th>Actions</th>
           </tr>
         </thead>
         <tbody id="adminUserRows"></tbody>
@@ -1822,6 +1862,7 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
     saveStudents(all);
   }
   setCurrent(existing.id);
+  ADMIN_KEY_CACHED = password; // used to authorize admin API calls this session
   Sound.unlock();
   Sound.start();
   document.getElementById('inAdminUser').value = '';
@@ -1839,6 +1880,7 @@ document.getElementById('inAdminPass').addEventListener('keydown', e => {
 function doLogout(silent) {
   if (!silent && !confirm('Log out? Your progress stays saved on this device.')) return;
   setCurrent(null);
+  ADMIN_KEY_CACHED = null; // drop admin key on logout
   renderWho();
   show('login');
 }
@@ -1884,11 +1926,40 @@ async function syncMyScoreToGlobal(student) {
         totalPoints: student.stats.totalPoints | 0,
         quizzesCompleted: student.stats.quizzesCompleted | 0,
         correctAnswers: student.stats.correctAnswers | 0,
+        totalQuestions: student.stats.totalQuestions | 0,
+        perfectRuns: student.stats.perfectRuns | 0,
+        bestScore: student.stats.bestScore | 0,
+        fastestAnswerMs: student.stats.fastestAnswerMs,
+        subjectsPlayed: student.stats.subjectsPlayed || {},
+        joinedAt: student.joinedAt,
         highestLevel: student.stats.highestLevel | 0,
         trophies: (student.achievements || []).length,
       }),
     });
   } catch (_) { /* offline: try again next quiz */ }
+}
+
+/* Cached admin credentials for server-side gated actions. Populated on
+   admin login and forgotten on logout — never persisted to storage. */
+let ADMIN_KEY_CACHED = null;
+async function adminApi(action, username) {
+  if (!ADMIN_KEY_CACHED) throw new Error('Admin key not set for this session');
+  const r = await fetch('/api/leaderboard', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Admin-Key': ADMIN_KEY_CACHED },
+    body: JSON.stringify({ action, username }),
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+async function fetchAdminPlayers() {
+  if (!ADMIN_KEY_CACHED) throw new Error('Admin key not set');
+  const r = await fetch('/api/leaderboard?admin=1', {
+    cache: 'no-store',
+    headers: { 'X-Admin-Key': ADMIN_KEY_CACHED },
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
 }
 
 function localLeaderboardEntries() {
@@ -2001,13 +2072,17 @@ function formatKB(kb) {
   return (mb / 1024).toFixed(2) + ' GB';
 }
 
+function fmtDate(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toISOString().slice(0, 16).replace('T', ' '); } catch (_) { return '—'; }
+}
+
 async function renderAdmin() {
   if (!isAdmin()) { show('home'); return; }
   const rowsEl = document.getElementById('adminUserRows');
-  rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">Loading…</td></tr>';
+  rowsEl.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">Loading…</td></tr>';
   try {
-    const r = await fetch('/api/leaderboard', { cache: 'no-store' });
-    const j = await r.json();
+    const j = await fetchAdminPlayers();
     const players = j.players || [];
 
     let totalQuizzes = 0, totalAnswers = 0;
@@ -2018,34 +2093,105 @@ async function renderAdmin() {
     document.getElementById('adminTotalQuizzes').textContent = totalQuizzes;
     document.getElementById('adminTotalQuestions').textContent = totalAnswers;
     document.getElementById('adminBandwidth').textContent = formatKB(globalKB);
-    const pctOfCap = ((globalKB / 1024 / 1024) / 100 * 100).toFixed(4); // 100 GB cap
+    const pctOfCap = ((globalKB / 1024 / 1024) / 100 * 100).toFixed(4);
     document.getElementById('adminCapNote').textContent =
       'Free tier: 100 GB / month. Estimated global usage so far: ' + formatKB(globalKB) +
       ' (~' + pctOfCap + '% of cap).';
 
     rowsEl.innerHTML = '';
-    // Sort by bandwidth desc (proxied by quizzes)
-    const sorted = players.slice().sort((a, b) => (b.quizzesCompleted | 0) - (a.quizzesCompleted | 0));
+    const sorted = players.slice().sort((a, b) => (b.totalPoints | 0) - (a.totalPoints | 0));
     sorted.forEach((p, i) => {
       const bwKB = estimateBandwidthKB(p.quizzesCompleted | 0);
       const tr = document.createElement('tr');
+      tr.dataset.uname = p.username;
+      const blockedTag = p.blocked ? ' <span class="admin-tag blocked">BLOCKED</span>' : '';
       tr.innerHTML =
         '<td>#' + (i + 1) + '</td>' +
-        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>@' + escapeHtml(p.username) + '</td>' +
+        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>@' + escapeHtml(p.username) + blockedTag + '</td>' +
         '<td class="num">' + (p.quizzesCompleted | 0) + '</td>' +
         '<td class="num">' + (p.correctAnswers | 0) + '</td>' +
         '<td class="num">' + (p.totalPoints | 0) + '</td>' +
-        '<td class="num">' + formatKB(bwKB) + '</td>';
+        '<td class="num">' + formatKB(bwKB) + '</td>' +
+        '<td class="admin-actions">' +
+          '<button class="admin-btn view" data-act="view">👁</button>' +
+          (p.blocked
+            ? '<button class="admin-btn unblock" data-act="unblock">Unblock</button>'
+            : '<button class="admin-btn block" data-act="block">Block</button>'
+          ) +
+          '<button class="admin-btn remove" data-act="remove">Remove</button>' +
+        '</td>';
+      /* Details row (hidden until 👁 clicked) */
+      const dr = document.createElement('tr');
+      dr.className = 'admin-detail-row hidden';
+      dr.dataset.detailFor = p.username;
+      const subj = p.subjectsPlayed || {};
+      const subjList = Object.keys(subj).length
+        ? Object.entries(subj).map(([s, c]) => escapeHtml(s) + ': <b>' + (c | 0) + '</b>').join(' • ')
+        : '—';
+      const accuracy = p.totalQuestions ? Math.round(100 * (p.correctAnswers | 0) / p.totalQuestions) + '%' : '—';
+      dr.innerHTML =
+        '<td colspan="7">' +
+          '<div class="admin-detail">' +
+            '<div class="admin-detail-grid">' +
+              '<div><span class="k">Name</span><span class="v">' + escapeHtml(p.name || '—') + '</span></div>' +
+              '<div><span class="k">Grade</span><span class="v">' + (p.grade || '—') + '</span></div>' +
+              '<div><span class="k">Highest Level</span><span class="v">L' + (p.highestLevel || 1) + '</span></div>' +
+              '<div><span class="k">Trophies</span><span class="v">' + (p.trophies || 0) + ' 🏆</span></div>' +
+              '<div><span class="k">Total Answers</span><span class="v">' + (p.totalQuestions || 0) + '</span></div>' +
+              '<div><span class="k">Correct</span><span class="v">' + (p.correctAnswers || 0) + '</span></div>' +
+              '<div><span class="k">Accuracy</span><span class="v">' + accuracy + '</span></div>' +
+              '<div><span class="k">Perfect Runs</span><span class="v">' + (p.perfectRuns || 0) + '</span></div>' +
+              '<div><span class="k">Best Score</span><span class="v">' + (p.bestScore || 0) + '/10</span></div>' +
+              '<div><span class="k">Fastest Answer</span><span class="v">' + (p.fastestAnswerMs ? (p.fastestAnswerMs / 1000).toFixed(1) + 's' : '—') + '</span></div>' +
+              '<div><span class="k">Joined</span><span class="v">' + fmtDate(p.joinedAt) + '</span></div>' +
+              '<div><span class="k">Last Played</span><span class="v">' + fmtDate(p.lastPlayed) + '</span></div>' +
+            '</div>' +
+            '<div class="admin-detail-subjects"><span class="k">By Subject</span><span class="v">' + subjList + '</span></div>' +
+          '</div>' +
+        '</td>';
       rowsEl.appendChild(tr);
+      rowsEl.appendChild(dr);
     });
     if (sorted.length === 0) {
-      rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No users yet.</td></tr>';
+      rowsEl.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No users yet.</td></tr>';
     }
   } catch (err) {
-    rowsEl.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--coral);padding:20px;">Failed to load: ' + escapeHtml(err.message || 'unknown error') + '</td></tr>';
+    rowsEl.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--coral);padding:20px;">Failed to load: ' + escapeHtml(err.message || 'unknown error') + '</td></tr>';
   }
 }
 document.getElementById('adminRefreshBtn').addEventListener('click', () => renderAdmin());
+
+/* Handle View/Block/Unblock/Remove clicks in the admin table via delegation. */
+document.getElementById('adminUserRows').addEventListener('click', async e => {
+  const btn = e.target.closest('button.admin-btn');
+  if (!btn) return;
+  const tr = btn.closest('tr');
+  const username = tr && tr.dataset.uname;
+  if (!username) return;
+  const act = btn.dataset.act;
+  try {
+    if (act === 'view') {
+      const detail = document.querySelector('tr.admin-detail-row[data-detail-for="' + CSS.escape(username) + '"]');
+      if (detail) detail.classList.toggle('hidden');
+      return;
+    }
+    if (act === 'block') {
+      if (!confirm('Block @' + username + '? Their future score posts will be rejected and they will be hidden from the public leaderboard.')) return;
+      await adminApi('block', username);
+      toast('🚫', 'Blocked', '@' + username);
+    } else if (act === 'unblock') {
+      await adminApi('unblock', username);
+      toast('✅', 'Unblocked', '@' + username);
+    } else if (act === 'remove') {
+      if (!confirm('Permanently REMOVE @' + username + ' from the leaderboard? This deletes their record. Cannot be undone.')) return;
+      await adminApi('remove', username);
+      toast('🗑️', 'Removed', '@' + username);
+    }
+    renderAdmin();
+  } catch (err) {
+    alert('Action failed: ' + (err.message || err));
+  }
+});
 
 /* ============================ Boot ============================ */
 (function boot() {

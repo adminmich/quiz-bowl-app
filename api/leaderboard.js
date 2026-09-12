@@ -1,17 +1,38 @@
 /* Global leaderboard API backed by Upstash Redis (via Vercel integration).
-   GET  /api/leaderboard         → top 100 players
-   POST /api/leaderboard { ... } → upsert a player's snapshot */
+   Public routes:
+     GET  /api/leaderboard         → top 100 non-blocked players
+     POST /api/leaderboard { ... snapshot ... } → upsert (rejected if blocked)
+   Admin routes (require x-admin-key: <ADMIN_KEY>):
+     GET  /api/leaderboard?admin=1 → all players, includes blocked flag
+     POST /api/leaderboard { action: 'block'|'unblock'|'remove', username }
+*/
 import { Redis } from '@upstash/redis';
 
 const redis = Redis.fromEnv();
 const KEY = 'quiz-bowl:players:v1';
-
-/* We store each player as a JSON string in a Redis hash keyed by their username. */
+const BLOCK_KEY = 'quiz-bowl:blocked:v1';
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Admin-Key');
+}
+
+function isAdminRequest(req) {
+  const expected = process.env.ADMIN_KEY;
+  if (!expected) return false;
+  const got = req.headers['x-admin-key'] || req.headers['X-Admin-Key'];
+  return got && got === expected;
+}
+
+function normUname(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24);
+}
+
+function clampLegacyLevel(hl) {
+  hl = hl | 0;
+  if (hl <= 5) return hl;
+  return hl >= 27 ? 5 : hl >= 21 ? 4 : hl >= 15 ? 3 : hl >= 9 ? 2 : 1;
 }
 
 export default async function handler(req, res) {
@@ -19,20 +40,24 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
 
   try {
+    /* ---------------- GET ---------------- */
     if (req.method === 'GET') {
+      const adminView = req.query && (req.query.admin === '1' || req.query.admin === 'true') && isAdminRequest(req);
       const raw = await redis.hgetall(KEY);
-      const out = [];
+      const blockedList = await redis.smembers(BLOCK_KEY);
+      const blocked = new Set((blockedList || []).map(u => String(u).toLowerCase()));
       const HIDE = new Set(['testuser', 'test', 'demo']);
+      const out = [];
       if (raw) {
         for (const [uname, value] of Object.entries(raw)) {
-          if (HIDE.has(uname.toLowerCase())) continue;
+          const un = String(uname).toLowerCase();
+          if (HIDE.has(un)) continue;
+          const isBlocked = blocked.has(un);
+          if (isBlocked && !adminView) continue;
           try {
             const p = typeof value === 'string' ? JSON.parse(value) : value;
             if (!p) continue;
-            /* Legacy values on the 1-28 grade scale get clamped to 1-5. */
-            let hl = p.highestLevel | 0;
-            if (hl > 5) hl = hl >= 27 ? 5 : hl >= 21 ? 4 : hl >= 15 ? 3 : hl >= 9 ? 2 : 1;
-            out.push({
+            const entry = {
               username: uname,
               name: p.name,
               avatar: p.avatar,
@@ -40,25 +65,66 @@ export default async function handler(req, res) {
               totalPoints: p.totalPoints | 0,
               quizzesCompleted: p.quizzesCompleted | 0,
               correctAnswers: p.correctAnswers | 0,
-              highestLevel: hl,
+              highestLevel: clampLegacyLevel(p.highestLevel),
               trophies: p.trophies | 0,
               lastPlayed: p.lastPlayed || null,
-            });
+              accuracy: p.totalQuestions ? Math.round(100 * (p.correctAnswers | 0) / p.totalQuestions) : null,
+              totalQuestions: p.totalQuestions || 0,
+              perfectRuns: p.perfectRuns || 0,
+              bestScore: p.bestScore || 0,
+              fastestAnswerMs: p.fastestAnswerMs || null,
+              joinedAt: p.joinedAt || null,
+              subjectsPlayed: p.subjectsPlayed || {},
+            };
+            if (adminView) entry.blocked = isBlocked;
+            out.push(entry);
           } catch (_) {}
         }
       }
       out.sort((a, b) => (b.totalPoints - a.totalPoints) || (b.correctAnswers - a.correctAnswers));
       res.setHeader('Cache-Control', 'no-store');
-      res.status(200).json({ players: out.slice(0, 200) });
+      res.status(200).json({ players: out.slice(0, 500) });
       return;
     }
 
+    /* ---------------- POST ---------------- */
     if (req.method === 'POST') {
-      /* Accept a snapshot from the client. Trust it minimally — cap point values
-         to avoid absurd tampering, and validate shape. */
       const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
-      const username = String(body.username || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24);
+
+      /* Admin actions */
+      if (body.action) {
+        if (!isAdminRequest(req)) {
+          res.status(403).json({ error: 'forbidden' });
+          return;
+        }
+        const target = normUname(body.username);
+        if (!target) { res.status(400).json({ error: 'username required' }); return; }
+        if (body.action === 'remove') {
+          await redis.hdel(KEY, target);
+          await redis.srem(BLOCK_KEY, target);
+          res.status(200).json({ ok: true, action: 'remove', username: target });
+          return;
+        }
+        if (body.action === 'block') {
+          await redis.sadd(BLOCK_KEY, target);
+          res.status(200).json({ ok: true, action: 'block', username: target });
+          return;
+        }
+        if (body.action === 'unblock') {
+          await redis.srem(BLOCK_KEY, target);
+          res.status(200).json({ ok: true, action: 'unblock', username: target });
+          return;
+        }
+        res.status(400).json({ error: 'unknown action' });
+        return;
+      }
+
+      /* Regular score sync from a player */
+      const username = normUname(body.username);
       if (!username) { res.status(400).json({ error: 'missing username' }); return; }
+      /* Reject posts from blocked users */
+      const isBlocked = await redis.sismember(BLOCK_KEY, username);
+      if (isBlocked) { res.status(403).json({ error: 'user is blocked' }); return; }
 
       const clean = {
         name: String(body.name || '').slice(0, 40),
@@ -67,21 +133,31 @@ export default async function handler(req, res) {
         totalPoints: Math.max(0, Math.min(10_000_000, Number(body.totalPoints) || 0)),
         quizzesCompleted: Math.max(0, Math.min(100_000, Number(body.quizzesCompleted) || 0)),
         correctAnswers: Math.max(0, Math.min(1_000_000, Number(body.correctAnswers) || 0)),
+        totalQuestions: Math.max(0, Math.min(2_000_000, Number(body.totalQuestions) || 0)),
+        perfectRuns: Math.max(0, Math.min(100_000, Number(body.perfectRuns) || 0)),
+        bestScore: Math.max(0, Math.min(1000, Number(body.bestScore) || 0)),
+        fastestAnswerMs: body.fastestAnswerMs != null ? Math.max(0, Number(body.fastestAnswerMs) || 0) : null,
+        joinedAt: body.joinedAt || null,
+        subjectsPlayed: body.subjectsPlayed && typeof body.subjectsPlayed === 'object' ? body.subjectsPlayed : {},
         highestLevel: Math.max(0, Math.min(5, Number(body.highestLevel) || 0)),
         trophies: Math.max(0, Math.min(50, Number(body.trophies) || 0)),
         lastPlayed: new Date().toISOString(),
       };
-      /* Don't downgrade a player's score: keep the higher of the two on each field. */
       const existingRaw = await redis.hget(KEY, username);
       const existing = existingRaw ? (typeof existingRaw === 'string' ? JSON.parse(existingRaw) : existingRaw) : null;
       if (existing) {
         clean.totalPoints = Math.max(clean.totalPoints, existing.totalPoints | 0);
         clean.quizzesCompleted = Math.max(clean.quizzesCompleted, existing.quizzesCompleted | 0);
         clean.correctAnswers = Math.max(clean.correctAnswers, existing.correctAnswers | 0);
-        /* Cap the merged highestLevel at 5 (the new tier scale) so any legacy
-           1-28 value stored from before the tier refactor gets clamped down. */
+        clean.totalQuestions = Math.max(clean.totalQuestions, existing.totalQuestions | 0);
+        clean.perfectRuns = Math.max(clean.perfectRuns, existing.perfectRuns | 0);
+        clean.bestScore = Math.max(clean.bestScore, existing.bestScore | 0);
         clean.highestLevel = Math.min(5, Math.max(clean.highestLevel, existing.highestLevel | 0));
         clean.trophies = Math.max(clean.trophies, existing.trophies | 0);
+        if (!clean.joinedAt) clean.joinedAt = existing.joinedAt || null;
+        if (existing.fastestAnswerMs && (clean.fastestAnswerMs == null || existing.fastestAnswerMs < clean.fastestAnswerMs)) {
+          clean.fastestAnswerMs = existing.fastestAnswerMs;
+        }
       }
       await redis.hset(KEY, { [username]: JSON.stringify(clean) });
       res.status(200).json({ ok: true, username, snapshot: clean });

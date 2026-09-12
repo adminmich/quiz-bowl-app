@@ -478,14 +478,162 @@
     position: fixed; inset: 0; pointer-events: none; z-index: 90;
   }
 
+  /* --- Tablet (up to iPad portrait) --- */
+  @media (max-width: 900px) {
+    .app { padding: 20px 16px 40px; }
+    .card { padding: 26px 22px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .hub-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* --- Phone (portrait / small tablet) --- */
   @media (max-width: 560px) {
-    .card { padding: 22px 18px; border-radius: 22px; }
-    .qtext { font-size: 21px; }
-    .score-hero .big { font-size: 64px; }
+    /* Safe-area padding for phones with notches; edge-to-edge card feel */
+    .app {
+      padding: 12px 12px 32px;
+      padding-left: max(12px, env(safe-area-inset-left));
+      padding-right: max(12px, env(safe-area-inset-right));
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
+    }
+
+    /* Headline sizing */
+    h2 { font-size: 22px; }
+    h3 { font-size: 14px; margin-top: 18px; }
+    p.lead { font-size: 14px; margin: 0 0 18px; }
+
+    /* Cards a bit tighter */
+    .card { padding: 20px 16px; border-radius: 22px; border-width: 3px; }
+
+    /* Header: shrink logo, allow chip to hug right, wrap if needed */
+    .brand { padding: 2px 0 14px; gap: 8px; }
+    .brand .logo { font-size: 18px; gap: 6px; }
+    .brand .logo .emoji { font-size: 24px; }
+    .brand .who-chip {
+      padding: 5px 8px 5px 10px; font-size: 13px; gap: 6px;
+      border-width: 2px;
+    }
+    .brand .who-chip .who-clickable { padding: 2px 4px; font-size: 13px; gap: 6px; }
+    .brand .who-chip #whoAvatar { font-size: 18px; }
+    .brand .who-chip .pts { padding: 2px 8px; font-size: 12px; }
+    .brand .who-chip button { min-width: 34px; min-height: 34px; font-size: 15px; padding: 4px 6px; }
+
+    /* Login form: inputs and buttons must be tap-friendly */
+    input[type=text], input[type=number], select {
+      padding: 14px 14px; font-size: 16px; /* 16px prevents iOS zoom-on-focus */
+      border-radius: 12px;
+    }
+    label { font-size: 12px; }
+    .btn { padding: 14px 20px; font-size: 15px; border-radius: 14px; min-height: 48px; }
+    .btn.big { padding: 16px 24px; font-size: 16px; min-height: 52px; }
+    .row { gap: 10px; }
+
+    /* Hub grid: 2 columns */
+    .hub-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .hub-tile { padding: 16px 10px; border-radius: 18px; }
+    .hub-tile .ico { font-size: 36px; }
+    .hub-tile .name { font-size: 14px; }
+    .hub-tile .desc { font-size: 11px; }
+
+    /* Subject / grade / level grids: 2 columns */
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tile { padding: 14px 8px; border-radius: 16px; border-width: 3px; }
+    .tile .ico { font-size: 32px; margin-bottom: 4px; }
+    .tile .name { font-size: 14px; }
+    .tile .desc { font-size: 11px; }
+    .tile.grade .grade-num { font-size: 26px; }
+    .tile.grade .grade-lbl { font-size: 10px; }
+    .tile.grade .grade-lvls { font-size: 11px; margin-top: 4px; }
+
+    /* Home stats: 2 columns */
+    .home-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .stat-pill { padding: 10px 8px; }
+    .stat-pill .val { font-size: 18px; }
+    .stat-pill .lbl { font-size: 10px; }
+
+    /* Quiz screen adjustments */
+    .quiz-head { gap: 6px; margin-bottom: 12px; }
+    .quiz-head > div { display: flex; gap: 4px; flex-wrap: wrap; }
+    .pill { padding: 6px 10px; font-size: 12px; }
+    .timer-bar { margin-bottom: 16px; height: 12px; }
+    .qtype { font-size: 10px; padding: 3px 10px; }
+    .qtext { font-size: 18px; margin: 8px 0 16px; line-height: 1.35; }
+    .choice { padding: 14px 14px; font-size: 15px; min-height: 48px; border-radius: 14px; }
+    .choices { gap: 10px; }
+    .feedback { padding: 12px 14px; font-size: 14px; }
+    .feedback .why { font-size: 13px; padding: 10px 12px; }
+
+    /* Skip / Next buttons row: stack tight */
+    #skipBtn, #nextBtn { min-height: 44px; padding: 10px 18px; font-size: 14px; }
+
+    /* Results screen */
+    .score-hero { padding: 12px 0 6px; }
+    .score-hero .big { font-size: 56px; }
+    .score-hero .big small { font-size: 22px; }
+    .score-hero .msg { font-size: 16px; }
+    .points-earned { font-size: 15px; padding: 8px 16px; }
+    .actions { gap: 8px; }
+    .actions > * { min-width: 110px; flex: 1 1 45%; }
+    .review-item { padding: 12px 14px; border-radius: 14px; }
+    .review-item .q { font-size: 14px; }
+    .review-item .yours, .review-item .correct { font-size: 12px; }
+    .review-item .why { font-size: 12px; padding: 8px 10px; }
+
+    /* Profile screen */
+    .profile-avatar { font-size: 60px; width: 110px; height: 110px; line-height: 110px; }
+    .profile-uname { font-size: 22px; }
+    .profile-meta span { font-size: 12px; padding: 5px 10px; }
+
+    /* Achievements grid */
+    .ach-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .ach-card { padding: 12px 8px; border-radius: 14px; }
+    .ach-card .ico { font-size: 32px; }
+    .ach-card .n { font-size: 13px; }
+    .ach-card .d { font-size: 10px; }
+
+    /* Leaderboard */
+    .podium { gap: 6px; }
+    .pod { padding: 12px 4px 10px; }
+    .pod .rank { font-size: 18px; }
+    .pod .avatar { font-size: 28px; }
+    .pod .name { font-size: 12px; }
+    .pod .pts { font-size: 11px; }
+    .pod-1 { padding-top: 20px; }
+    .pod-2 { padding-top: 16px; }
+    .pod-3 { padding-top: 10px; }
+    .lb-row { padding: 10px 12px; }
+    .lb-row .a { font-size: 20px; }
+    .lb-row .n { font-size: 13px; }
+    .lb-row .p { font-size: 11px; padding: 3px 10px; }
+
+    /* Toast */
+    .toast-wrap { top: 8px; left: 8px; right: 8px; transform: none; }
+    .toast { min-width: 0; padding: 12px 16px; border-radius: 16px; }
+    .toast .ico { font-size: 32px; }
+    .toast .t2 { font-size: 15px; }
+
+    /* Prevent floating cloud decorations from crowding */
+    body::before, body::after { display: none; }
+  }
+
+  /* --- Tiny phones (older iPhone SE etc.) --- */
+  @media (max-width: 360px) {
+    .grid { grid-template-columns: 1fr; }
+    .hub-grid { grid-template-columns: 1fr; }
     .home-stats { grid-template-columns: repeat(2, 1fr); }
-    h2 { font-size: 26px; }
-    .brand .logo { font-size: 22px; }
-    .brand .logo .emoji { font-size: 28px; }
+    .actions > * { flex: 1 1 100%; }
+    .brand .who-chip .who-clickable span:last-child {
+      max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+  }
+
+  /* --- Landscape phone: keep header compact --- */
+  @media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    .brand { padding: 4px 0 10px; }
+    .card { padding: 16px 18px; }
+    .qtext { font-size: 17px; margin: 6px 0 12px; }
+    .qtype { margin-bottom: 6px; }
+    .choice { padding: 10px 14px; min-height: 42px; }
+    body::before, body::after { display: none; }
   }
 </style>
 </head>

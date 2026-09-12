@@ -2,9 +2,13 @@
   "name": "quiz-bowl-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Online quiz bowl app for grades 5-12 with mixed subjects, difficulty levels, and audio.",
+  "type": "module",
+  "description": "Online quiz bowl app for grades 1-12 with mixed subjects, difficulty levels, audio, and a global leaderboard.",
   "scripts": {
     "dev": "npx serve public -l 3000",
     "start": "npx serve public -l 3000"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.38.4"
   }
 }

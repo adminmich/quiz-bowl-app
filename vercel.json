@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!manifest\\.json|sw\\.js|questions\\.js|icon-.*\\.svg).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|manifest\\.json|sw\\.js|questions\\.js|icon-.*\\.svg).*)", "destination": "/index.html" }
   ],
   "headers": [
     { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }, { "key": "Service-Worker-Allowed", "value": "/" }] },

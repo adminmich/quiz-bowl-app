@@ -1819,6 +1819,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   renderWho();
   show('home');
   hydrateStudentFromServer(all[id]);
+  pingLoginToGlobal(all[id]);
 });
 
 /* Switch between student and admin login forms on the login screen. */
@@ -1874,6 +1875,7 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
   renderWho();
   show('home');
   hydrateStudentFromServer(existing);
+  pingLoginToGlobal(existing);
 });
 /* Pressing Enter in the admin password field submits. */
 document.getElementById('inAdminPass').addEventListener('keydown', e => {
@@ -1965,6 +1967,27 @@ async function hydrateStudentFromServer(student) {
     }
     return true;
   } catch (_) { return false; }
+}
+
+/* Register the user in the server roster on login, even if they never take a
+   quiz. The server treats login:true as a metadata-only upsert and won't
+   touch stats or lastPlayed. */
+async function pingLoginToGlobal(student) {
+  if (!student || !student.username) return;
+  try {
+    await fetch('/api/leaderboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        login: true,
+        username: student.username,
+        name: student.name,
+        avatar: student.avatar,
+        grade: student.grade,
+        joinedAt: student.joinedAt,
+      }),
+    });
+  } catch (_) { /* offline: register on the next successful call */ }
 }
 
 async function syncMyScoreToGlobal(student) {
@@ -2099,7 +2122,10 @@ async function renderLeaderboard() {
     const r = await fetch('/api/leaderboard', { cache: 'no-store' });
     if (!r.ok) throw new Error('http ' + r.status);
     const j = await r.json();
-    renderLeaderboardRows(j.players || []);
+    /* Registered-but-never-played users show up in the admin roster but
+       should not appear on the public leaderboard. */
+    const played = (j.players || []).filter(p => (p.quizzesCompleted | 0) > 0);
+    renderLeaderboardRows(played);
   } catch (err) {
     // Offline or API failure — show a local leaderboard from this device only.
     const local = localLeaderboardEntries()
@@ -2179,9 +2205,10 @@ async function renderAdmin() {
       tr.dataset.uname = p.username;
       const blockedTag = p.blocked ? ' <span class="admin-tag blocked">BLOCKED</span>' : '';
       const shortId = shortLbId(p.username, i + 1);
+      const neverPlayedTag = (p.quizzesCompleted | 0) === 0 ? ' <span class="admin-tag" style="background:#94a3b8;color:#fff;">NEW</span>' : '';
       tr.innerHTML =
         '<td>#' + (i + 1) + '</td>' +
-        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>' + escapeHtml(shortId) + blockedTag + '</td>' +
+        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>' + escapeHtml(shortId) + blockedTag + neverPlayedTag + '</td>' +
         '<td class="num">' + (p.quizzesCompleted | 0) + '</td>' +
         '<td class="num">' + (p.correctAnswers | 0) + '</td>' +
         '<td class="num">' + (p.totalPoints | 0) + '</td>' +
@@ -2219,7 +2246,8 @@ async function renderAdmin() {
               '<div><span class="k">Best Score</span><span class="v">' + (p.bestScore || 0) + '/10</span></div>' +
               '<div><span class="k">Fastest Answer</span><span class="v">' + (p.fastestAnswerMs ? (p.fastestAnswerMs / 1000).toFixed(1) + 's' : '—') + '</span></div>' +
               '<div><span class="k">Joined</span><span class="v">' + fmtDate(p.joinedAt) + '</span></div>' +
-              '<div><span class="k">Last Played</span><span class="v">' + fmtDate(p.lastPlayed) + '</span></div>' +
+              '<div><span class="k">Last Login</span><span class="v">' + fmtDate(p.lastLogin) + '</span></div>' +
+              '<div><span class="k">Last Played</span><span class="v">' + (p.lastPlayed ? fmtDate(p.lastPlayed) : 'Never played') + '</span></div>' +
             '</div>' +
             '<div class="admin-detail-subjects"><span class="k">By Subject</span><span class="v">' + subjList + '</span></div>' +
           '</div>' +

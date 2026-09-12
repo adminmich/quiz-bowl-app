@@ -87,6 +87,7 @@ export default async function handler(req, res) {
           fastestAnswerMs: p.fastestAnswerMs || null,
           joinedAt: p.joinedAt || null,
           lastPlayed: p.lastPlayed || null,
+          lastLogin: p.lastLogin || null,
           subjectsPlayed: p.subjectsPlayed || {},
           achievements: Array.isArray(p.achievements) ? p.achievements : [],
         };
@@ -121,6 +122,7 @@ export default async function handler(req, res) {
               highestLevel: clampLegacyLevel(p.highestLevel),
               trophies: p.trophies | 0,
               lastPlayed: p.lastPlayed || null,
+              lastLogin: p.lastLogin || null,
               accuracy: p.totalQuestions ? Math.round(100 * (p.correctAnswers | 0) / p.totalQuestions) : null,
               totalQuestions: p.totalQuestions || 0,
               perfectRuns: p.perfectRuns || 0,
@@ -179,6 +181,32 @@ export default async function handler(req, res) {
       /* Reject posts from blocked users */
       const isBlocked = await redis.sismember(BLOCK_KEY, username);
       if (isBlocked) { res.status(403).json({ error: 'user is blocked' }); return; }
+
+      /* Login ping: registers a user in the roster without touching their
+         stats or lastPlayed. Lets the admin see users who logged in but
+         never played a quiz. */
+      if (body.login === true) {
+        const existingRaw0 = await redis.hget(KEY, username);
+        const existing0 = existingRaw0 ? (typeof existingRaw0 === 'string' ? JSON.parse(existingRaw0) : existingRaw0) : null;
+        const merged = existing0 ? { ...existing0 } : {
+          name: '', avatar: '', grade: 0,
+          totalPoints: 0, quizzesCompleted: 0, correctAnswers: 0, totalQuestions: 0,
+          perfectRuns: 0, bestScore: 0, fastestAnswerMs: null,
+          joinedAt: null, subjectsPlayed: {}, highestLevel: 0, trophies: 0,
+          achievements: [], lastPlayed: null,
+        };
+        const incomingName = String(body.name || '').slice(0, 40);
+        const incomingAvatar = String(body.avatar || '').slice(0, 4);
+        const incomingGrade = Number(body.grade) || 0;
+        if (incomingName) merged.name = incomingName;
+        if (incomingAvatar) merged.avatar = incomingAvatar;
+        if (incomingGrade) merged.grade = incomingGrade;
+        if (!merged.joinedAt && body.joinedAt) merged.joinedAt = body.joinedAt;
+        merged.lastLogin = new Date().toISOString();
+        await redis.hset(KEY, { [username]: JSON.stringify(merged) });
+        res.status(200).json({ ok: true, username, snapshot: merged, login: true });
+        return;
+      }
 
       const clean = {
         name: String(body.name || '').slice(0, 40),

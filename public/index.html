@@ -2031,6 +2031,14 @@ function localLeaderboardEntries() {
   }));
 }
 
+/* Build a short, anonymous public ID for the leaderboard: first 3 letters of
+   the username + zero-padded rank. Example: amberlalay at rank 1 → "amb01". */
+function shortLbId(username, rank) {
+  const base = String(username || 'usr').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 3) || 'usr';
+  const num = String(rank).padStart(2, '0');
+  return base + num;
+}
+
 function renderLeaderboardRows(list) {
   const me = currentStudent();
   const myUname = me ? (me.username || '').toLowerCase() : null;
@@ -2048,13 +2056,14 @@ function renderLeaderboardRows(list) {
   const topCard = document.createElement('div');
   const iAmTop = myUname && top.username && top.username.toLowerCase() === myUname;
   topCard.className = 'top-notcher' + (iAmTop ? ' you' : '');
+  const topId = shortLbId(top.username, 1) + (iAmTop ? ' (you)' : '');
   topCard.innerHTML =
     '<div class="crown">👑</div>' +
     '<div class="top-avatar">' + (top.avatar || '🧑') + '</div>' +
     '<div class="top-body">' +
       '<div class="top-label">TOP NOTCHER</div>' +
-      '<div class="top-name">@' + escapeHtml(top.username) + '</div>' +
-      '<div class="top-meta">' + (top.name ? escapeHtml(top.name) + ' • ' : '') + 'Grade ' + top.grade + ' • ' + (top.trophies || 0) + ' 🏆</div>' +
+      '<div class="top-name">' + escapeHtml(topId) + '</div>' +
+      '<div class="top-meta">Grade ' + top.grade + ' • ' + (top.trophies || 0) + ' 🏆</div>' +
     '</div>' +
     '<div class="top-pts">' +
       '<span class="pts-num">' + top.totalPoints + '</span>' +
@@ -2067,11 +2076,13 @@ function renderLeaderboardRows(list) {
     const row = document.createElement('div');
     const mine = myUname && s.username && s.username.toLowerCase() === myUname;
     row.className = 'lb-row' + (mine ? ' you' : '');
+    const rank = i + 2;
+    const rowId = shortLbId(s.username, rank) + (mine ? ' (you)' : '');
     row.innerHTML =
-      '<span class="r">#' + (i + 2) + '</span>' +
+      '<span class="r">#' + rank + '</span>' +
       '<span class="a">' + (s.avatar || '🧑') + '</span>' +
       '<span class="n">' +
-        '<span class="uname">@' + escapeHtml(s.username) + '</span>' +
+        '<span class="uname">' + escapeHtml(rowId) + '</span>' +
         '<span class="submeta">Grade ' + s.grade + ' • ' + (s.trophies || 0) + ' 🏆</span>' +
       '</span>' +
       '<span class="p">' + s.totalPoints + ' pts</span>';

@@ -213,6 +213,19 @@ export default async function handler(req, res) {
         if (existing.fastestAnswerMs && (clean.fastestAnswerMs == null || existing.fastestAnswerMs < clean.fastestAnswerMs)) {
           clean.fastestAnswerMs = existing.fastestAnswerMs;
         }
+        /* Preserve identity fields when the incoming POST omits them, so a
+           partial payload (e.g. an achievement backfill) can't blank out a
+           player's avatar, grade, name, or per-subject counts. */
+        if (!clean.name && existing.name) clean.name = existing.name;
+        if (!clean.avatar && existing.avatar) clean.avatar = existing.avatar;
+        if (!clean.grade && existing.grade) clean.grade = existing.grade;
+        if (existing.subjectsPlayed && typeof existing.subjectsPlayed === 'object') {
+          const merged = { ...existing.subjectsPlayed };
+          for (const k of Object.keys(clean.subjectsPlayed || {})) {
+            merged[k] = Math.max(merged[k] | 0, clean.subjectsPlayed[k] | 0);
+          }
+          clean.subjectsPlayed = merged;
+        }
         /* Union merge: once unlocked, an achievement is never lost. */
         const prior = cleanAchievements(existing.achievements);
         if (prior.length) {

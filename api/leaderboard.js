@@ -29,6 +29,21 @@ function normUname(s) {
   return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 24);
 }
 
+function cleanAchievements(v) {
+  if (!Array.isArray(v)) return [];
+  const seen = new Set();
+  const out = [];
+  for (const raw of v) {
+    if (typeof raw !== 'string') continue;
+    const id = raw.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 32);
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+    if (out.length >= 64) break;
+  }
+  return out;
+}
+
 function clampLegacyLevel(hl) {
   hl = hl | 0;
   if (hl <= 5) return hl;
@@ -73,6 +88,7 @@ export default async function handler(req, res) {
           joinedAt: p.joinedAt || null,
           lastPlayed: p.lastPlayed || null,
           subjectsPlayed: p.subjectsPlayed || {},
+          achievements: Array.isArray(p.achievements) ? p.achievements : [],
         };
         if (adminView) entry.blocked = isBlocked;
         res.setHeader('Cache-Control', 'no-store');
@@ -112,6 +128,7 @@ export default async function handler(req, res) {
               fastestAnswerMs: p.fastestAnswerMs || null,
               joinedAt: p.joinedAt || null,
               subjectsPlayed: p.subjectsPlayed || {},
+              achievements: Array.isArray(p.achievements) ? p.achievements : [],
             };
             if (adminView) entry.blocked = isBlocked;
             out.push(entry);
@@ -178,6 +195,7 @@ export default async function handler(req, res) {
         subjectsPlayed: body.subjectsPlayed && typeof body.subjectsPlayed === 'object' ? body.subjectsPlayed : {},
         highestLevel: Math.max(0, Math.min(5, Number(body.highestLevel) || 0)),
         trophies: Math.max(0, Math.min(50, Number(body.trophies) || 0)),
+        achievements: cleanAchievements(body.achievements),
         lastPlayed: new Date().toISOString(),
       };
       const existingRaw = await redis.hget(KEY, username);
@@ -195,6 +213,13 @@ export default async function handler(req, res) {
         if (existing.fastestAnswerMs && (clean.fastestAnswerMs == null || existing.fastestAnswerMs < clean.fastestAnswerMs)) {
           clean.fastestAnswerMs = existing.fastestAnswerMs;
         }
+        /* Union merge: once unlocked, an achievement is never lost. */
+        const prior = cleanAchievements(existing.achievements);
+        if (prior.length) {
+          const seen = new Set(clean.achievements);
+          for (const id of prior) { if (!seen.has(id)) { seen.add(id); clean.achievements.push(id); } }
+        }
+        clean.trophies = Math.max(clean.trophies, clean.achievements.length);
       }
       await redis.hset(KEY, { [username]: JSON.stringify(clean) });
       res.status(200).json({ ok: true, username, snapshot: clean });

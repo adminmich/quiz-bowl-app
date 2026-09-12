@@ -1951,6 +1951,13 @@ async function hydrateStudentFromServer(student) {
         if (inc > cur) { s.subjectsPlayed[k] = inc; changed = true; }
       }
     }
+    if (Array.isArray(p.achievements) && p.achievements.length) {
+      student.achievements = student.achievements || [];
+      const have = new Set(student.achievements);
+      for (const id of p.achievements) {
+        if (id && !have.has(id)) { student.achievements.push(id); have.add(id); changed = true; }
+      }
+    }
     if (changed) {
       saveCurrentStudent(student);
       renderWho();
@@ -1981,6 +1988,7 @@ async function syncMyScoreToGlobal(student) {
         joinedAt: student.joinedAt,
         highestLevel: student.stats.highestLevel | 0,
         trophies: (student.achievements || []).length,
+        achievements: student.achievements || [],
       }),
     });
   } catch (_) { /* offline: try again next quiz */ }

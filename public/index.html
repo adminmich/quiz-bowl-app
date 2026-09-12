@@ -2171,9 +2171,10 @@ async function renderAdmin() {
       const tr = document.createElement('tr');
       tr.dataset.uname = p.username;
       const blockedTag = p.blocked ? ' <span class="admin-tag blocked">BLOCKED</span>' : '';
+      const shortId = shortLbId(p.username, i + 1);
       tr.innerHTML =
         '<td>#' + (i + 1) + '</td>' +
-        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>@' + escapeHtml(p.username) + blockedTag + '</td>' +
+        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>' + escapeHtml(shortId) + blockedTag + '</td>' +
         '<td class="num">' + (p.quizzesCompleted | 0) + '</td>' +
         '<td class="num">' + (p.correctAnswers | 0) + '</td>' +
         '<td class="num">' + (p.totalPoints | 0) + '</td>' +
@@ -2199,6 +2200,7 @@ async function renderAdmin() {
         '<td colspan="7">' +
           '<div class="admin-detail">' +
             '<div class="admin-detail-grid">' +
+              '<div><span class="k">Username</span><span class="v">@' + escapeHtml(p.username) + '</span></div>' +
               '<div><span class="k">Name</span><span class="v">' + escapeHtml(p.name || '—') + '</span></div>' +
               '<div><span class="k">Grade</span><span class="v">' + (p.grade || '—') + '</span></div>' +
               '<div><span class="k">Highest Level</span><span class="v">L' + (p.highestLevel || 1) + '</span></div>' +

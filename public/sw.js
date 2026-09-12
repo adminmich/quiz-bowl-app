@@ -1,14 +1,7 @@
-/* Simple service worker for offline support. */
-const CACHE = 'quiz-bowl-v3';
-const CORE = [
-  '/',
-  '/index.html',
-  '/questions.js',
-  '/manifest.json',
-  '/icon-192.svg',
-  '/icon-512.svg',
-  '/icon-maskable.svg',
-];
+/* Service worker with fresh-first strategy for HTML + data,
+   cache-first for immutable assets like icons. */
+const CACHE = 'quiz-bowl-v5';
+const CORE = ['/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg'];
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -27,16 +20,45 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
-  event.respondWith(
-    caches.match(req).then(hit => {
-      if (hit) return hit;
-      return fetch(req).then(res => {
-        if (res && res.status === 200 && new URL(req.url).origin === location.origin) {
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+
+  const isHtmlLike =
+    req.mode === 'navigate' ||
+    (req.headers.get('accept') || '').includes('text/html') ||
+    url.pathname === '/' ||
+    url.pathname.endsWith('.html');
+  const isData = url.pathname.endsWith('/questions.js');
+
+  if (isHtmlLike || isData) {
+    // Network first so updates show immediately; cache is a fallback.
+    event.respondWith(
+      fetch(req).then(res => {
+        if (res && res.status === 200) {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(req, clone));
         }
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => caches.match(req).then(hit => hit || caches.match('/')))
+    );
+    return;
+  }
+
+  // Static assets: cache first for speed.
+  event.respondWith(
+    caches.match(req).then(hit => {
+      if (hit) return hit;
+      return fetch(req).then(res => {
+        if (res && res.status === 200) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(req, clone));
+        }
+        return res;
+      });
     })
   );
+});
+
+self.addEventListener('message', event => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });

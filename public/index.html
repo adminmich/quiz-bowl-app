@@ -1676,10 +1676,28 @@ function renderLeaderboard() {
   else { show('login'); }
   document.addEventListener('click', () => Sound.unlock(), { once: true });
 
-  /* Register the service worker for offline / installable PWA behavior. */
+  /* Register the service worker for offline / installable PWA behavior.
+     Also detect a new SW and hot-swap it so the site auto-updates. */
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        reg.addEventListener('updatefound', () => {
+          const nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener('statechange', () => {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+              // A newer version has installed alongside the current one; activate it.
+              nw.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+      }).catch(() => {});
+      let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (reloaded) return;
+        reloaded = true;
+        window.location.reload();
+      });
     });
   }
 })();

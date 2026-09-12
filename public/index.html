@@ -1006,12 +1006,28 @@ function newStudent(name, age, grade) {
     lastPlayed: null,
   };
 }
-/* Older student records may not have a username yet — assign one on first read. */
+/* Older student records may not have a username yet — assign one on first read.
+   Also migrate highestLevel from the old 1-28 grade scale to the new 1-5 tier scale. */
 function ensureUsername(student) {
+  let touched = false;
   if (student && !student.username) {
     student.username = generateUsername(student.name || 'student');
-    saveCurrentStudent(student);
+    touched = true;
   }
+  if (student && student.stats && student.stats.highestLevel > 5) {
+    /* Legacy value on the 1-28 grade scale — remap to 1-5 tier scale. */
+    const old = student.stats.highestLevel;
+    let mapped = 1;
+    if (old >= 27) mapped = 5;
+    else if (old >= 21) mapped = 4;
+    else if (old >= 15) mapped = 3;
+    else if (old >= 9) mapped = 2;
+    else if (old >= 5) mapped = 2;
+    else mapped = 1;
+    student.stats.highestLevel = mapped;
+    touched = true;
+  }
+  if (touched) saveCurrentStudent(student);
   return student;
 }
 /* Stable per-question key so we can track which questions a student has seen. */
@@ -1032,8 +1048,8 @@ const ACHIEVEMENTS = [
   { id:'speed_demon',  ico:'⚡', name:'Speed Demon',    desc:'Answer in under 3 seconds' },
   { id:'bookworm',     ico:'📚', name:'Bookworm',       desc:'Answer 50 questions total' },
   { id:'century',      ico:'💯', name:'Century Club',   desc:'Answer 100 questions total' },
-  { id:'level_up',     ico:'🚀', name:'Level Up',       desc:'Complete Level 10' },
-  { id:'champion',     ico:'👑', name:'Champion',       desc:'Complete Level 28' },
+  { id:'level_up',     ico:'🚀', name:'Level Up',       desc:'Complete Level 3 (Medium)' },
+  { id:'champion',     ico:'👑', name:'Champion',       desc:'Complete Level 5 (Expert)' },
   { id:'well_rounded', ico:'🌎', name:'Well-Rounded',   desc:'Play all 5 subjects' },
   { id:'hot_streak',   ico:'🔥', name:'Hot Streak',     desc:'Get 5 correct in a row' },
   { id:'perfectionist',ico:'💎', name:'Perfectionist',  desc:'Get 3 perfect scores' },
@@ -1050,8 +1066,8 @@ function checkAchievements(student, runInfo) {
   if (runInfo.fastestAnswerMs !== null && runInfo.fastestAnswerMs < 3000) add('speed_demon');
   if (s.totalQuestions >= 50) add('bookworm');
   if (s.totalQuestions >= 100) add('century');
-  if (s.highestLevel >= 10) add('level_up');
-  if (s.highestLevel >= 28) add('champion');
+  if (s.highestLevel >= 3) add('level_up');
+  if (s.highestLevel >= 5) add('champion');
   if (Object.keys(s.subjectsPlayed).filter(k => k !== 'mixed').length >= 5) add('well_rounded');
   if (runInfo.maxStreak >= 5) add('hot_streak');
   if (s.perfectRuns >= 3) add('perfectionist');
@@ -1131,7 +1147,8 @@ function renderProfile() {
   document.getElementById('pfPoints').textContent = st.totalPoints;
   document.getElementById('pfQuizzes').textContent = st.quizzesCompleted;
   document.getElementById('pfCorrect').textContent = st.correctAnswers;
-  document.getElementById('pfHighest').textContent = 'L' + st.highestLevel;
+  document.getElementById('pfHighest').textContent =
+    st.highestLevel ? ('L' + st.highestLevel + ' ' + ((TIER_INFO[st.highestLevel] || {}).label || '')) : 'L1';
   const acc = st.totalQuestions ? Math.round(100 * st.correctAnswers / st.totalQuestions) : 0;
   document.getElementById('pfAccuracy').textContent = acc + '%';
   document.getElementById('pfPerfect').textContent = st.perfectRuns;
@@ -1146,7 +1163,7 @@ function renderHome() {
   document.getElementById('statPoints').textContent = s.stats.totalPoints;
   document.getElementById('statQuizzes').textContent = s.stats.quizzesCompleted;
   document.getElementById('statCorrect').textContent = s.stats.correctAnswers;
-  document.getElementById('statBest').textContent = 'L' + s.stats.highestLevel;
+  document.getElementById('statBest').textContent = 'L' + (s.stats.highestLevel || 1);
   document.getElementById('achCount').textContent = s.achievements.length + ' of ' + ACHIEVEMENTS.length + ' earned';
   renderWho();
 }
@@ -1171,7 +1188,7 @@ function renderSubjects() {
     const el = document.createElement('div');
     el.className = 'tile ' + st.cls;
     el.innerHTML = `<span class="ico">${st.ico}</span><div class="name">${s.label}</div><div class="desc">${st.desc}</div>`;
-    el.addEventListener('click', () => { state.subject = s.id; show('grade'); });
+    el.addEventListener('click', () => { state.subject = s.id; show('level'); });
     grid.appendChild(el);
   });
 }
@@ -1214,46 +1231,46 @@ function renderGrades() {
   });
 }
 
-/* ============================ Render: levels ============================ */
-const LEVEL_ICON = {
-  1:'🍎',2:'🍎',3:'🎈',4:'🎈',5:'🧸',6:'🧸',7:'🎨',8:'🎨',
-  9:'🐣',10:'🐣',11:'🐣',12:'🌱',13:'🌱',14:'🌱',
-  15:'🍀',16:'🍀',17:'🍀',18:'🌟',19:'🌟',20:'🌟',
-  21:'🔥',22:'🔥',23:'⚡',24:'⚡',25:'💎',26:'💎',27:'👑',28:'🏆'
+/* ============================ Difficulty tiers ============================
+   Five levels per subject, arranged from easiest to hardest. Each tier
+   pulls its questions from a specific grade range so the difficulty
+   climbs naturally as students advance. */
+const TIER_INFO = {
+  1: { label: 'Beginner', ico: '🐣', grades: [1, 2],   cls: 'g5',  timeS: 30 },
+  2: { label: 'Easy',     ico: '🌱', grades: [3, 4],   cls: 'g7',  timeS: 25 },
+  3: { label: 'Medium',   ico: '🌟', grades: [5, 6, 7],cls: 'g8',  timeS: 20 },
+  4: { label: 'Hard',     ico: '🔥', grades: [8, 9, 10], cls: 'g10', timeS: 18 },
+  5: { label: 'Expert',   ico: '👑', grades: [11, 12], cls: 'g12', timeS: 15 },
 };
+const TIER_COUNT = 5;
+
+function questionsInTier(subject, tier) {
+  const grades = new Set(TIER_INFO[tier].grades);
+  return window.QUESTIONS.filter(q =>
+    grades.has(q.grade) && (subject === 'mixed' || q.subject === subject)
+  );
+}
+
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
-  const lead = document.getElementById('levelLead');
-  const filter = state.gradeFilter;
-  let levels;
-  if (filter === 'all') {
-    levels = [];
-    for (let L = 1; L <= 28; L++) levels.push(L);
-    lead.textContent = 'All 28 levels across every grade. Pick any!';
-  } else {
-    levels = Object.entries(window.LEVEL_GRADE)
-      .filter(([, g]) => g === filter)
-      .map(([lv]) => parseInt(lv, 10))
-      .sort((a,b)=>a-b);
-    lead.textContent = 'Grade ' + filter + ' levels. Each level is harder than the last!';
-  }
+  document.getElementById('levelLead').textContent =
+    '5 levels from easiest to hardest. Higher levels = tougher questions + less time.';
 
-  levels.forEach(L => {
-    const grade = window.LEVEL_GRADE[L];
-    const pool = window.QUESTIONS.filter(q =>
-      q.level === L && (state.subject === 'mixed' || q.subject === state.subject)
-    );
+  for (let t = 1; t <= TIER_COUNT; t++) {
+    const info = TIER_INFO[t];
+    const pool = questionsInTier(state.subject, t);
     const el = document.createElement('div');
-    el.className = 'tile level g' + grade;
+    el.className = 'tile level ' + info.cls;
     const disabled = pool.length === 0;
     if (disabled) el.style.opacity = '0.4';
-    el.innerHTML = `<span class="ico">${LEVEL_ICON[L] || '⭐'}</span>` +
-      `<div class="name">Level ${L}</div>` +
-      `<div class="desc">Grade ${grade} • ${pool.length} q${pool.length !== 1 ? 's' : ''}</div>`;
-    if (!disabled) el.addEventListener('click', () => startQuiz(L));
+    el.innerHTML =
+      `<span class="ico">${info.ico}</span>` +
+      `<div class="name">Level ${t} • ${info.label}</div>` +
+      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''}</div>`;
+    if (!disabled) el.addEventListener('click', () => startQuiz(t));
     grid.appendChild(el);
-  });
+  }
 }
 
 /* ============================ Quiz state ============================ */
@@ -1265,22 +1282,15 @@ const state = {
   answered: false, points: 0,
   qStartMs: 0, fastestAnswerMs: null,
 };
-/* Default is 20s per question. Very young grades get more time; very high levels tighten. */
-function timePerQuestion(level) {
-  if (level <= 4) return 25;   // Grade 1-2: extra time
-  if (level <= 22) return 20;  // Default 20s across grade 3 through grade 9
-  if (level <= 25) return 18;  // Grade 10-11
-  return 15;                   // Grade 12
+/* Per-tier time budget — beginners get more time, experts less. */
+function timePerQuestion(tier) {
+  return (TIER_INFO[tier] && TIER_INFO[tier].timeS) || 20;
 }
 
-/* Strict per-level pool. Each question appears in exactly one level, so no cross-level repeat.
-   The pool is fully reshuffled every call. When a student has already seen some questions in
-   this (subject, level), unseen ones are drawn first so the student meets fresh questions
-   before seeing repeats. If unseen runs out, we top up from the seen pool (also reshuffled). */
-function pickQuestions(subject, level, count) {
-  const pool = window.QUESTIONS.filter(q =>
-    q.level === level && (subject === 'mixed' || q.subject === subject)
-  );
+/* Draw questions from the tier's grade range. Prefer questions the student
+   has not seen before; fall back to seen ones when the tier is exhausted. */
+function pickQuestions(subject, tier, count) {
+  const pool = questionsInTier(subject, tier);
   const student = currentStudent();
   const seenSet = new Set((student && student.seenQuestions) || []);
   const unseen = [], seen = [];
@@ -1292,20 +1302,19 @@ function pickQuestions(subject, level, count) {
   return shuffle(picks); // final reshuffle so the order in the quiz is also random
 }
 
-function startQuiz(level) {
-  state.level = level;
-  state.timePerQ = timePerQuestion(level);
-  const pool = window.QUESTIONS.filter(q =>
-    q.level === level && (state.subject === 'mixed' || q.subject === state.subject)
-  );
+function startQuiz(tier) {
+  state.level = tier;
+  state.timePerQ = timePerQuestion(tier);
+  const pool = questionsInTier(state.subject, tier);
   state.totalQ = Math.min(pool.length, 10);
-  state.questions = pickQuestions(state.subject, level, state.totalQ);
+  state.questions = pickQuestions(state.subject, tier, state.totalQ);
   state.idx = 0; state.score = 0; state.wrong = [];
   state.streak = 0; state.maxStreak = 0; state.points = 0;
   state.fastestAnswerMs = null;
   document.getElementById('qTotal').textContent = state.totalQ;
   document.getElementById('qSubjectPill').textContent =
-    (window.SUBJECTS.find(s => s.id === state.subject) || {}).label + ' • L' + level;
+    (window.SUBJECTS.find(s => s.id === state.subject) || {}).label +
+    ' • L' + tier + ' ' + (TIER_INFO[tier] || {label:''}).label;
   Sound.start();
   show('quiz');
   renderQuestion();
@@ -1488,9 +1497,7 @@ function finishQuiz() {
   if (!Array.isArray(student.seenQuestions)) student.seenQuestions = [];
   const seenSet = new Set(student.seenQuestions);
   state.questions.forEach(q => seenSet.add(questionKey(q)));
-  const poolAtLvl = window.QUESTIONS.filter(q =>
-    q.level === state.level && (state.subject === 'mixed' || q.subject === state.subject)
-  );
+  const poolAtLvl = questionsInTier(state.subject, state.level);
   const poolKeys = poolAtLvl.map(questionKey);
   const allSeen = poolKeys.every(k => seenSet.has(k));
   if (allSeen) {
@@ -1541,7 +1548,7 @@ function finishQuiz() {
   });
 
   const nextBtn = document.getElementById('nextLevelBtn');
-  if (state.level < 28) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
+  if (state.level < TIER_COUNT) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
   else nextBtn.textContent = 'Play Again ↻';
 
   Sound.victory();
@@ -1562,15 +1569,12 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  let nextLevel = state.level < 28 ? state.level + 1 : state.level;
-  while (nextLevel <= 28) {
-    const pool = window.QUESTIONS.filter(q =>
-      q.level === nextLevel && (state.subject === 'mixed' || q.subject === state.subject)
-    );
-    if (pool.length > 0) break;
+  let nextLevel = state.level < TIER_COUNT ? state.level + 1 : state.level;
+  while (nextLevel <= TIER_COUNT) {
+    if (questionsInTier(state.subject, nextLevel).length > 0) break;
     nextLevel++;
   }
-  if (nextLevel > 28) nextLevel = state.level;
+  if (nextLevel > TIER_COUNT) nextLevel = state.level;
   startQuiz(nextLevel);
 });
 

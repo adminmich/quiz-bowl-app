@@ -43,6 +43,43 @@ export default async function handler(req, res) {
     /* ---------------- GET ---------------- */
     if (req.method === 'GET') {
       const adminView = req.query && (req.query.admin === '1' || req.query.admin === 'true') && isAdminRequest(req);
+
+      /* Single-player lookup by username, used on login to sync a student's
+         score across devices. Returns 404 for missing or (non-admin) blocked
+         usernames so clients can distinguish "no record" from "server down". */
+      const qUname = req.query && req.query.username;
+      if (qUname) {
+        const target = normUname(qUname);
+        if (!target) { res.status(400).json({ error: 'invalid username' }); return; }
+        const value = await redis.hget(KEY, target);
+        if (!value) { res.status(404).json({ error: 'not_found' }); return; }
+        const isBlocked = await redis.sismember(BLOCK_KEY, target);
+        if (isBlocked && !adminView) { res.status(404).json({ error: 'not_found' }); return; }
+        const p = typeof value === 'string' ? JSON.parse(value) : value;
+        const entry = {
+          username: target,
+          name: p.name,
+          avatar: p.avatar,
+          grade: p.grade,
+          totalPoints: p.totalPoints | 0,
+          quizzesCompleted: p.quizzesCompleted | 0,
+          correctAnswers: p.correctAnswers | 0,
+          totalQuestions: p.totalQuestions | 0,
+          perfectRuns: p.perfectRuns | 0,
+          bestScore: p.bestScore | 0,
+          highestLevel: clampLegacyLevel(p.highestLevel),
+          trophies: p.trophies | 0,
+          fastestAnswerMs: p.fastestAnswerMs || null,
+          joinedAt: p.joinedAt || null,
+          lastPlayed: p.lastPlayed || null,
+          subjectsPlayed: p.subjectsPlayed || {},
+        };
+        if (adminView) entry.blocked = isBlocked;
+        res.setHeader('Cache-Control', 'no-store');
+        res.status(200).json({ player: entry });
+        return;
+      }
+
       const raw = await redis.hgetall(KEY);
       const blockedList = await redis.smembers(BLOCK_KEY);
       const blocked = new Set((blockedList || []).map(u => String(u).toLowerCase()));

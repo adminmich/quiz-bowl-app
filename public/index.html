@@ -1817,6 +1817,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   document.getElementById('inGrade').value = '';
   renderWho();
   show('home');
+  hydrateStudentFromServer(all[id]);
 });
 
 /* Switch between student and admin login forms on the login screen. */
@@ -1871,6 +1872,7 @@ document.getElementById('adminLoginBtn').addEventListener('click', () => {
   showLoginForm('student'); // reset visibility for next time
   renderWho();
   show('home');
+  hydrateStudentFromServer(existing);
 });
 /* Pressing Enter in the admin password field submits. */
 document.getElementById('inAdminPass').addEventListener('keydown', e => {
@@ -1911,6 +1913,51 @@ function renderAchievements() {
 /* ============================ Leaderboard (global) ============================
    Fetches from /api/leaderboard (backed by Upstash Redis). Falls back to
    local-only leaderboard if the network or API is unavailable. */
+
+/* Pull this student's server-side stats and max-merge them into the local
+   record so the same username sees the same score on any device. Numbers
+   move up only; fastestAnswerMs moves down (lower is better). Achievements
+   are per-device — only the trophy count is authoritative on the server. */
+async function hydrateStudentFromServer(student) {
+  if (!student || !student.username) return false;
+  try {
+    const r = await fetch('/api/leaderboard?username=' + encodeURIComponent(student.username), { cache: 'no-store' });
+    if (!r.ok) return false;
+    const j = await r.json();
+    const p = j && j.player;
+    if (!p) return false;
+    const s = student.stats = student.stats || {};
+    let changed = false;
+    const maxSet = (k, v) => {
+      const nv = Math.max(s[k] | 0, v | 0);
+      if (nv !== (s[k] | 0)) { s[k] = nv; changed = true; }
+    };
+    maxSet('totalPoints', p.totalPoints);
+    maxSet('totalQuestions', p.totalQuestions);
+    maxSet('correctAnswers', p.correctAnswers);
+    maxSet('quizzesCompleted', p.quizzesCompleted);
+    maxSet('perfectRuns', p.perfectRuns);
+    maxSet('bestScore', p.bestScore);
+    maxSet('highestLevel', p.highestLevel);
+    if (p.fastestAnswerMs && (s.fastestAnswerMs == null || p.fastestAnswerMs < s.fastestAnswerMs)) {
+      s.fastestAnswerMs = p.fastestAnswerMs;
+      changed = true;
+    }
+    if (p.subjectsPlayed && typeof p.subjectsPlayed === 'object') {
+      s.subjectsPlayed = s.subjectsPlayed || {};
+      for (const k of Object.keys(p.subjectsPlayed)) {
+        const cur = s.subjectsPlayed[k] | 0;
+        const inc = p.subjectsPlayed[k] | 0;
+        if (inc > cur) { s.subjectsPlayed[k] = inc; changed = true; }
+      }
+    }
+    if (changed) {
+      saveCurrentStudent(student);
+      renderWho();
+    }
+    return true;
+  } catch (_) { return false; }
+}
 
 async function syncMyScoreToGlobal(student) {
   if (!student || !student.username) return;
@@ -2195,7 +2242,8 @@ document.getElementById('adminUserRows').addEventListener('click', async e => {
 
 /* ============================ Boot ============================ */
 (function boot() {
-  if (currentStudent()) { renderWho(); show('home'); }
+  const booted = currentStudent();
+  if (booted) { renderWho(); show('home'); hydrateStudentFromServer(booted); }
   else { show('login'); }
   document.addEventListener('click', () => Sound.unlock(), { once: true });
 

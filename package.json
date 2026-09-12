@@ -1,0 +1,10 @@
+{
+  "name": "quiz-bowl-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Online quiz bowl app for grades 5-12 with mixed subjects, difficulty levels, and audio.",
+  "scripts": {
+    "dev": "npx serve public -l 3000",
+    "start": "npx serve public -l 3000"
+  }
+}

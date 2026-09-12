@@ -934,6 +934,7 @@
       <div class="stat-pill"><div class="val" id="adminTotalQuizzes">0</div><div class="lbl">Quizzes</div></div>
       <div class="stat-pill"><div class="val" id="adminTotalQuestions">0</div><div class="lbl">Answers</div></div>
       <div class="stat-pill"><div class="val" id="adminBandwidth">0 MB</div><div class="lbl">Est. Bandwidth</div></div>
+      <div class="stat-pill"><div class="val" id="adminBandwidthRemaining">100 GB</div><div class="lbl">Remaining</div></div>
     </div>
     <p class="lead" id="adminCapNote" style="font-size:12px;margin-top:8px;">Free tier cap: 100 GB / month.</p>
 
@@ -2123,6 +2124,7 @@ async function renderLeaderboard() {
 const BW_KB_PAGE_LOAD = 180;
 const BW_KB_QUIZ_POST = 0.6;
 const BW_KB_LB_FETCH  = 1.5;
+const BW_CAP_KB       = 100 * 1024 * 1024; // Vercel free tier: 100 GB / month
 
 function estimateBandwidthKB(quizzes) {
   const pageLoads = Math.max(1, quizzes);              // ~1 fresh page per quiz session
@@ -2159,10 +2161,15 @@ async function renderAdmin() {
     document.getElementById('adminTotalQuizzes').textContent = totalQuizzes;
     document.getElementById('adminTotalQuestions').textContent = totalAnswers;
     document.getElementById('adminBandwidth').textContent = formatKB(globalKB);
-    const pctOfCap = ((globalKB / 1024 / 1024) / 100 * 100).toFixed(4);
+    const remainingKB = Math.max(0, BW_CAP_KB - globalKB);
+    const remainingEl = document.getElementById('adminBandwidthRemaining');
+    remainingEl.textContent = globalKB >= BW_CAP_KB ? '0 KB' : formatKB(remainingKB);
+    const pctUsed = (globalKB / BW_CAP_KB) * 100;
+    const pctRemaining = 100 - pctUsed;
     document.getElementById('adminCapNote').textContent =
-      'Free tier: 100 GB / month. Estimated global usage so far: ' + formatKB(globalKB) +
-      ' (~' + pctOfCap + '% of cap).';
+      'Free tier: 100 GB / month. Used ' + formatKB(globalKB) +
+      ' (' + pctUsed.toFixed(4) + '%). Remaining ' + formatKB(remainingKB) +
+      ' (' + pctRemaining.toFixed(4) + '%).';
 
     rowsEl.innerHTML = '';
     const sorted = players.slice().sort((a, b) => (b.totalPoints | 0) - (a.totalPoints | 0));

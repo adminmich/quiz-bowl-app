@@ -214,6 +214,10 @@
   .tile.level {
     background: linear-gradient(135deg, #f8fafc, white);
   }
+  .tile.level.g1  { border-color: #fde68a; background: linear-gradient(135deg, #fef9c3, #fef3c7); }
+  .tile.level.g2  { border-color: #fbbf24; background: linear-gradient(135deg, #fef3c7, #fed7aa); }
+  .tile.level.g3  { border-color: #fb923c; background: linear-gradient(135deg, #ffedd5, #fed7aa); }
+  .tile.level.g4  { border-color: #4ade80; background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
   .tile.level.g5  { border-color: #a3e635; }
   .tile.level.g6  { border-color: #22d3ee; }
   .tile.level.g7  { border-color: #38bdf8; }
@@ -466,12 +470,16 @@
     <div class="row" style="margin-top:14px;">
       <div>
         <label for="inAge">Age</label>
-        <input id="inAge" type="number" min="5" max="20" placeholder="10" />
+        <input id="inAge" type="number" min="4" max="25" placeholder="10" />
       </div>
       <div>
         <label for="inGrade">Grade</label>
         <select id="inGrade">
           <option value="">Pick one</option>
+          <option value="1">Grade 1</option>
+          <option value="2">Grade 2</option>
+          <option value="3">Grade 3</option>
+          <option value="4">Grade 4</option>
           <option value="5">Grade 5</option>
           <option value="6">Grade 6</option>
           <option value="7">Grade 7</option>
@@ -745,8 +753,8 @@ const ACHIEVEMENTS = [
   { id:'speed_demon',  ico:'⚡', name:'Speed Demon',    desc:'Answer in under 3 seconds' },
   { id:'bookworm',     ico:'📚', name:'Bookworm',       desc:'Answer 50 questions total' },
   { id:'century',      ico:'💯', name:'Century Club',   desc:'Answer 100 questions total' },
-  { id:'level_up',     ico:'🚀', name:'Level Up',       desc:'Complete Level 3' },
-  { id:'champion',     ico:'👑', name:'Champion',       desc:'Complete Level 5' },
+  { id:'level_up',     ico:'🚀', name:'Level Up',       desc:'Complete Level 10' },
+  { id:'champion',     ico:'👑', name:'Champion',       desc:'Complete Level 28' },
   { id:'well_rounded', ico:'🌎', name:'Well-Rounded',   desc:'Play all 5 subjects' },
   { id:'hot_streak',   ico:'🔥', name:'Hot Streak',     desc:'Get 5 correct in a row' },
   { id:'perfectionist',ico:'💎', name:'Perfectionist',  desc:'Get 3 perfect scores' },
@@ -763,8 +771,8 @@ function checkAchievements(student, runInfo) {
   if (runInfo.fastestAnswerMs !== null && runInfo.fastestAnswerMs < 3000) add('speed_demon');
   if (s.totalQuestions >= 50) add('bookworm');
   if (s.totalQuestions >= 100) add('century');
-  if (s.highestLevel >= 3) add('level_up');
-  if (s.highestLevel >= 5) add('champion');
+  if (s.highestLevel >= 10) add('level_up');
+  if (s.highestLevel >= 28) add('champion');
   if (Object.keys(s.subjectsPlayed).filter(k => k !== 'mixed').length >= 5) add('well_rounded');
   if (runInfo.maxStreak >= 5) add('hot_streak');
   if (s.perfectRuns >= 3) add('perfectionist');
@@ -901,7 +909,12 @@ function renderGrades() {
 }
 
 /* ============================ Render: levels ============================ */
-const LEVEL_ICON = {1:'🐣',2:'🐣',3:'🐣',4:'🌱',5:'🌱',6:'🌱',7:'🍀',8:'🍀',9:'🍀',10:'🌟',11:'🌟',12:'🌟',13:'🔥',14:'🔥',15:'⚡',16:'⚡',17:'💎',18:'💎',19:'👑',20:'🏆'};
+const LEVEL_ICON = {
+  1:'🍎',2:'🍎',3:'🎈',4:'🎈',5:'🧸',6:'🧸',7:'🎨',8:'🎨',
+  9:'🐣',10:'🐣',11:'🐣',12:'🌱',13:'🌱',14:'🌱',
+  15:'🍀',16:'🍀',17:'🍀',18:'🌟',19:'🌟',20:'🌟',
+  21:'🔥',22:'🔥',23:'⚡',24:'⚡',25:'💎',26:'💎',27:'👑',28:'🏆'
+};
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
@@ -910,8 +923,8 @@ function renderLevels() {
   let levels;
   if (filter === 'all') {
     levels = [];
-    for (let L = 1; L <= 20; L++) levels.push(L);
-    lead.textContent = 'All 20 levels across every grade. Pick any!';
+    for (let L = 1; L <= 28; L++) levels.push(L);
+    lead.textContent = 'All 28 levels across every grade. Pick any!';
   } else {
     levels = Object.entries(window.LEVEL_GRADE)
       .filter(([, g]) => g === filter)
@@ -946,11 +959,12 @@ const state = {
   answered: false, points: 0,
   qStartMs: 0, fastestAnswerMs: null,
 };
-/* Default is 20s per question. Higher levels tighten it a bit. */
+/* Default is 20s per question. Very young grades get more time; very high levels tighten. */
 function timePerQuestion(level) {
-  if (level <= 15) return 20;
-  if (level <= 18) return 18;
-  return 15;
+  if (level <= 4) return 25;   // Grade 1-2: extra time
+  if (level <= 22) return 20;  // Default 20s across grade 3 through grade 9
+  if (level <= 25) return 18;  // Grade 10-11
+  return 15;                   // Grade 12
 }
 
 /* Strict per-level pool. Each question appears in exactly one level, so no cross-level repeat. */
@@ -1171,7 +1185,7 @@ function finishQuiz() {
   });
 
   const nextBtn = document.getElementById('nextLevelBtn');
-  if (state.level < 20) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
+  if (state.level < 28) nextBtn.textContent = 'Next Level (L' + (state.level + 1) + ') →';
   else nextBtn.textContent = 'Play Again ↻';
 
   Sound.victory();
@@ -1192,16 +1206,15 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  let nextLevel = state.level < 20 ? state.level + 1 : state.level;
-  // If the immediate next level has no questions for this subject, hop to the next level that does
-  while (nextLevel <= 20) {
+  let nextLevel = state.level < 28 ? state.level + 1 : state.level;
+  while (nextLevel <= 28) {
     const pool = window.QUESTIONS.filter(q =>
       q.level === nextLevel && (state.subject === 'mixed' || q.subject === state.subject)
     );
     if (pool.length > 0) break;
     nextLevel++;
   }
-  if (nextLevel > 20) nextLevel = state.level;
+  if (nextLevel > 28) nextLevel = state.level;
   startQuiz(nextLevel);
 });
 
@@ -1211,7 +1224,7 @@ document.getElementById('loginBtn').addEventListener('click', () => {
   const age = parseInt(document.getElementById('inAge').value, 10);
   const grade = parseInt(document.getElementById('inGrade').value, 10);
   if (!name) { alert('Please enter your name!'); return; }
-  if (!age || age < 5 || age > 25) { alert('Please enter your age!'); return; }
+  if (!age || age < 4 || age > 25) { alert('Please enter your age!'); return; }
   if (!grade) { alert('Please pick your grade!'); return; }
   const id = makeStudentId(name, grade);
   const all = loadStudents();

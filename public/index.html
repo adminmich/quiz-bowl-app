@@ -1520,11 +1520,23 @@ function questionsInTier(subject, tier) {
   );
 }
 
+/* Cap difficulty by grade band: grades 1-4 top out at Medium (L3); grades
+   5-12 (and admins, whose profile is grade 12) see all five tiers. */
+function maxTierForGrade(grade) {
+  const g = Number(grade) || 0;
+  if (g >= 1 && g <= 4) return 3;
+  return TIER_COUNT;
+}
+
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
+  const student = currentStudent();
+  const maxTier = student ? maxTierForGrade(student.grade) : TIER_COUNT;
   document.getElementById('levelLead').textContent =
-    'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
+    maxTier < TIER_COUNT
+      ? 'Levels 1-' + maxTier + ' are open for your grade. Higher levels unlock as you move up in school.'
+      : 'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
 
   /* Count per tier uses the grade-scoped mixed pool so the tile shows a
      realistic per-tier size; General Knowledge itself ignores this filter
@@ -1535,12 +1547,15 @@ function renderLevels() {
     const tierScopedCount = window.QUESTIONS.filter(q => tierGrades.has(q.grade)).length;
     const el = document.createElement('div');
     el.className = 'tile level ' + info.cls;
-    const disabled = tierScopedCount === 0;
+    const lockedByGrade = t > maxTier;
+    const disabled = tierScopedCount === 0 || lockedByGrade;
     if (disabled) el.style.opacity = '0.4';
+    if (lockedByGrade) el.style.cursor = 'not-allowed';
+    const lockNote = lockedByGrade ? ' • 🔒 unlocks in a higher grade' : '';
     el.innerHTML =
       `<span class="ico">${info.ico}</span>` +
       `<div class="name">Level ${t} • ${info.label}</div>` +
-      `<div class="desc">${info.timeS}s per Q • ${tierScopedCount} q${tierScopedCount !== 1 ? 's' : ''} across all subjects</div>`;
+      `<div class="desc">${info.timeS}s per Q • ${tierScopedCount} q${tierScopedCount !== 1 ? 's' : ''} across all subjects${lockNote}</div>`;
     if (!disabled) el.addEventListener('click', () => { state.level = t; show('subject'); });
     grid.appendChild(el);
   }
@@ -1811,15 +1826,18 @@ function finishQuiz() {
             : 'Practice makes perfect! You got this 🚀';
   document.getElementById('rMsg').textContent = msg;
 
-  /* Passing threshold is 70% (7/10 on a standard quiz). Pass unlocks the
-     "Next Level" button; fail restricts the student to a re-take. */
+  /* Passing threshold is 70% (7/10 on a standard quiz). Badge always shows.
+     Progression is gated only for General Knowledge — other subjects always
+     offer Next Level and Change Subject regardless of pass/fail. */
   const passed = pct >= 70;
+  const isGK = state.subject === 'mixed';
+  const restrictToRetake = isGK && !passed;
   const badge = document.getElementById('rBadge');
   badge.textContent = passed ? 'PASSED' : 'FAILED';
   badge.className = 'result-badge ' + (passed ? 'pass' : 'fail');
-  document.getElementById('nextLevelBtn').classList.toggle('hidden', !passed);
-  document.getElementById('changeSubjectBtn').classList.toggle('hidden', !passed);
-  document.getElementById('retakeBtn').classList.toggle('hidden', passed);
+  document.getElementById('nextLevelBtn').classList.toggle('hidden', restrictToRetake);
+  document.getElementById('changeSubjectBtn').classList.toggle('hidden', restrictToRetake);
+  document.getElementById('retakeBtn').classList.toggle('hidden', !restrictToRetake);
   document.getElementById('rTitle').textContent = passed
     ? (perfect ? 'Level Complete! 🎊✨' : 'Level Complete! 🎉')
     : 'Try Again 💪';
@@ -1862,12 +1880,14 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  let nextLevel = state.level < TIER_COUNT ? state.level + 1 : state.level;
-  while (nextLevel <= TIER_COUNT) {
+  const student = currentStudent();
+  const cap = student ? maxTierForGrade(student.grade) : TIER_COUNT;
+  let nextLevel = state.level < cap ? state.level + 1 : state.level;
+  while (nextLevel <= cap) {
     if (questionsInTier(state.subject, nextLevel).length > 0) break;
     nextLevel++;
   }
-  if (nextLevel > TIER_COUNT) nextLevel = state.level;
+  if (nextLevel > cap) nextLevel = state.level;
   startQuiz(nextLevel);
 });
 document.getElementById('retakeBtn').addEventListener('click', () => {

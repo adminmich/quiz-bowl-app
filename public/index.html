@@ -858,10 +858,10 @@
     <h2 id="homeGreeting">Welcome back!</h2>
     <p class="lead">Ready for more fun? Pick something to do below.</p>
     <div class="hub-grid">
-      <div class="hub-tile play" data-nav="subject">
+      <div class="hub-tile play" data-nav="level">
         <span class="ico">🎮</span>
         <div class="name">Play Quiz</div>
-        <div class="desc">Pick a subject</div>
+        <div class="desc">Pick your difficulty</div>
       </div>
       <div class="hub-tile trophy" data-nav="achievements">
         <span class="ico">🏆</span>
@@ -959,9 +959,9 @@
   <!-- SUBJECT -->
   <section id="screen-subject" class="card hidden">
     <h2>Choose a Subject 📚</h2>
-    <p class="lead">Pick one, or try Mixed for a challenge across all subjects!</p>
+    <p class="lead" id="subjectLead">Pick one, or try Mixed for a challenge across all subjects!</p>
     <div class="grid" id="subjectGrid"></div>
-    <button class="btn ghost" data-nav="home" style="margin-top:20px;">← Back to Home</button>
+    <button class="btn ghost" data-nav="level" style="margin-top:20px;">← Back to Difficulty</button>
   </section>
 
   <!-- GRADE PICKER -->
@@ -977,7 +977,7 @@
     <h2>Pick Your Difficulty 🎯</h2>
     <p class="lead" id="levelLead">Each level is harder than the last. Same time, tougher questions!</p>
     <div class="grid" id="levelGrid"></div>
-    <button class="btn ghost" data-nav="grade" style="margin-top:20px;">← Back to Grades</button>
+    <button class="btn ghost" data-nav="home" style="margin-top:20px;">← Back to Home</button>
   </section>
 
   <!-- QUIZ -->
@@ -1397,12 +1397,34 @@ function renderSubjects() {
     filipino:{cls:'filipino', ico:'📝', desc:'Wika at panitikan'},
     mapeh:{cls:'mapeh', ico:'🎵', desc:'Music, Arts, PE, Health'},
   };
+  /* Difficulty is chosen before the subject, so scope each tile's question
+     count to the current tier and disable subjects that have no questions
+     at that level. */
+  const tier = state.level || 1;
+  const info = TIER_INFO[tier] || TIER_INFO[1];
+  const lead = document.getElementById('subjectLead');
+  if (lead) {
+    lead.textContent =
+      'Difficulty: Level ' + tier + ' ' + info.label + ' ' + info.ico +
+      ' • ' + info.timeS + 's per question. Each tile shows how many questions are available at this level.';
+  }
   window.SUBJECTS.forEach(s => {
     const st = styles[s.id] || {cls:'', ico:'⭐', desc:''};
+    const pool = questionsInTier(s.id, tier);
     const el = document.createElement('div');
     el.className = 'tile ' + st.cls;
-    el.innerHTML = `<span class="ico">${st.ico}</span><div class="name">${s.label}</div><div class="desc">${st.desc}</div>`;
-    el.addEventListener('click', () => { state.subject = s.id; show('level'); });
+    const countLbl = pool.length + ' question' + (pool.length === 1 ? '' : 's') + ' at L' + tier;
+    el.innerHTML =
+      `<span class="ico">${st.ico}</span>` +
+      `<div class="name">${s.label}</div>` +
+      `<div class="desc">${st.desc}</div>` +
+      `<div class="desc" style="margin-top:6px;font-weight:700;">${countLbl}</div>`;
+    if (pool.length === 0) {
+      el.style.opacity = '0.4';
+      el.style.cursor = 'not-allowed';
+    } else {
+      el.addEventListener('click', () => { state.subject = s.id; startQuiz(tier); });
+    }
     grid.appendChild(el);
   });
 }
@@ -1469,11 +1491,13 @@ function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
   document.getElementById('levelLead').textContent =
-    '5 levels from easiest to hardest. Higher levels = tougher questions + less time.';
+    'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
 
+  /* Count across every subject at this tier, since the subject is chosen
+     after difficulty in the current flow. */
   for (let t = 1; t <= TIER_COUNT; t++) {
     const info = TIER_INFO[t];
-    const pool = questionsInTier(state.subject, t);
+    const pool = questionsInTier('mixed', t);
     const el = document.createElement('div');
     el.className = 'tile level ' + info.cls;
     const disabled = pool.length === 0;
@@ -1481,8 +1505,8 @@ function renderLevels() {
     el.innerHTML =
       `<span class="ico">${info.ico}</span>` +
       `<div class="name">Level ${t} • ${info.label}</div>` +
-      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''}</div>`;
-    if (!disabled) el.addEventListener('click', () => startQuiz(t));
+      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''} across all subjects</div>`;
+    if (!disabled) el.addEventListener('click', () => { state.level = t; show('subject'); });
     grid.appendChild(el);
   }
 }

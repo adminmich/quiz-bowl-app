@@ -2266,7 +2266,7 @@ window.QUESTIONS = [
 ];
 
 window.SUBJECTS = [
-  { id:'mixed',     label:'Mixed Subjects' },
+  { id:'mixed',     label:'General Knowledge' },
   { id:'math',      label:'Math' },
   { id:'science',   label:'Science' },
   { id:'english',   label:'English' },

@@ -457,6 +457,20 @@
   .score-hero .big small { font-size: 34px; color: var(--muted); font-weight: 500; text-shadow: none; }
   .score-hero .pct { color: var(--muted); margin-top: 8px; font-size: 16px; }
   .score-hero .msg { color: var(--grape); font-weight: 600; font-size: 20px; margin-top: 10px; }
+  .result-badge {
+    display: inline-block; margin-top: 12px;
+    padding: 8px 22px; border-radius: 999px;
+    font-weight: 800; font-size: 18px; letter-spacing: 2px;
+    border: 3px solid transparent;
+  }
+  .result-badge.pass {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #065f46; border-color: #16a34a;
+  }
+  .result-badge.fail {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b; border-color: #ef4444;
+  }
   .points-earned {
     display: inline-block; margin-top: 12px; padding: 10px 22px;
     background: linear-gradient(135deg, var(--sun), var(--peach));
@@ -1015,6 +1029,7 @@
     <div class="score-hero">
       <div class="big"><span id="rScore">0</span><small>/<span id="rTotal">10</span></small></div>
       <div class="pct" id="rPct">0%</div>
+      <div class="result-badge" id="rBadge">PASSED</div>
       <div class="msg" id="rMsg"></div>
       <div class="points-earned">+<span id="rPoints">0</span> points earned!</div>
     </div>
@@ -1024,7 +1039,8 @@
 
     <div class="actions">
       <button class="btn ghost" data-nav="home">🏠 Home</button>
-      <button class="btn grape" data-nav="subject">Change Subject</button>
+      <button class="btn grape" id="changeSubjectBtn" data-nav="subject">Change Subject</button>
+      <button class="btn coral hidden" id="retakeBtn">↻ Re-take</button>
       <button class="btn sun" id="nextLevelBtn">Next Level →</button>
     </div>
   </section>
@@ -1387,7 +1403,7 @@ function renderSubjects() {
   const grid = document.getElementById('subjectGrid');
   grid.innerHTML = '';
   const styles = {
-    mixed:{cls:'rainbow', ico:'🌈', desc:'All subjects mixed!'},
+    mixed:{cls:'rainbow', ico:'🌈', desc:'All subjects, all grades — no limit!'},
     math:{cls:'math', ico:'🔢', desc:'Numbers, shapes, and more'},
     science:{cls:'science', ico:'🔬', desc:'How the world works'},
     english:{cls:'english', ico:'📖', desc:'Words and stories'},
@@ -1481,47 +1497,37 @@ const TIER_INFO = {
 const TIER_COUNT = 5;
 
 function questionsInTier(subject, tier) {
+  /* General Knowledge (subject 'mixed') is deliberately unbounded — it
+     draws from every subject and every grade regardless of tier. The tier
+     still governs time-per-question, but not the pool. */
+  if (subject === 'mixed') return window.QUESTIONS.slice();
   const grades = new Set(TIER_INFO[tier].grades);
   return window.QUESTIONS.filter(q =>
-    grades.has(q.grade) && (subject === 'mixed' || q.subject === subject)
+    grades.has(q.grade) && q.subject === subject
   );
-}
-
-/* Cap difficulty by the student's grade so younger players don't see tiers
-   built for older grade bands. Admins keep the full ladder because their
-   bootstrap profile is grade 12. */
-function maxTierForGrade(grade) {
-  const g = Number(grade) || 0;
-  if (g >= 1 && g <= 4) return 3;
-  return TIER_COUNT;
 }
 
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
-  const student = currentStudent();
-  const maxTier = student ? maxTierForGrade(student.grade) : TIER_COUNT;
   document.getElementById('levelLead').textContent =
-    maxTier < TIER_COUNT
-      ? 'Levels 1-' + maxTier + ' are open for your grade. Higher levels unlock as you move up in school.'
-      : 'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
+    'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
 
-  /* Count across every subject at this tier, since the subject is chosen
-     after difficulty in the current flow. */
+  /* Count per tier uses the grade-scoped mixed pool so the tile shows a
+     realistic per-tier size; General Knowledge itself ignores this filter
+     inside questionsInTier when the subject is actually 'mixed'. */
   for (let t = 1; t <= TIER_COUNT; t++) {
     const info = TIER_INFO[t];
-    const pool = questionsInTier('mixed', t);
+    const tierGrades = new Set(info.grades);
+    const tierScopedCount = window.QUESTIONS.filter(q => tierGrades.has(q.grade)).length;
     const el = document.createElement('div');
     el.className = 'tile level ' + info.cls;
-    const lockedByGrade = t > maxTier;
-    const disabled = pool.length === 0 || lockedByGrade;
+    const disabled = tierScopedCount === 0;
     if (disabled) el.style.opacity = '0.4';
-    if (lockedByGrade) el.style.cursor = 'not-allowed';
-    const lockNote = lockedByGrade ? ' • 🔒 unlocks in a higher grade' : '';
     el.innerHTML =
       `<span class="ico">${info.ico}</span>` +
       `<div class="name">Level ${t} • ${info.label}</div>` +
-      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''} across all subjects${lockNote}</div>`;
+      `<div class="desc">${info.timeS}s per Q • ${tierScopedCount} q${tierScopedCount !== 1 ? 's' : ''} across all subjects</div>`;
     if (!disabled) el.addEventListener('click', () => { state.level = t; show('subject'); });
     grid.appendChild(el);
   }
@@ -1560,7 +1566,10 @@ function startQuiz(tier) {
   state.level = tier;
   state.timePerQ = timePerQuestion(tier);
   const pool = questionsInTier(state.subject, tier);
-  state.totalQ = Math.min(pool.length, 10);
+  /* General Knowledge quizzes are longer so the "no limit" pool actually
+     shows up as a broader session; per-subject quizzes stay at 10 Qs. */
+  const perSessionCap = state.subject === 'mixed' ? 20 : 10;
+  state.totalQ = Math.min(pool.length, perSessionCap);
   state.questions = pickQuestions(state.subject, tier, state.totalQ);
   state.idx = 0; state.score = 0; state.wrong = [];
   state.streak = 0; state.maxStreak = 0; state.points = 0;
@@ -1783,7 +1792,19 @@ function finishQuiz() {
             : pct >= 40  ? 'Good try! Play again to level up 💪'
             : 'Practice makes perfect! You got this 🚀';
   document.getElementById('rMsg').textContent = msg;
-  document.getElementById('rTitle').textContent = perfect ? 'Level Complete! 🎊✨' : 'Level Complete! 🎉';
+
+  /* Passing threshold is 70% (7/10 on a standard quiz). Pass unlocks the
+     "Next Level" button; fail restricts the student to a re-take. */
+  const passed = pct >= 70;
+  const badge = document.getElementById('rBadge');
+  badge.textContent = passed ? 'PASSED' : 'FAILED';
+  badge.className = 'result-badge ' + (passed ? 'pass' : 'fail');
+  document.getElementById('nextLevelBtn').classList.toggle('hidden', !passed);
+  document.getElementById('changeSubjectBtn').classList.toggle('hidden', !passed);
+  document.getElementById('retakeBtn').classList.toggle('hidden', passed);
+  document.getElementById('rTitle').textContent = passed
+    ? (perfect ? 'Level Complete! 🎊✨' : 'Level Complete! 🎉')
+    : 'Try Again 💪';
 
   const list = document.getElementById('reviewList');
   list.innerHTML = '';
@@ -1823,15 +1844,18 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  const student = currentStudent();
-  const cap = student ? maxTierForGrade(student.grade) : TIER_COUNT;
-  let nextLevel = state.level < cap ? state.level + 1 : state.level;
-  while (nextLevel <= cap) {
+  let nextLevel = state.level < TIER_COUNT ? state.level + 1 : state.level;
+  while (nextLevel <= TIER_COUNT) {
     if (questionsInTier(state.subject, nextLevel).length > 0) break;
     nextLevel++;
   }
-  if (nextLevel > cap) nextLevel = state.level;
+  if (nextLevel > TIER_COUNT) nextLevel = state.level;
   startQuiz(nextLevel);
+});
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  /* Replay the same subject at the same level so a failed student stays
+     on the current tier until they pass. */
+  startQuiz(state.level);
 });
 
 /* ============================ Login ============================ */

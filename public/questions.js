@@ -2263,6 +2263,134 @@ window.QUESTIONS = [
   { subject:"filipino", grade:12, level:28, type:"mc", q:"Maikling patulang palaisipan na naglalarawan ng bagay sa pamamagitan ng talinghaga.", choices:["mabilis","bugtong","marikit","panloob"], a:"bugtong", e:"Ang bugtong ay bahagi ng panitikang bayan na sumusubok sa talas ng isip." },
   { subject:"araling", grade:6, level:13, type:"mc", q:"Ang unang babaeng Pangulo ng Pilipinas matapos ang EDSA Revolution.", choices:["Corazon Aquino","Galleon Trade","Hieroglyphics","Global cooling"], a:"Corazon Aquino", e:"Si Corazon Aquino ang naging unang babaeng pangulo mula 1986 hanggang 1992." },
   { subject:"mapeh", grade:9, level:21, type:"mc", q:"Ang standard na haba ng olympic-size swimming pool ay ____ meters.", choices:["3","8","1","50"], a:"50", e:"An Olympic-size swimming pool is 50 meters long, with 8 to 10 lanes." },
+
+  /* ================= MATATAG curriculum expansion (Math + Science, G5-G10) ================= */
+
+  /* ---- MATH G5 ---- */
+  { subject:"math", grade:5, level:9, type:"mc", q:"On a 24-hour clock, 3:00 PM is written as ____.", choices:["03:00","13:00","15:00","30:00"], a:"15:00", e:"Add 12 to any PM hour: 3 + 12 = 15, so 3:00 PM is 15:00." },
+  { subject:"math", grade:5, level:9, type:"mc", q:"The area of a triangle with base 10 cm and height 6 cm is ____ square cm.", choices:["16","30","60","100"], a:"30", e:"Area = (1/2) × base × height = (1/2) × 10 × 6 = 30 sq cm." },
+  { subject:"math", grade:5, level:9, type:"mc", q:"Following GMDAS, what is 8 + 2 × 3?", choices:["30","14","10","16"], a:"14", e:"Multiply first: 2 × 3 = 6, then add: 8 + 6 = 14." },
+  { subject:"math", grade:5, level:10, type:"mc", q:"What is 2/3 × 3/4?", choices:["6/7","5/12","1/2","2/4"], a:"1/2", e:"Multiply numerators and denominators: (2×3)/(3×4) = 6/12 = 1/2." },
+  { subject:"math", grade:5, level:10, type:"mc", q:"Divide: 1/2 ÷ 1/4 = ____.", choices:["1/8","2","4","1/2"], a:"2", e:"Divide by inverting and multiplying: 1/2 × 4/1 = 4/2 = 2." },
+  { subject:"math", grade:5, level:10, type:"mc", q:"The decimal 0.35 is equivalent to which fraction?", choices:["3/5","7/20","35/10","1/35"], a:"7/20", e:"0.35 = 35/100 = 7/20 after simplifying by 5." },
+  { subject:"math", grade:5, level:11, type:"mc", q:"Which number is divisible by both 3 and 4?", choices:["14","18","24","30"], a:"24", e:"24 ÷ 3 = 8 and 24 ÷ 4 = 6; both divide evenly." },
+  { subject:"math", grade:5, level:11, type:"mc", q:"Which of these is a prime number?", choices:["9","15","21","23"], a:"23", e:"A prime has exactly two factors: 1 and itself. 23 has no divisors between 1 and 23." },
+  { subject:"math", grade:5, level:11, type:"mc", q:"A rectangular prism has ____ faces, 12 edges, and 8 vertices.", choices:["4","5","6","8"], a:"6", e:"A rectangular prism has 6 flat rectangular faces." },
+
+  /* ---- MATH G6 ---- */
+  { subject:"math", grade:6, level:12, type:"mc", q:"Which regular shape can tessellate a flat surface with no gaps?", choices:["Regular pentagon","Regular octagon","Regular hexagon","Circle"], a:"Regular hexagon", e:"Only the equilateral triangle, square, and regular hexagon tessellate on their own." },
+  { subject:"math", grade:6, level:12, type:"mc", q:"When you multiply a decimal by 0.01, the decimal point moves ____ places to the left.", choices:["1","2","3","0"], a:"2", e:"Multiplying by 0.01 = dividing by 100, so shift the point two places to the left." },
+  { subject:"math", grade:6, level:12, type:"mc", q:"What is 5.6 × 100?", choices:["0.56","56","560","5600"], a:"560", e:"Multiplying by 100 moves the decimal two places to the right." },
+  { subject:"math", grade:6, level:13, type:"mc", q:"In the ratio 3:4, if the first term is 12, what is the second term?", choices:["8","9","16","20"], a:"16", e:"3:4 scaled by 4 gives 12:16, keeping the same ratio." },
+  { subject:"math", grade:6, level:13, type:"mc", q:"What is 25% of 80?", choices:["20","25","40","55"], a:"20", e:"25% = 1/4, and 80 ÷ 4 = 20." },
+  { subject:"math", grade:6, level:13, type:"mc", q:"The volume of a cube with side length 4 cm is ____ cubic cm.", choices:["12","16","32","64"], a:"64", e:"Volume of a cube = side³ = 4 × 4 × 4 = 64." },
+  { subject:"math", grade:6, level:14, type:"mc", q:"2³ (2 to the power of 3) equals ____.", choices:["5","6","8","9"], a:"8", e:"2 × 2 × 2 = 8." },
+  { subject:"math", grade:6, level:14, type:"mc", q:"The GCF (greatest common factor) of 12 and 18 is ____.", choices:["2","3","6","12"], a:"6", e:"Factors of 12: 1,2,3,4,6,12. Factors of 18: 1,2,3,6,9,18. Greatest shared factor is 6." },
+  { subject:"math", grade:6, level:14, type:"mc", q:"The circumference of a circle with radius 7 cm (using π ≈ 22/7) is ____ cm.", choices:["22","44","49","154"], a:"44", e:"C = 2πr = 2 × 22/7 × 7 = 44 cm." },
+
+  /* ---- MATH G7 ---- */
+  { subject:"math", grade:7, level:15, type:"mc", q:"A regular hexagon has ____ interior angles that each measure 120°.", choices:["4","5","6","8"], a:"6", e:"A hexagon has 6 sides and 6 interior angles; each interior angle of a regular hexagon is 120°." },
+  { subject:"math", grade:7, level:15, type:"mc", q:"If a shirt costs ₱500 and is marked up by 20%, the new price is ____.", choices:["₱520","₱600","₱620","₱700"], a:"₱600", e:"20% of 500 = 100. New price = 500 + 100 = ₱600." },
+  { subject:"math", grade:7, level:15, type:"mc", q:"The fraction 3/4 as a decimal is ____.", choices:["0.34","0.43","0.75","0.34"], a:"0.75", e:"3 ÷ 4 = 0.75." },
+  { subject:"math", grade:7, level:16, type:"mc", q:"The square root of 81 is ____.", choices:["7","8","9","10"], a:"9", e:"9 × 9 = 81." },
+  { subject:"math", grade:7, level:16, type:"mc", q:"The cube root of 27 is ____.", choices:["3","4","6","9"], a:"3", e:"3 × 3 × 3 = 27." },
+  { subject:"math", grade:7, level:16, type:"mc", q:"In a Venn diagram, the region shared by two sets is called their ____.", choices:["union","difference","intersection","complement"], a:"intersection", e:"The intersection A ∩ B contains elements common to both sets." },
+  { subject:"math", grade:7, level:17, type:"mc", q:"Simplify: -5 + (-3) × 2.", choices:["-16","-11","-1","6"], a:"-11", e:"Multiply first: -3 × 2 = -6. Then -5 + (-6) = -11." },
+  { subject:"math", grade:7, level:17, type:"mc", q:"The absolute value |-9| is ____.", choices:["-9","0","1","9"], a:"9", e:"Absolute value is the distance from zero, always non-negative." },
+  { subject:"math", grade:7, level:17, type:"mc", q:"The number 6,500,000 in scientific notation is ____.", choices:["6.5 × 10^5","6.5 × 10^6","65 × 10^5","0.65 × 10^7"], a:"6.5 × 10^6", e:"Move the decimal six places left: 6,500,000 = 6.5 × 10⁶." },
+
+  /* ---- MATH G8 ---- */
+  { subject:"math", grade:8, level:18, type:"mc", q:"Expand (x + 3)².", choices:["x² + 9","x² + 3x + 9","x² + 6x + 9","x² + 6x + 3"], a:"x² + 6x + 9", e:"Square of a binomial: (a+b)² = a² + 2ab + b² = x² + 6x + 9." },
+  { subject:"math", grade:8, level:18, type:"mc", q:"Factor: x² - 25.", choices:["(x-5)(x-5)","(x+5)(x-5)","(x-25)(x+1)","(x+5)²"], a:"(x+5)(x-5)", e:"Difference of two squares: a² - b² = (a+b)(a-b)." },
+  { subject:"math", grade:8, level:18, type:"mc", q:"The mean of 4, 6, 8, 10 is ____.", choices:["6","7","8","28"], a:"7", e:"Mean = (4+6+8+10) / 4 = 28/4 = 7." },
+  { subject:"math", grade:8, level:19, type:"mc", q:"A right triangle has legs 3 and 4. Its hypotenuse is ____.", choices:["5","6","7","12"], a:"5", e:"By the Pythagorean theorem: √(3² + 4²) = √25 = 5." },
+  { subject:"math", grade:8, level:19, type:"mc", q:"The distance between (0,0) and (6,8) on the coordinate plane is ____.", choices:["7","10","14","48"], a:"10", e:"Distance = √((6-0)² + (8-0)²) = √(36+64) = √100 = 10." },
+  { subject:"math", grade:8, level:19, type:"mc", q:"The volume of a sphere with radius 3 cm (V = 4/3 π r³) using π ≈ 3.14 is about ____ cubic cm.", choices:["28.3","36","113","113.04"], a:"113.04", e:"V = 4/3 × 3.14 × 27 = 4/3 × 84.78 ≈ 113.04." },
+  { subject:"math", grade:8, level:20, type:"mc", q:"Solve for y: 2x + y = 10 when x = 3.", choices:["1","2","4","7"], a:"4", e:"2(3) + y = 10 → 6 + y = 10 → y = 4." },
+  { subject:"math", grade:8, level:20, type:"mc", q:"Which inequality does the number 5 satisfy?", choices:["x < 3","x > 8","x ≥ 5","x ≤ 4"], a:"x ≥ 5", e:"5 is greater than or equal to 5, satisfying x ≥ 5." },
+  { subject:"math", grade:8, level:20, type:"mc", q:"Rolling one fair six-sided die, the probability of getting a 3 is ____.", choices:["1/2","1/3","1/6","3/6"], a:"1/6", e:"There is 1 favorable outcome out of 6 equally likely outcomes." },
+
+  /* ---- MATH G9 ---- */
+  { subject:"math", grade:9, level:21, type:"mc", q:"Two parallel lines cut by a transversal form pairs of ____ angles that are equal.", choices:["complementary","supplementary","corresponding","adjacent"], a:"corresponding", e:"Corresponding angles are on the same side of the transversal and are congruent when the lines are parallel." },
+  { subject:"math", grade:9, level:21, type:"mc", q:"For the linear function y = 2x + 3, the slope is ____.", choices:["1","2","3","5"], a:"2", e:"In y = mx + b, m is the slope; here m = 2." },
+  { subject:"math", grade:9, level:21, type:"mc", q:"A parallelogram has opposite sides that are ____.", choices:["perpendicular","parallel and equal","curved","all equal"], a:"parallel and equal", e:"Opposite sides of a parallelogram are both parallel and congruent." },
+  { subject:"math", grade:9, level:22, type:"mc", q:"Solve x² = 49.", choices:["x = 7 only","x = -7 only","x = ±7","x = 49"], a:"x = ±7", e:"Both 7² and (-7)² equal 49, so x can be 7 or -7." },
+  { subject:"math", grade:9, level:22, type:"mc", q:"In a 45-45-90 triangle, if each leg is 5, the hypotenuse is ____.", choices:["5","5√2","10","10√2"], a:"5√2", e:"For a 45-45-90 triangle, the hypotenuse is leg × √2 = 5√2." },
+  { subject:"math", grade:9, level:22, type:"mc", q:"For an acute angle A in a right triangle, sin A = opposite / ____.", choices:["adjacent","hypotenuse","tangent","cosine"], a:"hypotenuse", e:"SOH: sine = opposite over hypotenuse." },
+  { subject:"math", grade:9, level:22, type:"mc", q:"The value of tan 45° is ____.", choices:["0","0.5","1","√2"], a:"1", e:"tan 45° = sin 45°/cos 45° = 1." },
+
+  /* ---- MATH G10 ---- */
+  { subject:"math", grade:10, level:23, type:"mc", q:"Solve |x| = 4.", choices:["x = 4 only","x = -4 only","x = ±4","no solution"], a:"x = ±4", e:"|x| = 4 means x is 4 units from zero: x = 4 or x = -4." },
+  { subject:"math", grade:10, level:23, type:"mc", q:"Simplify √50.", choices:["25√2","5√2","2√5","10√5"], a:"5√2", e:"√50 = √(25 × 2) = 5√2." },
+  { subject:"math", grade:10, level:23, type:"mc", q:"For ax² + bx + c = 0, the quantity b² - 4ac is called the ____.", choices:["vertex","discriminant","axis","zero"], a:"discriminant", e:"The discriminant tells whether roots are real and distinct, real and equal, or complex." },
+  { subject:"math", grade:10, level:23, type:"mc", q:"The equation (x-2)² + (y+3)² = 16 describes a circle with center ____ and radius 4.", choices:["(2,-3)","(-2,3)","(2,3)","(0,0)"], a:"(2,-3)", e:"Center form (x-h)² + (y-k)² = r², so h=2, k=-3, r=√16 = 4." },
+  { subject:"math", grade:10, level:24, type:"mc", q:"The middle value of a data set is called the ____.", choices:["mean","median","mode","range"], a:"median", e:"The median splits an ordered data set into two equal halves." },
+  { subject:"math", grade:10, level:24, type:"mc", q:"On a box-and-whisker plot, the line inside the box marks the ____.", choices:["mean","median","range","mode"], a:"median", e:"The box's central line is the second quartile, which equals the median." },
+  { subject:"math", grade:10, level:24, type:"mc", q:"The interquartile range (IQR) is defined as ____.", choices:["Q1 + Q3","Q3 - Q1","Q2 + Q3","maximum - minimum"], a:"Q3 - Q1", e:"IQR measures the spread of the middle 50% of the data." },
+  { subject:"math", grade:10, level:24, type:"mc", q:"Two events A and B are independent if the outcome of A ____ the probability of B.", choices:["increases","decreases","does not affect","doubles"], a:"does not affect", e:"For independent events, P(A and B) = P(A) × P(B) because A's occurrence has no effect on B." },
+
+  /* ---- SCIENCE G5 ---- */
+  { subject:"science", grade:5, level:9, type:"mc", q:"Anything that has mass and takes up space is called ____.", choices:["energy","matter","gravity","force"], a:"matter", e:"Matter has both mass (the amount of stuff) and volume (the space it occupies)." },
+  { subject:"science", grade:5, level:9, type:"mc", q:"Volume of a liquid is commonly measured in ____.", choices:["kilograms","milliliters","meters","Celsius"], a:"milliliters", e:"Milliliters (mL) and liters (L) are standard units for liquid volume." },
+  { subject:"science", grade:5, level:9, type:"mc", q:"The unit of temperature in the metric system is degrees ____.", choices:["Fahrenheit","Kelvin only","Celsius","Newton"], a:"Celsius", e:"Celsius (°C) is the everyday metric temperature scale used in Philippine schools." },
+  { subject:"science", grade:5, level:10, type:"mc", q:"The organ system that breaks down food is the ____ system.", choices:["digestive","respiratory","circulatory","excretory"], a:"digestive", e:"The digestive system includes the mouth, stomach, and intestines." },
+  { subject:"science", grade:5, level:10, type:"mc", q:"Animals that give birth to live young rather than lay eggs are called ____.", choices:["oviparous","viviparous","reptiles","insects"], a:"viviparous", e:"Viviparous animals develop young inside the mother's body." },
+  { subject:"science", grade:5, level:10, type:"mc", q:"Underground stems that store food, like ginger, are called ____.", choices:["tubers","rhizomes","bulbs","roots"], a:"rhizomes", e:"Rhizomes are horizontal underground stems; ginger and turmeric grow from them." },
+  { subject:"science", grade:5, level:11, type:"mc", q:"The force that resists motion between two surfaces in contact is ____.", choices:["gravity","magnetism","friction","tension"], a:"friction", e:"Friction acts opposite to motion and produces heat." },
+  { subject:"science", grade:5, level:11, type:"mc", q:"Materials that allow electricity to flow easily are called ____.", choices:["insulators","conductors","semiconductors","magnets"], a:"conductors", e:"Metals like copper are good conductors of electricity." },
+  { subject:"science", grade:5, level:11, type:"mc", q:"The cycle in which water moves through evaporation, condensation, and precipitation is called the ____ cycle.", choices:["carbon","nitrogen","water","rock"], a:"water", e:"The water cycle recycles Earth's water continuously between land, sea, and sky." },
+
+  /* ---- SCIENCE G6 ---- */
+  { subject:"science", grade:6, level:12, type:"mc", q:"When ice melts to water, the change is ____.", choices:["chemical","physical","irreversible","new substance"], a:"physical", e:"Melting is a physical change — the water is still H₂O." },
+  { subject:"science", grade:6, level:12, type:"mc", q:"A mixture whose components are evenly distributed and cannot be easily seen apart is called ____.", choices:["homogeneous","heterogeneous","suspension","alloy"], a:"homogeneous", e:"Solutions like salt water are homogeneous — uniform throughout." },
+  { subject:"science", grade:6, level:12, type:"mc", q:"The separation technique that uses a filter paper to trap solid particles from a liquid is ____.", choices:["distillation","filtration","decantation","evaporation"], a:"filtration", e:"Filtration traps insoluble solids while letting the liquid pass." },
+  { subject:"science", grade:6, level:13, type:"mc", q:"Blood is pumped through the body by the ____.", choices:["kidney","lungs","heart","brain"], a:"heart", e:"The heart is a muscular pump at the center of the circulatory system." },
+  { subject:"science", grade:6, level:13, type:"mc", q:"Organisms that get energy by breaking down dead matter are called ____.", choices:["producers","consumers","decomposers","predators"], a:"decomposers", e:"Fungi and bacteria act as decomposers, returning nutrients to the soil." },
+  { subject:"science", grade:6, level:13, type:"mc", q:"Non-living factors in an ecosystem, such as sunlight and temperature, are called ____ factors.", choices:["biotic","abiotic","predatory","microbial"], a:"abiotic", e:"Abiotic factors are non-living physical and chemical elements of the environment." },
+  { subject:"science", grade:6, level:14, type:"mc", q:"A simple machine consisting of a rigid bar pivoting on a fulcrum is a ____.", choices:["pulley","lever","wedge","screw"], a:"lever", e:"Seesaws and crowbars are levers that trade force for distance around a fulcrum." },
+  { subject:"science", grade:6, level:14, type:"mc", q:"The distance from one crest of a wave to the next is called the ____.", choices:["amplitude","frequency","wavelength","period"], a:"wavelength", e:"Wavelength is measured in meters and defines one full cycle of a wave." },
+  { subject:"science", grade:6, level:14, type:"mc", q:"PHIVOLCS is the Philippine agency that monitors ____.", choices:["typhoons","earthquakes and volcanoes","fisheries","forests"], a:"earthquakes and volcanoes", e:"Philippine Institute of Volcanology and Seismology issues alert levels for volcanoes and reports earthquake intensity." },
+
+  /* ---- SCIENCE G7 ---- */
+  { subject:"science", grade:7, level:15, type:"mc", q:"A pure substance made of only one kind of atom is called an ____.", choices:["element","compound","mixture","alloy"], a:"element", e:"Elements cannot be broken down into simpler substances by chemical means." },
+  { subject:"science", grade:7, level:15, type:"mc", q:"When salt is dissolved in water, the water is the ____.", choices:["solute","solvent","solution","compound"], a:"solvent", e:"The solvent is the substance (usually the larger amount) that dissolves the solute." },
+  { subject:"science", grade:7, level:15, type:"mc", q:"The largest level of ecological organization is the ____.", choices:["organism","population","community","ecosystem"], a:"ecosystem", e:"An ecosystem includes all living communities and their non-living environment." },
+  { subject:"science", grade:7, level:16, type:"mc", q:"Speed with a direction is called ____.", choices:["distance","displacement","velocity","acceleration"], a:"velocity", e:"Velocity is a vector: it has both magnitude (speed) and direction." },
+  { subject:"science", grade:7, level:16, type:"mc", q:"An object speeds up because it experiences ____.", choices:["zero force","gravity only","acceleration","friction only"], a:"acceleration", e:"Acceleration is any change in velocity — speeding up, slowing down, or changing direction." },
+  { subject:"science", grade:7, level:16, type:"mc", q:"Heat transfer through a fluid by movement of the fluid itself is called ____.", choices:["conduction","convection","radiation","insulation"], a:"convection", e:"Convection moves heat as warmer, less dense fluid rises and cooler fluid sinks." },
+  { subject:"science", grade:7, level:17, type:"mc", q:"The seasonal wind that brings the wet season to the Philippines is called the ____ monsoon.", choices:["amihan","habagat","siberian","polar"], a:"habagat", e:"Habagat is the southwest monsoon; it brings heavy rain from about June to September." },
+  { subject:"science", grade:7, level:17, type:"mc", q:"The imaginary belt near the equator where the trade winds meet is the ____.", choices:["ITCZ","PAR","ENSO","tropic of cancer"], a:"ITCZ", e:"Intertropical Convergence Zone drives rainfall in tropical regions." },
+  { subject:"science", grade:7, level:17, type:"mc", q:"A solar eclipse happens when the ____ passes between the Sun and Earth.", choices:["Moon","Mars","Venus","Earth's shadow"], a:"Moon", e:"During a solar eclipse the Moon blocks part or all of the Sun as seen from Earth." },
+
+  /* ---- SCIENCE G8 ---- */
+  { subject:"science", grade:8, level:18, type:"mc", q:"The passing of traits from parents to offspring is called ____.", choices:["mutation","heredity","evolution","adaptation"], a:"heredity", e:"Genes carry hereditary information across generations." },
+  { subject:"science", grade:8, level:18, type:"mc", q:"Photosynthesis converts carbon dioxide and water into glucose and ____.", choices:["nitrogen","hydrogen","oxygen","carbon"], a:"oxygen", e:"6 CO₂ + 6 H₂O → C₆H₁₂O₆ + 6 O₂ (in the presence of sunlight)." },
+  { subject:"science", grade:8, level:18, type:"mc", q:"Which classification level groups together closely related species?", choices:["kingdom","phylum","genus","order"], a:"genus", e:"Genus is directly above species in the taxonomic hierarchy." },
+  { subject:"science", grade:8, level:19, type:"mc", q:"The scientist who proposed that atoms are indivisible spheres was ____.", choices:["Bohr","Dalton","Rutherford","Thomson"], a:"Dalton", e:"John Dalton's early 19th-century atomic model treated atoms as solid, indivisible spheres." },
+  { subject:"science", grade:8, level:19, type:"mc", q:"The rows in the periodic table are called ____.", choices:["groups","periods","families","cycles"], a:"periods", e:"Horizontal rows are periods; vertical columns are groups or families." },
+  { subject:"science", grade:8, level:19, type:"mc", q:"Elements in the same group share the same number of ____ electrons.", choices:["valence","core","total","nuclear"], a:"valence", e:"Elements in a group have identical outer-shell electron counts, giving similar chemistry." },
+  { subject:"science", grade:8, level:20, type:"mc", q:"Earthquake magnitude is measured on the ____ scale.", choices:["Beaufort","Richter","Mercalli","Saffir-Simpson"], a:"Richter", e:"Richter measures the energy released; Mercalli measures felt intensity." },
+  { subject:"science", grade:8, level:20, type:"mc", q:"The Philippine Area of Responsibility (PAR) is the region monitored for ____.", choices:["earthquakes","typhoons","forest fires","tsunamis only"], a:"typhoons", e:"PAGASA tracks tropical cyclones once they enter the PAR." },
+  { subject:"science", grade:8, level:20, type:"mc", q:"A small icy body that develops a glowing tail when close to the Sun is a ____.", choices:["meteor","asteroid","comet","planet"], a:"comet", e:"Comets are icy leftovers from the solar system's formation; the Sun vaporizes their ice into a tail." },
+
+  /* ---- SCIENCE G9 ---- */
+  { subject:"science", grade:9, level:21, type:"mc", q:"Newton's first law states that an object at rest stays at rest unless acted on by a(n) ____ force.", choices:["balanced","gravitational","unbalanced","magnetic"], a:"unbalanced", e:"Only an unbalanced (net non-zero) force can change an object's state of motion." },
+  { subject:"science", grade:9, level:21, type:"mc", q:"In a series circuit, if one bulb burns out, the other bulbs ____.", choices:["stay lit","get brighter","also go out","get dimmer"], a:"also go out", e:"A series circuit forms a single loop, so breaking it anywhere stops the current everywhere." },
+  { subject:"science", grade:9, level:21, type:"mc", q:"Which electromagnetic wave has the longest wavelength?", choices:["gamma","X-ray","visible light","radio"], a:"radio", e:"Radio waves sit at the low-frequency, long-wavelength end of the EM spectrum." },
+  { subject:"science", grade:9, level:22, type:"mc", q:"The supercontinent from which today's continents drifted apart is called ____.", choices:["Laurasia","Gondwana","Pangaea","Panthalassa"], a:"Pangaea", e:"Alfred Wegener proposed that all modern continents were once joined in Pangaea." },
+  { subject:"science", grade:9, level:22, type:"mc", q:"The boundary where two tectonic plates slide past each other is called a ____ boundary.", choices:["convergent","divergent","transform","subduction"], a:"transform", e:"The San Andreas fault is a well-known transform boundary." },
+  { subject:"science", grade:9, level:22, type:"mc", q:"An ionic bond forms when atoms ____ electrons.", choices:["share","transfer","emit","absorb"], a:"transfer", e:"In ionic bonding one atom donates electrons to another, creating oppositely charged ions that attract." },
+  { subject:"science", grade:9, level:22, type:"mc", q:"The chemical formula for ammonia is ____.", choices:["NH3","CH4","H2O","CO2"], a:"NH3", e:"Ammonia has one nitrogen atom bonded to three hydrogen atoms." },
+
+  /* ---- SCIENCE G10 ---- */
+  { subject:"science", grade:10, level:23, type:"mc", q:"The mechanism that mainly drives the movement of tectonic plates is ____.", choices:["ocean currents","convection in the mantle","wind","Earth's magnetic field"], a:"convection in the mantle", e:"Heat from the core drives slow convection currents in the mantle that carry plates along." },
+  { subject:"science", grade:10, level:23, type:"mc", q:"The greenhouse gas released mainly by burning fossil fuels is ____.", choices:["oxygen","nitrogen","carbon dioxide","hydrogen"], a:"carbon dioxide", e:"CO₂ from combustion of coal, oil, and gas is the leading driver of modern global warming." },
+  { subject:"science", grade:10, level:23, type:"mc", q:"El Niño is characterized by unusually ____ Pacific waters shifting toward the eastern Pacific.", choices:["cold","warm","salty","fresh"], a:"warm", e:"During El Niño, warm surface waters spread east across the Pacific, disrupting global weather." },
+  { subject:"science", grade:10, level:24, type:"mc", q:"Momentum is calculated as ____.", choices:["mass × velocity","force × time","mass × acceleration","force × distance"], a:"mass × velocity", e:"p = mv, so heavier and faster objects carry more momentum." },
+  { subject:"science", grade:10, level:24, type:"mc", q:"In an elastic collision, both momentum and ____ are conserved.", choices:["mass only","kinetic energy","charge","temperature"], a:"kinetic energy", e:"Elastic collisions conserve kinetic energy; inelastic ones don't." },
+  { subject:"science", grade:10, level:24, type:"mc", q:"The pH range of an acid is ____.", choices:["7","greater than 7","less than 7","equal to 14"], a:"less than 7", e:"Acids have pH below 7; bases above 7; pure water is 7." },
+  { subject:"science", grade:10, level:24, type:"mc", q:"Balancing a chemical equation reflects the law of conservation of ____.", choices:["energy","charge","mass","velocity"], a:"mass", e:"Atoms are neither created nor destroyed in a chemical reaction; total mass stays the same." },
+  { subject:"science", grade:10, level:24, type:"mc", q:"Traditional biotechnology used by Filipinos to make bagoong and patis relies on ____.", choices:["genetic engineering","fermentation","cloning","cross-pollination"], a:"fermentation", e:"Fermentation by microbes has been used for centuries to preserve and flavor food." },
 ];
 
 window.SUBJECTS = [

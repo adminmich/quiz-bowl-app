@@ -2299,7 +2299,14 @@ document.getElementById('adminUserRows').addEventListener('click', async e => {
 /* ============================ Boot ============================ */
 (function boot() {
   const booted = currentStudent();
-  if (booted) { renderWho(); show('home'); hydrateStudentFromServer(booted); }
+  if (booted) {
+    renderWho();
+    show('home');
+    hydrateStudentFromServer(booted);
+    /* Register returning sessions too, so the admin roster captures every user
+       who opens the app — not just the ones who tapped "Let's Play!" again. */
+    pingLoginToGlobal(booted);
+  }
   else { show('login'); }
   document.addEventListener('click', () => Sound.unlock(), { once: true });
 

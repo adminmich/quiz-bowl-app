@@ -1193,6 +1193,7 @@ function newStudent(name, age, grade) {
       quizzesCompleted: 0, perfectRuns: 0, highestLevel: 1,
       subjectsPlayed: {}, fastestAnswerMs: null,
       bestScore: 0, currentAllTimeStreak: 0,
+      gkHighestPassed: 0,
     },
     achievements: [],
     seenQuestions: [],
@@ -1424,18 +1425,30 @@ function renderSubjects() {
       'Difficulty: Level ' + tier + ' ' + info.label + ' ' + info.ico +
       ' • ' + info.timeS + 's per question. Each tile shows how many questions are available at this level.';
   }
+  /* General Knowledge is the only subject with per-level progression:
+     level N+1 unlocks only after passing level N. Other subjects are
+     unrestricted at any tier the student picks. */
+  const student = currentStudent();
+  const gkHighest = (student && student.stats && (student.stats.gkHighestPassed | 0)) || 0;
+  const gkUnlockedUpTo = gkHighest + 1;
   window.SUBJECTS.forEach(s => {
     const st = styles[s.id] || {cls:'', ico:'⭐', desc:''};
     const pool = questionsInTier(s.id, tier);
     const el = document.createElement('div');
     el.className = 'tile ' + st.cls;
     const countLbl = pool.length + ' question' + (pool.length === 1 ? '' : 's') + ' at L' + tier;
+    const gkLocked = s.id === 'mixed' && tier > gkUnlockedUpTo;
+    const lockNote = gkLocked
+      ? `<div class="desc" style="margin-top:6px;color:#991b1b;font-weight:700;">🔒 Pass L${tier - 1} in General Knowledge to unlock</div>`
+      : '';
     el.innerHTML =
       `<span class="ico">${st.ico}</span>` +
       `<div class="name">${s.label}</div>` +
       `<div class="desc">${st.desc}</div>` +
-      `<div class="desc" style="margin-top:6px;font-weight:700;">${countLbl}</div>`;
-    if (pool.length === 0) {
+      `<div class="desc" style="margin-top:6px;font-weight:700;">${countLbl}</div>` +
+      lockNote;
+    const disabled = pool.length === 0 || gkLocked;
+    if (disabled) {
       el.style.opacity = '0.4';
       el.style.cursor = 'not-allowed';
     } else {
@@ -1752,6 +1765,11 @@ function finishQuiz() {
     s.fastestAnswerMs = state.fastestAnswerMs;
   }
   if (state.score > s.bestScore) s.bestScore = state.score;
+  /* General Knowledge progression: passing (>=70%) bumps the highest
+     GK level cleared so the next tier unlocks on the subject picker. */
+  if (state.subject === 'mixed' && (state.score / total) >= 0.7) {
+    s.gkHighestPassed = Math.max(s.gkHighestPassed | 0, state.level);
+  }
   student.lastPlayed = new Date().toISOString();
 
   // Record which questions were shown so future quizzes prefer fresh ones.

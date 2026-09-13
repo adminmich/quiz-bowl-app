@@ -260,6 +260,37 @@
     font-size: 14px; color: var(--ink); font-weight: 600; margin-top: 2px;
   }
   .admin-detail-subjects { margin-top: 12px; }
+  .coverage-grade {
+    border: 2px solid var(--ink-2); border-radius: 14px;
+    background: #fff; margin-bottom: 10px; overflow: hidden;
+  }
+  .coverage-head {
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 12px; padding: 12px 16px; cursor:pointer;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    font-weight: 700;
+  }
+  .coverage-head:hover { background: linear-gradient(135deg, #eef2ff, #dbeafe); }
+  .coverage-head .gr-name { font-size: 16px; }
+  .coverage-head .gr-total { color: var(--muted); font-size: 13px; font-weight: 600; }
+  .coverage-body { padding: 14px 16px; border-top: 2px solid #e2e8f0; }
+  .coverage-body.hidden { display: none; }
+  .coverage-subj-list {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px; margin-bottom: 12px;
+  }
+  .coverage-subj-list .row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 6px 10px; border-radius: 8px; background:#f8fafc;
+    font-size: 13px;
+  }
+  .coverage-subj-list .row b { color: var(--grape); }
+  .coverage-topics { font-size: 13px; color: var(--ink-2); }
+  .coverage-topics h4 {
+    margin: 10px 0 4px; font-size: 13px; color: var(--ink);
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .coverage-topics ul { margin: 0 0 6px 20px; padding: 0; }
   .admin-detail-subjects .v { font-size: 13px; color: var(--ink-2); margin-top: 4px; display: block; }
 
   /* Profile screen */
@@ -963,6 +994,10 @@
         <tbody id="adminUserRows"></tbody>
       </table>
     </div>
+
+    <h3 style="margin-top:28px;">Question Bank Coverage by Grade</h3>
+    <p class="lead" style="font-size:12px;">Question counts per subject per grade, plus MATATAG-aligned topics where available. Click a grade to expand.</p>
+    <div id="adminCoverageWrap"></div>
 
     <div class="actions" style="margin-top:22px;">
       <button class="btn ghost" data-nav="home">← Home</button>
@@ -2366,7 +2401,94 @@ async function renderAdmin() {
   } catch (err) {
     rowsEl.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--coral);padding:20px;">Failed to load: ' + escapeHtml(err.message || 'unknown error') + '</td></tr>';
   }
+  renderCoverage();
 }
+
+/* ================= Admin: Question Bank Coverage by grade =================
+   Aggregates window.QUESTIONS by grade and subject, and layers MATATAG
+   curriculum topics on top for grades 5-10 (Math and Science) so admins
+   can see both what's actually in the bank and what topics the questions
+   were drawn from. */
+const MATATAG_TOPICS = {
+  5: {
+    math:    ['12/24-hour clocks & time zones','Area of parallelogram, triangle, trapezoid','GMDAS','Multiplying and dividing fractions','Decimals to ten-thousandths','Divisibility rules 2-12','Primes and Sieve of Eratosthenes','Bivariate data and double bar/line graphs','Theoretical probability','Prisms, pyramids, nets, surface area, volume','Rotations'],
+    science: ['Matter (mass, volume, state changes)','Measuring volume, mass, temperature','Digestive, respiratory, reproductive systems','Grouping plants, animals, microorganisms','Live-birth vs egg-laying','Plant adaptations: rhizomes, tubers, bulbs','Contact vs non-contact forces','Friction, gravity, static electricity','Conductors & insulators, circuits, electromagnets','Landforms, rocks, minerals, soil','Water cycle, weathering, erosion','Philippine weather, tropical cyclones','Solar system, phases of the Moon'],
+  },
+  6: {
+    math:    ['Tessellation','Translation, reflection, rotation','Operations on decimals to 4 places','Fractions, whole numbers, mixed numbers','Ratio and proportion','Percent, rate, base','Volume of cubes and rectangular prisms','Exponents and GEMDAS','GCF and LCM by listing','Perimeter and area of composite figures','Circumference and area of a circle','Frequency tables and pie graphs'],
+    science: ['Melting, evaporation, freezing, condensation','Physical vs chemical, reversible vs irreversible','Homogeneous and heterogeneous mixtures','Separation techniques: filtration, distillation, etc.','Heart, blood, blood vessels','Pollination and seed production','Vertebrates vs invertebrates','Food webs, producers/consumers/decomposers','Biotic and abiotic factors','Simple machines: inclined plane, wedge, lever, pulley','Waves: amplitude, frequency, wavelength, velocity','Longitudinal vs transverse waves; Doppler','Volcanoes, PHIVOLCS alert levels','Rotation vs revolution, seasons, eclipses','Constellations and indigenous Filipino star patterns'],
+  },
+  7: {
+    math:    ['Regular/irregular polygons and angle pairs','Percentage increase/decrease, financial planning','Rational numbers as fractions/decimals/percents','Square and cube roots, irrational numbers','Sets, subsets, union, intersection, Venn diagrams','Unit conversion (SI and across systems)','Volume of cylinders and pyramids','Sampling and frequency distributions','Reading pie/bar/line/stem-and-leaf graphs','Integer arithmetic and absolute value','Solving simple equations','Rearranging formulas','Scientific notation'],
+    science: ['Scientific method and fair testing','Elements, compounds, mixtures, concentration','Levels of organization: cell to ecosystem','Microscopy and microorganisms','Reproduction and ecological relationships','1-D motion: speed, velocity, acceleration','Waves, sound, light','Heat transfer: conduction, convection, radiation','Electrical charges','Philippine environment and natural resources','Breezes, monsoons (habagat, amihan), ITCZ','Seasons and solar position','Solar and lunar eclipses'],
+  },
+  8: {
+    math:    ['Special products and factoring','Rational algebraic expressions','Measures of central tendency and variability','Pythagorean theorem','Triangle inequality','Volume of cones and spheres','Distance and midpoint formulas','Linear equations and systems','Linear inequalities','Basic probability and Fundamental Counting Principle'],
+    science: ['Organ systems working together','Heredity and inheritance patterns','Taxonomic classification','Photosynthesis, respiration, natural cycles','History of the atomic model','Subatomic particles','Elements, compounds, periodic table','Faults and earthquake generation','Intensity vs magnitude (Mercalli vs Richter)','Typhoons and the Philippine Area of Responsibility','Comets, meteors, asteroids','Motion graphs, kinetic and potential energy','Work and power','Light reflection and refraction','Renewable energy incl. Philippine hydro'],
+  },
+  9: {
+    math:    ['Points, lines, rays, angles, planes','Perpendicular and parallel constructions','Angle relationships from a transversal','Functions, domain, range, slope','Graphing linear functions','Classifying quadrilaterals','Properties of parallelograms; proofs','Triangle congruence (SSS, SAS, ASA, AAS, HL)','CPCTC and midline theorem','Quadratic equations and the parabola','Vertex form and the quadratic formula','Similarity, 30-60-90 and 45-45-90','Sine, cosine, tangent for special angles','Angles of elevation and depression','Simple and compound probability'],
+    science: ['Newton\'s laws and action-reaction pairs','Series vs parallel circuits, current/voltage/resistance','Electromagnetic spectrum and applications','Continental drift and plate boundaries','Fossils and geologic time','Seismic waves and Earth\'s internal structure','Comets, meteoroids, asteroids, dwarf planets','DNA, genes, chromosomes; mutations','Biodiversity and Philippine endangered species','Rainforest, mangrove, coral-reef ecosystems','Ionic vs covalent bonding; naming compounds','Metallic bonding and property comparisons'],
+  },
+  10: {
+    math:    ['Quadratic inequalities in one and two variables','Absolute value equations and inequalities','Radical expressions and laws of exponents','Discriminant and nature of quadratic roots','Vertex-form transformations','Equation of a circle','Compound interest and depreciation','Laws of sines and cosines','Rigid motions in the Cartesian plane','Central and inscribed angles, sectors','Fundamental Counting Principle','Box-and-whisker plots, quartiles, IQR','Analysing statistical reports for bias','Union, intersection, dependent/independent, complementary events'],
+    science: ['Plate tectonics, subduction, mountain building','Philippine mountains, faults, volcanoes, trenches','Climate change, greenhouse gases, ENSO/El Niño','Projectile motion','Elastic vs inelastic collisions','Momentum, impulse, conservation of momentum','Household electrical safety; motors vs generators','Reaction indicators, acids, bases, salts','Balancing chemical equations (conservation of mass)','Combustion, exothermic vs endothermic reactions','Homeostasis and feedback mechanisms','Natural selection and evolution evidence','Biotechnology: fermentation, GMOs, ethics','Carrying capacity of ecosystems'],
+  },
+};
+
+function renderCoverage() {
+  const wrap = document.getElementById('adminCoverageWrap');
+  if (!wrap || !window.QUESTIONS) return;
+  const subjLabel = {};
+  (window.SUBJECTS || []).forEach(s => { if (s.id !== 'mixed') subjLabel[s.id] = s.label; });
+  /* Aggregate: countsByGrade[grade][subject] = count */
+  const counts = {};
+  window.QUESTIONS.forEach(q => {
+    counts[q.grade] = counts[q.grade] || {};
+    counts[q.grade][q.subject] = (counts[q.grade][q.subject] || 0) + 1;
+  });
+  const grades = Object.keys(counts).map(g => +g).sort((a,b) => a-b);
+  wrap.innerHTML = '';
+  grades.forEach(g => {
+    const perSubj = counts[g];
+    const total = Object.values(perSubj).reduce((a,b) => a+b, 0);
+    const card = document.createElement('div');
+    card.className = 'coverage-grade';
+    const subjRows = Object.keys(subjLabel).sort().map(sid => {
+      const c = perSubj[sid] | 0;
+      return `<div class="row"><span>${escapeHtml(subjLabel[sid])}</span><b>${c}</b></div>`;
+    }).join('');
+    const topics = MATATAG_TOPICS[g];
+    let topicsHtml = '';
+    if (topics) {
+      const parts = [];
+      if (topics.math) parts.push('<h4>Math (MATATAG)</h4><ul><li>' + topics.math.map(escapeHtml).join('</li><li>') + '</li></ul>');
+      if (topics.science) parts.push('<h4>Science (MATATAG)</h4><ul><li>' + topics.science.map(escapeHtml).join('</li><li>') + '</li></ul>');
+      topicsHtml = '<div class="coverage-topics">' + parts.join('') + '</div>';
+    } else {
+      topicsHtml = '<div class="coverage-topics" style="color:var(--muted);">No MATATAG topic mapping recorded for this grade yet.</div>';
+    }
+    card.innerHTML =
+      '<div class="coverage-head" data-toggle-grade="' + g + '">' +
+        '<span class="gr-name">Grade ' + g + '</span>' +
+        '<span class="gr-total">' + total + ' question' + (total !== 1 ? 's' : '') + ' • click to expand ▾</span>' +
+      '</div>' +
+      '<div class="coverage-body hidden" data-body-grade="' + g + '">' +
+        '<div class="coverage-subj-list">' + subjRows + '</div>' +
+        topicsHtml +
+      '</div>';
+    wrap.appendChild(card);
+  });
+  /* Delegate expand/collapse clicks */
+  wrap.onclick = (e) => {
+    const head = e.target.closest('[data-toggle-grade]');
+    if (!head) return;
+    const g = head.dataset.toggleGrade;
+    const body = wrap.querySelector('[data-body-grade="' + g + '"]');
+    if (body) body.classList.toggle('hidden');
+  };
+}
+
 document.getElementById('adminRefreshBtn').addEventListener('click', () => renderAdmin());
 
 /* Handle View/Block/Unblock/Remove clicks in the admin table via delegation. */

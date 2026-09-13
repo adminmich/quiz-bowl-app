@@ -1487,11 +1487,24 @@ function questionsInTier(subject, tier) {
   );
 }
 
+/* Cap difficulty by the student's grade so younger players don't see tiers
+   built for older grade bands. Admins keep the full ladder because their
+   bootstrap profile is grade 12. */
+function maxTierForGrade(grade) {
+  const g = Number(grade) || 0;
+  if (g >= 1 && g <= 4) return 3;
+  return TIER_COUNT;
+}
+
 function renderLevels() {
   const grid = document.getElementById('levelGrid');
   grid.innerHTML = '';
+  const student = currentStudent();
+  const maxTier = student ? maxTierForGrade(student.grade) : TIER_COUNT;
   document.getElementById('levelLead').textContent =
-    'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
+    maxTier < TIER_COUNT
+      ? 'Levels 1-' + maxTier + ' are open for your grade. Higher levels unlock as you move up in school.'
+      : 'Pick a difficulty first — the next screen shows how many questions each subject has at that level.';
 
   /* Count across every subject at this tier, since the subject is chosen
      after difficulty in the current flow. */
@@ -1500,12 +1513,15 @@ function renderLevels() {
     const pool = questionsInTier('mixed', t);
     const el = document.createElement('div');
     el.className = 'tile level ' + info.cls;
-    const disabled = pool.length === 0;
+    const lockedByGrade = t > maxTier;
+    const disabled = pool.length === 0 || lockedByGrade;
     if (disabled) el.style.opacity = '0.4';
+    if (lockedByGrade) el.style.cursor = 'not-allowed';
+    const lockNote = lockedByGrade ? ' • 🔒 unlocks in a higher grade' : '';
     el.innerHTML =
       `<span class="ico">${info.ico}</span>` +
       `<div class="name">Level ${t} • ${info.label}</div>` +
-      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''} across all subjects</div>`;
+      `<div class="desc">${info.timeS}s per Q • ${pool.length} q${pool.length !== 1 ? 's' : ''} across all subjects${lockNote}</div>`;
     if (!disabled) el.addEventListener('click', () => { state.level = t; show('subject'); });
     grid.appendChild(el);
   }
@@ -1807,12 +1823,14 @@ function finishQuiz() {
 }
 
 document.getElementById('nextLevelBtn').addEventListener('click', () => {
-  let nextLevel = state.level < TIER_COUNT ? state.level + 1 : state.level;
-  while (nextLevel <= TIER_COUNT) {
+  const student = currentStudent();
+  const cap = student ? maxTierForGrade(student.grade) : TIER_COUNT;
+  let nextLevel = state.level < cap ? state.level + 1 : state.level;
+  while (nextLevel <= cap) {
     if (questionsInTier(state.subject, nextLevel).length > 0) break;
     nextLevel++;
   }
-  if (nextLevel > TIER_COUNT) nextLevel = state.level;
+  if (nextLevel > cap) nextLevel = state.level;
   startQuiz(nextLevel);
 });
 

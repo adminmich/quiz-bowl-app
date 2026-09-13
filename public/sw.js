@@ -1,6 +1,6 @@
 /* Service worker with fresh-first strategy for HTML, data, and API,
    cache-first for immutable assets like icons. */
-const CACHE = 'quiz-bowl-v14';
+const CACHE = 'quiz-bowl-v15';
 const CORE = ['/manifest.json', '/icon-192.svg', '/icon-512.svg', '/icon-maskable.svg'];
 
 self.addEventListener('install', event => {

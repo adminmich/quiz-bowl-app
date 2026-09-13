@@ -2230,9 +2230,10 @@ async function renderAdmin() {
       const blockedTag = p.blocked ? ' <span class="admin-tag blocked">BLOCKED</span>' : '';
       const shortId = shortLbId(p.username, i + 1);
       const neverPlayedTag = (p.quizzesCompleted | 0) === 0 ? ' <span class="admin-tag" style="background:#94a3b8;color:#fff;">NEW</span>' : '';
+      const realName = p.name ? ' <span style="font-weight:400;color:var(--muted);">' + escapeHtml(p.name) + '</span>' : '';
       tr.innerHTML =
         '<td>#' + (i + 1) + '</td>' +
-        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>' + escapeHtml(shortId) + blockedTag + neverPlayedTag + '</td>' +
+        '<td><span class="avatar">' + (p.avatar || '🧑') + '</span>' + escapeHtml(shortId) + realName + blockedTag + neverPlayedTag + '</td>' +
         '<td class="num">' + (p.quizzesCompleted | 0) + '</td>' +
         '<td class="num">' + (p.correctAnswers | 0) + '</td>' +
         '<td class="num">' + (p.totalPoints | 0) + '</td>' +
